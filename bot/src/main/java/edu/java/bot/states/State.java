@@ -15,7 +15,8 @@ public class State {
     @Getter @Setter private String stepName;
 
     public void clear() {
-        command = null;
+        setCommand(null);
+        setStepName(null);
         dict.clear();
     }
 
@@ -34,3 +35,5 @@ public class State {
     }
 
 }
+
+
