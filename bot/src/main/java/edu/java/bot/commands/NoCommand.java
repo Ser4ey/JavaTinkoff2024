@@ -12,7 +12,7 @@ public class NoCommand implements Command {
         String text = bot.getMessageText(update);
 
         String message = String.format("Ваш id: %s\nВаш текст: %s", chatId, text);
-        bot.sendMessage(chatId, text);
+        bot.sendMessage(chatId, message);
     }
 }
 

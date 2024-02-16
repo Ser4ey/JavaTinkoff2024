@@ -1,9 +1,5 @@
 package edu.java.bot.handlers;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.SimpleBot;
 import edu.java.bot.commands.Command;
@@ -12,13 +8,16 @@ import edu.java.bot.commands.NoCommand;
 import edu.java.bot.commands.StartCommand;
 import edu.java.bot.states.State;
 import edu.java.bot.states.StateManager;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class MainHandler {
     private final Map<String, Command> commands = new HashMap<>();
     private final StateManager stateManager = new StateManager();
     private final Command noCommand = new NoCommand();
 
-    public void registerCommand(String commandName, Command command){
+    public void registerCommand(String commandName, Command command) {
         commands.put(commandName, command);
     }
 

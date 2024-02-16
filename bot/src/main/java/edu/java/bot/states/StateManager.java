@@ -9,7 +9,7 @@ public class StateManager {
     private final Map<Long, State> usersStates = new HashMap<>();
 
     @NonNull
-    public State getState(Long userId){
+    public State getState(Long userId) {
         State userState = usersStates.get(userId);
         if (userState == null) {
             userState = new State();
