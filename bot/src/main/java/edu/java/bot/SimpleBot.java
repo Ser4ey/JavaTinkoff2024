@@ -21,7 +21,7 @@ public class SimpleBot {
     private final TelegramBot bot;
     private final MainHandler commandHandler = new MainHandler();
 
-    public SimpleBot(@Value("${BOT_TOKEN}") String botToken) {
+    public SimpleBot(@Value("${app.telegram-token}") String botToken) {
         bot = new TelegramBot(botToken);
         setBotCommands();
         start();
