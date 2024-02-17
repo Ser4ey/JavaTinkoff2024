@@ -14,7 +14,7 @@ public class HelpCommand extends AbstractCommand {
         Long chatId = bot.getChaiId(update);
 
         StringBuilder helpText = new StringBuilder();
-        for (RegisteredCommand registeredCommand : RegisteredCommand.values()){
+        for (RegisteredCommand registeredCommand : RegisteredCommand.values()) {
             AbstractCommand command = registeredCommand.getCommand();
             helpText.append(command.toString());
             helpText.append("\n");

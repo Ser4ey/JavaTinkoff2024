@@ -4,11 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum RegisteredCommand {
-    START_COMMAND (new StartCommand()),
-    HELP_COMMAND (new HelpCommand()),
-    LIST_COMMAND (new ListCommand()),
-    TRACK_COMMAND (new TrackCommand()),
-    UNTRACK_COMMAND (new UntrackCommand());
+    START_COMMAND(new StartCommand()),
+    HELP_COMMAND(new HelpCommand()),
+    LIST_COMMAND(new ListCommand()),
+    TRACK_COMMAND(new TrackCommand()),
+    UNTRACK_COMMAND(new UntrackCommand());
 
     private final AbstractCommand command;
 
@@ -17,8 +17,7 @@ public enum RegisteredCommand {
     }
 
     @Override public String toString() {
-        return "RegisteredCommands{" +
-            "command=" + command +
-            '}';
+        return String.format("RegisteredCommands{command=%s}", command);
     }
+
 }

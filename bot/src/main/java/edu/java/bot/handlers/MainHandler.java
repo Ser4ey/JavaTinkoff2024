@@ -24,7 +24,7 @@ public class MainHandler {
     }
 
     public MainHandler() {
-        for (RegisteredCommand registeredCommand : RegisteredCommand.values()){
+        for (RegisteredCommand registeredCommand : RegisteredCommand.values()) {
             AbstractCommand command = registeredCommand.getCommand();
             registerCommand(command.getCommandName(), command);
         }
@@ -41,7 +41,7 @@ public class MainHandler {
         }
         currentChatState.clear();
 
-        if (Command.isCommand(messageText)){
+        if (Command.isCommand(messageText)) {
             Command command = commands.get(messageText);
             Objects.requireNonNullElse(command, unknownCommand).execute(bot, currentChatState, update);
         } else {
