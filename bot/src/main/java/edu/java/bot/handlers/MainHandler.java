@@ -34,13 +34,18 @@ public class MainHandler {
         Long chatId = bot.getChaiId(update);
         String messageText = bot.getMessageText(update);
 
-        State cerrentChatState = stateManager.getState(chatId);
+        State currentChatState = stateManager.getState(chatId);
+        if (currentChatState.getCommand() != null) {
+            currentChatState.getCommand().execute(bot, currentChatState, update);
+            return;
+        }
+        currentChatState.clear();
 
         if (Command.isCommand(messageText)){
             Command command = commands.get(messageText);
-            Objects.requireNonNullElse(command, unknownCommand).execute(bot, cerrentChatState, update);
+            Objects.requireNonNullElse(command, unknownCommand).execute(bot, currentChatState, update);
         } else {
-            noCommand.execute(bot, cerrentChatState, update);
+            noCommand.execute(bot, currentChatState, update);
         }
 
     }
