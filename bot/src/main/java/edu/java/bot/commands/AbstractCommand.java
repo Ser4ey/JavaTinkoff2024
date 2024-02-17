@@ -12,4 +12,7 @@ public abstract class AbstractCommand implements Command {
         this.commandDescription = commandDescription;
     }
 
+    @Override public String toString() {
+        return String.format("%s - %s", commandName, commandDescription);
+    }
 }

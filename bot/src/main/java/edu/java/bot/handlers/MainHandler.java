@@ -4,12 +4,9 @@ import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.SimpleBot;
 import edu.java.bot.commands.AbstractCommand;
 import edu.java.bot.commands.Command;
-import edu.java.bot.commands.HelpCommand;
-import edu.java.bot.commands.ListCommand;
 import edu.java.bot.commands.NoCommand;
-import edu.java.bot.commands.StartCommand;
-import edu.java.bot.commands.TrackCommand;
-import edu.java.bot.commands.UntrackCommand;
+import edu.java.bot.commands.RegisteredCommand;
+import edu.java.bot.commands.UnknownCommand;
 import edu.java.bot.states.State;
 import edu.java.bot.states.StateManager;
 import java.util.HashMap;
@@ -20,23 +17,17 @@ public class MainHandler {
     private final Map<String, Command> commands = new HashMap<>();
     private final StateManager stateManager = new StateManager();
     private final Command noCommand = new NoCommand();
+    private final Command unknownCommand = new UnknownCommand();
 
     public void registerCommand(String commandName, Command command) {
         commands.put(commandName, command);
     }
 
     public MainHandler() {
-        AbstractCommand startCommand = new StartCommand();
-        AbstractCommand helpCommand = new HelpCommand();
-        AbstractCommand listCommand = new ListCommand();
-        AbstractCommand trackCommand = new TrackCommand();
-        AbstractCommand untrackCommand = new UntrackCommand();
-
-        registerCommand(startCommand.getCommandName(), startCommand);
-        registerCommand(helpCommand.getCommandName(), helpCommand);
-        registerCommand(listCommand.getCommandName(), listCommand);
-        registerCommand(trackCommand.getCommandName(), trackCommand);
-        registerCommand(untrackCommand.getCommandName(), untrackCommand);
+        for (RegisteredCommand registeredCommand : RegisteredCommand.values()){
+            AbstractCommand command = registeredCommand.getCommand();
+            registerCommand(command.getCommandName(), command);
+        }
     }
 
     public void handleCommand(SimpleBot bot, Update update) {
@@ -45,8 +36,12 @@ public class MainHandler {
 
         State cerrentChatState = stateManager.getState(chatId);
 
-        Command command = commands.get(messageText);
-        Objects.requireNonNullElse(command, noCommand).execute(bot, cerrentChatState, update);
+        if (Command.isCommand(messageText)){
+            Command command = commands.get(messageText);
+            Objects.requireNonNullElse(command, unknownCommand).execute(bot, cerrentChatState, update);
+        } else {
+            noCommand.execute(bot, cerrentChatState, update);
+        }
 
     }
 }

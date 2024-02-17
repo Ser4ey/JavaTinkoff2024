@@ -12,6 +12,13 @@ public class HelpCommand extends AbstractCommand {
     @Override
     public void execute(SimpleBot bot, State state, Update update) {
         Long chatId = bot.getChaiId(update);
-        bot.sendMessage(chatId, "command: help");
+
+        StringBuilder helpText = new StringBuilder();
+        for (RegisteredCommand registeredCommand : RegisteredCommand.values()){
+            AbstractCommand command = registeredCommand.getCommand();
+            helpText.append(command.toString());
+            helpText.append("\n");
+        }
+        bot.sendMessage(chatId, helpText.toString());
     }
 }
