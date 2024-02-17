@@ -9,9 +9,12 @@ import edu.java.bot.commands.RegisteredCommand;
 import edu.java.bot.commands.UnknownCommand;
 import edu.java.bot.states.State;
 import edu.java.bot.states.StateManager;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class MainHandler {
     private final Map<String, Command> commands = new HashMap<>();
@@ -21,6 +24,12 @@ public class MainHandler {
 
     public void registerCommand(String commandName, Command command) {
         commands.put(commandName, command);
+    }
+
+    public List<AbstractCommand> getAllCommands() {
+        return Arrays.stream(RegisteredCommand.values())
+            .map(RegisteredCommand::getCommand)
+            .collect(Collectors.toList());
     }
 
     public MainHandler() {

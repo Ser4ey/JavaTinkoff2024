@@ -1,12 +1,16 @@
 package edu.java.bot;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.BotCommand;
+import com.pengrad.telegrambot.request.SetMyCommands;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
+import edu.java.bot.commands.AbstractCommand;
 import edu.java.bot.handlers.MainHandler;
 import lombok.extern.log4j.Log4j2;
-
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j2
 @SuppressWarnings("all")
@@ -16,6 +20,7 @@ public class SimpleBot {
 
     public SimpleBot(String botToken) {
         bot = new TelegramBot(botToken);
+        setBotCommands();
     }
 
     public Long getChaiId(Update update) {
@@ -35,6 +40,15 @@ public class SimpleBot {
         if (update != null && update.message() != null) {
             commandHandler.handleCommand(this, update);
         }
+    }
+
+    private void setBotCommands() {
+        List<BotCommand> commands = new ArrayList<>();
+        for (AbstractCommand command : commandHandler.getAllCommands()) {
+            commands.add(new BotCommand(command.getCommandName(), command.getCommandDescription()));
+        }
+
+        bot.execute(new SetMyCommands(commands.toArray(BotCommand[]::new)));
     }
 
     public void start() {

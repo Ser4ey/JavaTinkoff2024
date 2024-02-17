@@ -6,7 +6,7 @@ import edu.java.bot.states.State;
 
 public class HelpCommand extends AbstractCommand {
     public HelpCommand() {
-        super("/help", "Помощь");
+        super("/help", "Список комманд");
     }
 
     @Override
