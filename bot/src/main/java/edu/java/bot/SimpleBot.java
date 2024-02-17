@@ -5,7 +5,10 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import edu.java.bot.handlers.MainHandler;
+import lombok.extern.log4j.Log4j2;
 
+
+@Log4j2
 public class SimpleBot {
     private final TelegramBot bot;
     private final MainHandler commandHandler = new MainHandler();

@@ -2,6 +2,7 @@ package edu.java.bot.handlers;
 
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.SimpleBot;
+import edu.java.bot.commands.AbstractCommand;
 import edu.java.bot.commands.Command;
 import edu.java.bot.commands.HelpCommand;
 import edu.java.bot.commands.NoCommand;
@@ -22,8 +23,11 @@ public class MainHandler {
     }
 
     public MainHandler() {
-        registerCommand("/start", new StartCommand());
-        registerCommand("/help", new HelpCommand());
+        AbstractCommand startCommand = new StartCommand();
+        AbstractCommand helpCommand = new HelpCommand();
+
+        registerCommand(startCommand.getCommandName(), startCommand);
+        registerCommand(helpCommand.getCommandName(), helpCommand);
     }
 
     public void handleCommand(SimpleBot bot, Update update) {
