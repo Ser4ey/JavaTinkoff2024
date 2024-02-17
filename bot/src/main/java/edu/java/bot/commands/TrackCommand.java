@@ -13,13 +13,15 @@ public class TrackCommand extends AbstractCommand {
         super("/track", "Добавить ссылку");
     }
 
+    private final String STATUS_WAIT_URL = "statusWaitUrl";
+
     @Override
     public void execute(SimpleBot bot, State state, Update update) {
         switch (state.getStepName()) {
             case null:
                 noStatus(bot, state, update);
                 break;
-            case "statusWaitUrl":
+            case STATUS_WAIT_URL:
                 statusWaitUrl(bot, state, update);
                 break;
             default:
@@ -32,7 +34,7 @@ public class TrackCommand extends AbstractCommand {
         Long chatId = bot.getChaiId(update);
         bot.sendMessage(chatId, "Введите ссылку для отслеживания:");
 
-        state.setStepName("statusWaitUrl");
+        state.setStepName(STATUS_WAIT_URL);
         state.setCommand(this);
     }
 
@@ -41,7 +43,7 @@ public class TrackCommand extends AbstractCommand {
         String url = bot.getMessageText(update);
 
         // тут будет проверка
-        if (url.contains("http")){
+        if (url.contains("http")) {
             bot.sendMessage(chatId, "Ссылка успешно добавлена!");
             UserLinkDB db = LocalDBFactory.getInstance();
             db.addUserLinks(chatId, url);

@@ -33,20 +33,24 @@ public class MainHandler {
     public void handleCommand(SimpleBot bot, Update update) {
         Long chatId = bot.getChaiId(update);
         String messageText = bot.getMessageText(update);
-
         State currentChatState = stateManager.getState(chatId);
+
+        // при отправки новой команды сбрасываем состояние
+        if (Command.isCommand(messageText)) {
+            currentChatState.clear();
+            Command command = commands.get(messageText);
+            Objects.requireNonNullElse(command, unknownCommand).execute(bot, currentChatState, update);
+            return;
+        }
+
+        // вызываем команду состояния, если она есть
         if (currentChatState.getCommand() != null) {
             currentChatState.getCommand().execute(bot, currentChatState, update);
             return;
         }
+
         currentChatState.clear();
-
-        if (Command.isCommand(messageText)) {
-            Command command = commands.get(messageText);
-            Objects.requireNonNullElse(command, unknownCommand).execute(bot, currentChatState, update);
-        } else {
-            noCommand.execute(bot, currentChatState, update);
-        }
-
+        noCommand.execute(bot, currentChatState, update);
     }
+
 }

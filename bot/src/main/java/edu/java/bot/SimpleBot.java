@@ -31,7 +31,9 @@ public class SimpleBot {
     }
 
     private void processUpdate(Update update) {
-        commandHandler.handleCommand(this, update);
+        if (update != null && update.message() != null) {
+            commandHandler.handleCommand(this, update);
+        }
     }
 
     public void start() {
