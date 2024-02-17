@@ -30,6 +30,7 @@ public class MainHandler {
         }
     }
 
+    @SuppressWarnings("ReturnCount")
     public void handleCommand(SimpleBot bot, Update update) {
         Long chatId = bot.getChaiId(update);
         String messageText = bot.getMessageText(update);

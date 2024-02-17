@@ -8,6 +8,7 @@ import edu.java.bot.states.State;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
+@SuppressWarnings("MemberName")
 public class UntrackCommand extends AbstractCommand {
     public UntrackCommand() {
         super("/untrack", "Удалить ссылку");
