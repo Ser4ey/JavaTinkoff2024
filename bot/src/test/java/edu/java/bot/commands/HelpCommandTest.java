@@ -22,6 +22,5 @@ class HelpCommandTest {
         helpCommand.execute(bot, state, update);
 
         verify(bot, Mockito.times(1)).sendMessage(anyLong(), anyString());
-
     }
 }

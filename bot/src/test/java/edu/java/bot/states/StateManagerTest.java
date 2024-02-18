@@ -14,7 +14,7 @@ class StateManagerTest {
     }
 
     @Test
-    void getState() {
+    void testGetState() {
         State state1 = stateManager.getState(1L);
         State state2 = stateManager.getState(1L);
 
@@ -25,7 +25,7 @@ class StateManagerTest {
     }
 
     @Test
-    void getState2() {
+    void testGetState2() {
         State state1 = stateManager.getState(10L);
         State state2 = stateManager.getState(1L);
 
@@ -36,13 +36,12 @@ class StateManagerTest {
     }
 
     @Test
-    void getState3() {
+    void testGetState3() {
         State state1 = stateManager.getState(1L);
         State state2 = stateManager.getState(1L);
 
         state1.setStepName("123");
         assertEquals(state1.getStepName(), state2.getStepName());
-
     }
 
 }

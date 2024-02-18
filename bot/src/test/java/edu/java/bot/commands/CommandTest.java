@@ -14,20 +14,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class CommandTest {
 
     @Test
-    void isCommand() {
+    void testIsCommand() {
         assertThat(Command.isCommand("/rrr")).isEqualTo(true);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"/start", "/command", "/some"})
-    void isCommandTrueTest(String text) {
+    void testIsCommandTrueTest(String text) {
         assertTrue(Command.isCommand(text));
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"a1", "/b2", "/start ", " /start", "/sta rt", "123", "ddd", "//dfg", "/frwds/fe",
         "/fds/gfds"})
-    void isCommandFalseTest(String text) {
+    void testIsCommandFalseTest(String text) {
         assertFalse(Command.isCommand(text));
     }
 }
