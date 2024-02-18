@@ -9,5 +9,5 @@ public interface UserLinkDB {
 
     void delUserLinks(long userId, String link);
 
-    boolean checkUserLinks(long userId, String link);
+    boolean checkUserLink(long userId, String link);
 }

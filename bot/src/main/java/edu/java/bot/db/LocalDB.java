@@ -23,7 +23,7 @@ public class LocalDB implements UserLinkDB {
         db.get(userId).remove(link);
     }
 
-    public boolean checkUserLinks(long userId, String link) {
+    public boolean checkUserLink(long userId, String link) {
         db.computeIfAbsent(userId, k -> new LinkedList<>());
         return db.get(userId).contains(link);
     }
