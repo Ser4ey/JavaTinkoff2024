@@ -5,6 +5,8 @@ import edu.java.bot.SimpleBot;
 import edu.java.bot.states.State;
 
 public class StartCommand extends AbstractCommand {
+    public static final String WELCOME_MESSAGE = "Привет!\nЯ бот для отслеживания обновлений.\nСписок команд: /help";
+
     public StartCommand() {
         super("/start", "Запустить бота");
     }
@@ -12,7 +14,7 @@ public class StartCommand extends AbstractCommand {
     @Override
     public void execute(SimpleBot bot, State state, Update update) {
         Long chatId = bot.getChaiId(update);
-        bot.sendMessage(chatId, "command: start");
+        bot.sendMessage(chatId, WELCOME_MESSAGE);
     }
 
 }
