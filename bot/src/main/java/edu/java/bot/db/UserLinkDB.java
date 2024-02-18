@@ -8,4 +8,6 @@ public interface UserLinkDB {
     void addUserLinks(long userId, String link);
 
     void delUserLinks(long userId, String link);
+
+    boolean checkUserLinks(long userId, String link);
 }
