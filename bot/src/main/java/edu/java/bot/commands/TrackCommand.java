@@ -41,6 +41,7 @@ public class TrackCommand extends AbstractCommand {
         state.setCommand(this);
     }
 
+    @SuppressWarnings("ReturnCount")
     public void statusWaitUrl(SimpleBot bot, State state, Update update) {
         Long chatId = bot.getChatId(update);
         String url = bot.getMessageText(update);
