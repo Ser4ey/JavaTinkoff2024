@@ -60,7 +60,7 @@ public class TrackCommand extends AbstractCommand {
 
         if (!isUrlRegistered(url)) {
             bot.sendMessage(
-                chatId, String.format("Сайт %s не отслеживается!\n Введите другую ссылку", getLinkHost(url))
+                chatId, String.format("Сайт %s не отслеживается!", getLinkHost(url))
             );
             state.clear();
             return;
