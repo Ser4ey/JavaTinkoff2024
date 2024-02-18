@@ -2,7 +2,6 @@ package edu.java.bot.urls;
 
 import lombok.Getter;
 
-import java.util.Objects;
 
 @Getter
 public abstract class TrackedUrl {
@@ -13,6 +12,6 @@ public abstract class TrackedUrl {
     }
 
     public boolean isProperUrlHost(String url) {
-        return Objects.equals(UrlWorker.getHostFromUrl(url), urlHost);
+        return urlHost.equals(UrlWorker.getHostFromUrl(url));
     }
 }
