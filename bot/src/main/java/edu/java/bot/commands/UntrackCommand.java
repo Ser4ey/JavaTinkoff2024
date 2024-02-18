@@ -14,7 +14,7 @@ public class UntrackCommand extends AbstractCommand {
         super("/untrack", "Удалить ссылку");
     }
 
-    private final String STATUS_WAIT_URL = "statusWaitUrl";
+    public final static String STATUS_WAIT_URL = "statusWaitUrl";
 
     @Override
     public void execute(SimpleBot bot, State state, Update update) {
@@ -43,7 +43,6 @@ public class UntrackCommand extends AbstractCommand {
         Long chatId = bot.getChatId(update);
         String url = bot.getMessageText(update);
 
-        // тут будет проверка 2
         if (checkUrlAlreadyInDB(chatId, url)) {
             delUrlFromDB(chatId, url);
             bot.sendMessage(chatId, "Ссылка успешно удалена!");

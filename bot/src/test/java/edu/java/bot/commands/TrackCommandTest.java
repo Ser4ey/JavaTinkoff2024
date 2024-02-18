@@ -106,7 +106,18 @@ public class TrackCommandTest {
         Mockito.verify(bot, Mockito.times(1)).sendMessage(anyLong(), Mockito.eq("Ссылка не валидна"));
 
         Mockito.verify(state, Mockito.times(1)).clear();
+    }
 
+    @Test
+    public void testStatusWaitUrl_UrlTrack() {
+        Mockito.when(trackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(false);
+        Mockito.when(bot.getMessageText(any())).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
+
+        trackCommand.statusWaitUrl(bot, state, update);
+
+        Mockito.verify(bot, Mockito.times(1)).sendMessage(anyLong(), Mockito.eq("Ссылка успешно добавлена!"));
+
+        Mockito.verify(state, Mockito.times(1)).clear();
     }
 }
 
