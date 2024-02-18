@@ -21,7 +21,7 @@ public class HelpCommand extends AbstractCommand {
 
     @Override
     public void execute(SimpleBot bot, State state, Update update) {
-        Long chatId = bot.getChaiId(update);
+        Long chatId = bot.getChatId(update);
 
         bot.sendMessage(chatId, buildHelpMessage());
     }

@@ -8,7 +8,7 @@ public class NoCommand implements Command {
 
     @Override
     public void execute(SimpleBot bot, State state, Update update) {
-        Long chatId = bot.getChaiId(update);
+        Long chatId = bot.getChatId(update);
         String text = bot.getMessageText(update);
 
         String message = String.format("Ваш id: %s\nВаш текст: %s", chatId, text);

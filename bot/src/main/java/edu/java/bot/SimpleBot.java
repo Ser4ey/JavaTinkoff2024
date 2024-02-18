@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Log4j2
-@SuppressWarnings("all")
 @Component
 public class SimpleBot {
     private final TelegramBot bot;
@@ -28,7 +27,7 @@ public class SimpleBot {
         log.info("BOT started!");
     }
 
-    public Long getChaiId(Update update) {
+    public Long getChatId(Update update) {
         return update.message().chat().id();
     }
 

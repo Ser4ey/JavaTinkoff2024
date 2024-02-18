@@ -41,7 +41,7 @@ public class MainHandler {
 
     @SuppressWarnings("ReturnCount")
     public void handleCommand(SimpleBot bot, Update update) {
-        Long chatId = bot.getChaiId(update);
+        Long chatId = bot.getChatId(update);
         String messageText = bot.getMessageText(update);
         State currentChatState = stateManager.getState(chatId);
 

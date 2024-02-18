@@ -32,7 +32,7 @@ public class TrackCommand extends AbstractCommand {
     }
 
     public void noStatus(SimpleBot bot, State state, Update update) {
-        Long chatId = bot.getChaiId(update);
+        Long chatId = bot.getChatId(update);
         bot.sendMessage(chatId, "Введите ссылку для отслеживания:");
 
         state.setStepName(STATUS_WAIT_URL);
@@ -40,7 +40,7 @@ public class TrackCommand extends AbstractCommand {
     }
 
     public void statusWaitUrl(SimpleBot bot, State state, Update update) {
-        Long chatId = bot.getChaiId(update);
+        Long chatId = bot.getChatId(update);
         String url = bot.getMessageText(update);
 
         // тут будет проверка
