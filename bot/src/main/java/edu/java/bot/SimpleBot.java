@@ -37,6 +37,11 @@ public class SimpleBot {
     }
 
     public void sendMessage(Long chatId, String text) {
+        SendMessage sendMessage = new SendMessage(chatId, text).disableWebPagePreview(true);
+        bot.execute(sendMessage);
+    }
+
+    public void sendMessageWithWebPagePreview(Long chatId, String text) {
         SendMessage sendMessage = new SendMessage(chatId, text);
         bot.execute(sendMessage);
     }
