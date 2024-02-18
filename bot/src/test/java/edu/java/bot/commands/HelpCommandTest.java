@@ -5,10 +5,8 @@ import edu.java.bot.SimpleBot;
 import edu.java.bot.states.State;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.verify;
 
 class HelpCommandTest {
     @Test
@@ -21,6 +19,6 @@ class HelpCommandTest {
 
         helpCommand.execute(bot, state, update);
 
-        verify(bot, Mockito.times(1)).sendMessage(anyLong(), anyString());
+        Mockito.verify(bot, Mockito.times(1)).sendMessage(anyLong(), anyString());
     }
 }

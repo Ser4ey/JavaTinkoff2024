@@ -5,9 +5,7 @@ import edu.java.bot.SimpleBot;
 import edu.java.bot.states.State;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.verify;
 
 class StartCommandTest {
     @Test
@@ -20,6 +18,6 @@ class StartCommandTest {
 
         startCommand.execute(bot, state, update);
 
-        verify(bot, Mockito.times(1)).sendMessage(anyLong(), Mockito.eq(StartCommand.WELCOME_MESSAGE));
+        Mockito.verify(bot, Mockito.times(1)).sendMessage(anyLong(), Mockito.eq(StartCommand.WELCOME_MESSAGE));
     }
 }
