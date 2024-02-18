@@ -9,16 +9,20 @@ public class HelpCommand extends AbstractCommand {
         super("/help", "Список комманд");
     }
 
-    @Override
-    public void execute(SimpleBot bot, State state, Update update) {
-        Long chatId = bot.getChaiId(update);
-
+    private String buildHelpMessage() {
         StringBuilder helpText = new StringBuilder();
         for (RegisteredCommand registeredCommand : RegisteredCommand.values()) {
             AbstractCommand command = registeredCommand.getCommand();
             helpText.append(command.toString());
             helpText.append("\n");
         }
-        bot.sendMessage(chatId, helpText.toString());
+        return helpText.toString();
+    }
+
+    @Override
+    public void execute(SimpleBot bot, State state, Update update) {
+        Long chatId = bot.getChaiId(update);
+
+        bot.sendMessage(chatId, buildHelpMessage());
     }
 }
