@@ -26,7 +26,7 @@ public class UntrackCommand extends AbstractCommand {
                 statusWaitUrl(bot, state, update);
                 break;
             default:
-                log.warn("Неизвестный статус: " + state.getStepName());
+                log.error("Неизвестный статус: " + state.getStepName());
                 noStatus(bot, state, update);
         }
     }
@@ -44,14 +44,23 @@ public class UntrackCommand extends AbstractCommand {
         String url = bot.getMessageText(update);
 
         // тут будет проверка 2
-        if (url.contains("http")) {
+        if (checkUrlAlreadyInDB(chatId, url)) {
+            delUrlFromDB(chatId, url);
             bot.sendMessage(chatId, "Ссылка успешно удалена!");
-            UserLinkDB db = LocalDBFactory.getInstance();
-            db.delUserLinks(chatId, url);
         } else {
-            bot.sendMessage(chatId, "Некорректный формат ссылки!");
+            bot.sendMessage(chatId, "Ссылка не отслеживается!");
         }
 
         state.clear();
+    }
+
+    public void delUrlFromDB(Long chatId, String url) {
+        UserLinkDB db = LocalDBFactory.getInstance();
+        db.delUserLinks(chatId, url);
+    }
+
+    public boolean checkUrlAlreadyInDB(Long chatId, String url) {
+        UserLinkDB db = LocalDBFactory.getInstance();
+        return db.checkUserLink(chatId, url);
     }
 }

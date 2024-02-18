@@ -5,6 +5,8 @@ import edu.java.bot.SimpleBot;
 import edu.java.bot.db.LocalDBFactory;
 import edu.java.bot.db.UserLinkDB;
 import edu.java.bot.states.State;
+import edu.java.bot.urls.RegisteredUrl;
+import edu.java.bot.urls.UrlWorker;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -14,7 +16,7 @@ public class TrackCommand extends AbstractCommand {
         super("/track", "Добавить ссылку");
     }
 
-    private final String STATUS_WAIT_URL = "statusWaitUrl";
+    public static final String STATUS_WAIT_URL = "statusWaitUrl";
 
     @Override
     public void execute(SimpleBot bot, State state, Update update) {
@@ -26,7 +28,7 @@ public class TrackCommand extends AbstractCommand {
                 statusWaitUrl(bot, state, update);
                 break;
             default:
-                log.warn("Неизвестный статус: " + state.getStepName());
+                log.error("Неизвестный статус: " + state.getStepName());
                 noStatus(bot, state, update);
         }
     }
@@ -43,17 +45,51 @@ public class TrackCommand extends AbstractCommand {
         Long chatId = bot.getChatId(update);
         String url = bot.getMessageText(update);
 
-        // тут будет проверка
-        if (url.contains("http")) {
-            bot.sendMessage(chatId, "Ссылка успешно добавлена!");
-            UserLinkDB db = LocalDBFactory.getInstance();
-            db.addUserLinks(chatId, url);
-        } else {
-            bot.sendMessage(chatId, "Некорректный формат ссылки!");
+        if (checkUrlAlreadyInDB(chatId, url)) {
+            bot.sendMessage(chatId, "Ссылка уже отслеживается");
+            state.clear();
+            return;
         }
 
+        if (!checkUrlValid(url)) {
+            bot.sendMessage(chatId, "Ссылка не валидна");
+            state.clear();
+            return;
+        }
+
+        if (!isUrlRegistered(url)) {
+            bot.sendMessage(
+                chatId, String.format("Сайт %s не отслеживается!\n Введите другую ссылку", getLinkHost(url))
+            );
+            state.clear();
+            return;
+        }
+
+        bot.sendMessage(chatId, "Ссылка успешно добавлена!");
+        addUrlToDB(chatId, url);
         state.clear();
     }
 
+    public void addUrlToDB(Long chatId, String url) {
+        UserLinkDB db = LocalDBFactory.getInstance();
+        db.addUserLinks(chatId, url);
+    }
+
+    public boolean checkUrlAlreadyInDB(Long chatId, String url) {
+        UserLinkDB db = LocalDBFactory.getInstance();
+        return db.checkUserLink(chatId, url);
+    }
+
+    private boolean checkUrlValid(String url) {
+        return UrlWorker.isValidUrl(url);
+    }
+
+    private boolean isUrlRegistered(String url) {
+        return RegisteredUrl.getRegisteredUrl(url) != null;
+    }
+
+    private String getLinkHost(String url) {
+        return UrlWorker.getHostFromUrl(url);
+    }
 
 }
