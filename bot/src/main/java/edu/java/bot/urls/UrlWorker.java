@@ -26,13 +26,4 @@ public class UrlWorker {
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println(
-            getHostFromUrl("https://www.tinkoff.ru/career/")
-        );
-        System.out.println(
-            getHostFromUrl("https://music.yandex.ru/album/29230920?utm_source=plus-home&utm_medium=news&utm_campaign=podcast-corn&shortlink=jpcafq1z&c=Podcast_Corn&pid=plus_home&deep_link_value=yandexmusic:/album/29230920&dir=desc&activeTab=about")
-        );
-    }
-
 }
