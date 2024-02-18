@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public abstract class AbstractCommand implements Command {
-    protected String commandName;
-    protected String commandDescription;
+    private final String commandName;
+    private final String commandDescription;
 
     public AbstractCommand(String commandName, String commandDescription) {
         this.commandName = commandName;
