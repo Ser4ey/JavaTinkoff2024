@@ -15,13 +15,13 @@ public enum RegisteredUrl {
     }
 
     public static RegisteredUrl getRegisteredUrl(String url) {
-        String urlHost = UrlWorker.getHostFromUrl(url);
-        if (urlHost == null) {
+        boolean isValid = UrlWorker.isValidUrl(url);
+        if (!isValid) {
             return null;
         }
 
         for (RegisteredUrl regUrl : RegisteredUrl.values()) {
-            if (urlHost.equals(regUrl.getTrackedUrl().getUrlHost())){
+            if (regUrl.getTrackedUrl().isProperUrlHost(url)) {
                 return regUrl;
             }
         }
