@@ -11,8 +11,14 @@ import lombok.Setter;
 @NoArgsConstructor
 public class State {
     private final Map<String, String> dict = new HashMap<>();
-    @Getter @Setter private Command command;
-    @Getter @Setter private String stepName;
+
+    @Getter
+    @Setter
+    private Command command;
+
+    @Getter
+    @Setter
+    private String stepName;
 
     public void clear() {
         setCommand(null);

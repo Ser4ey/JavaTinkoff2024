@@ -32,16 +32,10 @@ class RegisteredUrlTest {
 
     @Test
     void testGetTrackedUrlNull() {
-        assertNull(
-            RegisteredUrl.getRegisteredUrl(null)
-        );
+        assertNull(RegisteredUrl.getRegisteredUrl(null));
 
-        assertNull(
-            RegisteredUrl.getRegisteredUrl("123")
-        );
+        assertNull(RegisteredUrl.getRegisteredUrl("123"));
 
-        assertNull(
-            RegisteredUrl.getRegisteredUrl("https://www.vogella.com/tutorials/JUnit/article.html")
-        );
+        assertNull(RegisteredUrl.getRegisteredUrl("https://www.vogella.com/tutorials/JUnit/article.html"));
     }
 }

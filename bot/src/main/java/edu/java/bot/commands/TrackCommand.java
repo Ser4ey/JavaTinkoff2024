@@ -12,11 +12,13 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @SuppressWarnings("MemberName")
 public class TrackCommand extends AbstractCommand {
+    public static final String STATUS_WAIT_URL = "statusWaitUrl";
+    private final UserLinkDB db;
+
     public TrackCommand() {
         super("/track", "Добавить ссылку");
+        db = LocalDBFactory.getInstance();
     }
-
-    public static final String STATUS_WAIT_URL = "statusWaitUrl";
 
     @Override
     public void execute(SimpleBot bot, State state, Update update) {
@@ -46,12 +48,6 @@ public class TrackCommand extends AbstractCommand {
         Long chatId = bot.getChatId(update);
         String url = bot.getMessageText(update);
 
-        if (checkUrlAlreadyInDB(chatId, url)) {
-            bot.sendMessage(chatId, "Ссылка уже отслеживается");
-            state.clear();
-            return;
-        }
-
         if (!checkUrlValid(url)) {
             bot.sendMessage(chatId, "Ссылка не валидна");
             state.clear();
@@ -66,18 +62,22 @@ public class TrackCommand extends AbstractCommand {
             return;
         }
 
+        if (checkUrlAlreadyInDB(chatId, url)) {
+            bot.sendMessage(chatId, "Ссылка уже отслеживается");
+            state.clear();
+            return;
+        }
+
         bot.sendMessage(chatId, "Ссылка успешно добавлена!");
         addUrlToDB(chatId, url);
         state.clear();
     }
 
     public void addUrlToDB(Long chatId, String url) {
-        UserLinkDB db = LocalDBFactory.getInstance();
         db.addUserLinks(chatId, url);
     }
 
     public boolean checkUrlAlreadyInDB(Long chatId, String url) {
-        UserLinkDB db = LocalDBFactory.getInstance();
         return db.checkUserLink(chatId, url);
     }
 

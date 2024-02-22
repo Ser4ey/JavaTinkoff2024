@@ -60,7 +60,7 @@ public class SimpleBot {
         bot.execute(new SetMyCommands(commands.toArray(BotCommand[]::new)));
     }
 
-    public void start() {
+    private void start() {
         bot.setUpdatesListener(updates -> {
             updates.forEach(this::processUpdate);
             return UpdatesListener.CONFIRMED_UPDATES_ALL;

@@ -10,11 +10,15 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @SuppressWarnings("MemberName")
 public class UntrackCommand extends AbstractCommand {
+    private final UserLinkDB db;
+    public final static String STATUS_WAIT_URL = "statusWaitUrl";
+
+
     public UntrackCommand() {
         super("/untrack", "Удалить ссылку");
+        db = LocalDBFactory.getInstance();
     }
 
-    public final static String STATUS_WAIT_URL = "statusWaitUrl";
 
     @Override
     public void execute(SimpleBot bot, State state, Update update) {
@@ -54,12 +58,10 @@ public class UntrackCommand extends AbstractCommand {
     }
 
     public void delUrlFromDB(Long chatId, String url) {
-        UserLinkDB db = LocalDBFactory.getInstance();
         db.delUserLinks(chatId, url);
     }
 
     public boolean checkUrlAlreadyInDB(Long chatId, String url) {
-        UserLinkDB db = LocalDBFactory.getInstance();
         return db.checkUserLink(chatId, url);
     }
 }

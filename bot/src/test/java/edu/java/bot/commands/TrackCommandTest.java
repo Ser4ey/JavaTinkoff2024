@@ -98,7 +98,6 @@ public class TrackCommandTest {
 
     @Test
     public void testStatusWaitUrl_UrlNotValid() {
-        Mockito.when(trackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(false);
         Mockito.when(bot.getMessageText(any())).thenReturn("123");
 
         trackCommand.statusWaitUrl(bot, state, update);

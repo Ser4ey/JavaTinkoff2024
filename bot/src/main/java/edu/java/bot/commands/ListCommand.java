@@ -9,9 +9,11 @@ import java.util.List;
 
 public class ListCommand extends AbstractCommand {
     public static final String NO_LINKS = "Нет отслеживаемых ссылок!";
+    private final UserLinkDB db;
 
     public ListCommand() {
         super("/list", "Список отслеживаемых ссылок");
+        db = LocalDBFactory.getInstance();
     }
 
     @Override
@@ -32,15 +34,13 @@ public class ListCommand extends AbstractCommand {
         listText.append("Список ссылок:\n\n");
 
         for (String link : links) {
-            listText.append(link);
-            listText.append("\n\n");
+            listText.append(link).append("\n\n");
         }
 
         return listText.toString();
     }
 
     public List<String> getUserLinks(Long chatId) {
-        UserLinkDB db = LocalDBFactory.getInstance();
         return db.getUserLinks(chatId);
     }
 }
