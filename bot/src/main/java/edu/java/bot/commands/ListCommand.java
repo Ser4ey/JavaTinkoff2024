@@ -5,14 +5,23 @@ import edu.java.bot.SimpleBot;
 import edu.java.bot.db.LocalDBFactory;
 import edu.java.bot.db.UserLinkDB;
 import edu.java.bot.states.State;
+import lombok.NonNull;
 import java.util.List;
 
-public class ListCommand extends AbstractCommand {
+public class ListCommand implements Command {
     public static final String NO_LINKS = "Нет отслеживаемых ссылок!";
     private final UserLinkDB db;
+    @Override
+    public @NonNull String getName() {
+        return "/list";
+    }
+    @Override
+    public @NonNull String getDescription() {
+        return "Список отслеживаемых ссылок";
+    }
 
     public ListCommand() {
-        super("/list", "Список отслеживаемых ссылок");
+        super();
         db = LocalDBFactory.getInstance();
     }
 

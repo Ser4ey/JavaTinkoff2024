@@ -6,7 +6,7 @@ import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetMyCommands;
-import edu.java.bot.commands.AbstractCommand;
+import edu.java.bot.commands.Command;
 import edu.java.bot.handlers.MainHandler;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,8 +53,8 @@ public class SimpleBot {
 
     private void setBotCommands() {
         List<BotCommand> commands = new ArrayList<>();
-        for (AbstractCommand command : commandHandler.getAllCommands()) {
-            commands.add(new BotCommand(command.getCommandName(), command.getCommandDescription()));
+        for (Command command : commandHandler.getAllCommands()) {
+            commands.add(new BotCommand(command.getName(), command.getDescription()));
         }
 
         bot.execute(new SetMyCommands(commands.toArray(BotCommand[]::new)));

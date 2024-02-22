@@ -3,16 +3,23 @@ package edu.java.bot.commands;
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.SimpleBot;
 import edu.java.bot.states.State;
+import lombok.NonNull;
 
-public class HelpCommand extends AbstractCommand {
-    public HelpCommand() {
-        super("/help", "Список комманд");
+public class HelpCommand implements Command {
+    @Override
+    public @NonNull String getName() {
+        return "/help";
+    }
+
+    @Override
+    public @NonNull String getDescription() {
+        return "Список комманд";
     }
 
     private String buildHelpMessage() {
         StringBuilder helpText = new StringBuilder();
         for (RegisteredCommand registeredCommand : RegisteredCommand.values()) {
-            AbstractCommand command = registeredCommand.getCommand();
+            Command command = registeredCommand.getCommand();
             helpText.append(command.toString());
             helpText.append("\n");
         }
@@ -25,4 +32,5 @@ public class HelpCommand extends AbstractCommand {
 
         bot.sendMessage(chatId, buildHelpMessage());
     }
+
 }

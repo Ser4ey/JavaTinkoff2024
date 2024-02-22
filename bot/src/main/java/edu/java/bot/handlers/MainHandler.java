@@ -2,7 +2,6 @@ package edu.java.bot.handlers;
 
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.SimpleBot;
-import edu.java.bot.commands.AbstractCommand;
 import edu.java.bot.commands.Command;
 import edu.java.bot.commands.RegisteredCommand;
 import edu.java.bot.states.State;
@@ -20,7 +19,7 @@ public class MainHandler {
         commands.put(commandName, command);
     }
 
-    public List<AbstractCommand> getAllCommands() {
+    public List<Command> getAllCommands() {
         return Arrays.stream(RegisteredCommand.values())
             .map(RegisteredCommand::getCommand)
             .collect(Collectors.toList());
@@ -28,8 +27,8 @@ public class MainHandler {
 
     public MainHandler() {
         for (RegisteredCommand registeredCommand : RegisteredCommand.values()) {
-            AbstractCommand command = registeredCommand.getCommand();
-            registerCommand(command.getCommandName(), command);
+            Command command = registeredCommand.getCommand();
+            registerCommand(command.getName(), command);
         }
     }
 

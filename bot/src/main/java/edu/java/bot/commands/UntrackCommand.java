@@ -5,20 +5,29 @@ import edu.java.bot.SimpleBot;
 import edu.java.bot.db.LocalDBFactory;
 import edu.java.bot.db.UserLinkDB;
 import edu.java.bot.states.State;
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @SuppressWarnings("MemberName")
-public class UntrackCommand extends AbstractCommand {
+public class UntrackCommand implements Command {
     private final UserLinkDB db;
     public final static String STATUS_WAIT_URL = "statusWaitUrl";
 
-
-    public UntrackCommand() {
-        super("/untrack", "Удалить ссылку");
-        db = LocalDBFactory.getInstance();
+    @Override
+    public @NonNull String getName() {
+        return "/untrack";
     }
 
+    @Override
+    public @NonNull String getDescription() {
+        return "Удалить ссылку";
+    }
+
+
+    public UntrackCommand() {
+        db = LocalDBFactory.getInstance();
+    }
 
     @Override
     public void execute(SimpleBot bot, State state, Update update) {

@@ -10,9 +10,9 @@ public enum RegisteredCommand {
     TRACK_COMMAND(new TrackCommand()),
     UNTRACK_COMMAND(new UntrackCommand());
 
-    private final AbstractCommand command;
+    private final Command command;
 
-    RegisteredCommand(AbstractCommand command) {
+    RegisteredCommand(Command command) {
         this.command = command;
     }
 

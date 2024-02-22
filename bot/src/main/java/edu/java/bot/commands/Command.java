@@ -3,9 +3,9 @@ package edu.java.bot.commands;
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.SimpleBot;
 import edu.java.bot.states.State;
+import lombok.NonNull;
 import java.util.regex.Pattern;
 
-@FunctionalInterface
 public interface Command {
     static boolean isCommand(String text) {
         String regex = "^/[a-zA-Z]*$";
@@ -13,4 +13,9 @@ public interface Command {
     }
 
     void execute(SimpleBot bot, State state, Update update);
+
+    @NonNull
+    String getName();
+    @NonNull
+    String getDescription();
 }

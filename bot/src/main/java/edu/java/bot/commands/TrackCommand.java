@@ -7,16 +7,26 @@ import edu.java.bot.db.UserLinkDB;
 import edu.java.bot.states.State;
 import edu.java.bot.urls.RegisteredUrl;
 import edu.java.bot.urls.UrlWorker;
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @SuppressWarnings("MemberName")
-public class TrackCommand extends AbstractCommand {
+public class TrackCommand implements Command {
     public static final String STATUS_WAIT_URL = "statusWaitUrl";
     private final UserLinkDB db;
 
+    @Override
+    public @NonNull String getName() {
+        return "/track";
+    }
+
+    @Override
+    public @NonNull String getDescription() {
+        return "Добавить ссылку";
+    }
+
     public TrackCommand() {
-        super("/track", "Добавить ссылку");
         db = LocalDBFactory.getInstance();
     }
 
