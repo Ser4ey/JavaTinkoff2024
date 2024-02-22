@@ -5,7 +5,7 @@ import edu.java.bot.SimpleBot;
 import edu.java.bot.db.LocalDBFactory;
 import edu.java.bot.db.UserLinkDB;
 import edu.java.bot.states.State;
-import edu.java.bot.urls.RegisteredUrl;
+import edu.java.bot.urls.AllUrls;
 import edu.java.bot.urls.UrlWorker;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
@@ -64,7 +64,7 @@ public class TrackCommand implements Command {
             return;
         }
 
-        if (RegisteredUrl.getRegisteredUrl(url) == null) {
+        if (!AllUrls.isAllowedUrl(url)) {
             bot.sendMessage(
                 chatId, String.format("Сайт %s не отслеживается!", UrlWorker.getHostFromUrl(url))
             );
