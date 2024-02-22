@@ -4,24 +4,18 @@ import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.SimpleBot;
 import edu.java.bot.commands.AbstractCommand;
 import edu.java.bot.commands.Command;
-import edu.java.bot.commands.NoCommand;
 import edu.java.bot.commands.RegisteredCommand;
-import edu.java.bot.commands.UnknownCommand;
 import edu.java.bot.states.State;
 import edu.java.bot.states.StateManager;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class MainHandler {
     private final Map<String, Command> commands = new HashMap<>();
     private final StateManager stateManager = new StateManager();
-    private final Command noCommand = new NoCommand();
-    private final Command unknownCommand = new UnknownCommand();
-
     public void registerCommand(String commandName, Command command) {
         commands.put(commandName, command);
     }
@@ -49,7 +43,11 @@ public class MainHandler {
         if (Command.isCommand(messageText)) {
             currentChatState.clear();
             Command command = commands.get(messageText);
-            Objects.requireNonNullElse(command, unknownCommand).execute(bot, currentChatState, update);
+            if (command != null) {
+                command.execute(bot, currentChatState, update);
+            } else {
+                unknownCommand(bot, update);
+            }
             return;
         }
 
@@ -60,7 +58,25 @@ public class MainHandler {
         }
 
         currentChatState.clear();
-        noCommand.execute(bot, currentChatState, update);
+        noCommand(bot, update);
+    }
+
+    private void unknownCommand(SimpleBot bot, Update update) {
+        // действия при отправке неизвестной команды
+        Long chatId = bot.getChatId(update);
+        String text = bot.getMessageText(update);
+
+        String message = String.format("Неизвестная команда: %s\nСписок команд: /help", text);
+        bot.sendMessage(chatId, message);
+    }
+
+    private void noCommand(SimpleBot bot, Update update) {
+        // действия при отправке текстка
+        Long chatId = bot.getChatId(update);
+        String text = bot.getMessageText(update);
+
+        String message = String.format("Ваш id: %s\nВаш текст: %s", chatId, text);
+        bot.sendMessage(chatId, message);
     }
 
 }
