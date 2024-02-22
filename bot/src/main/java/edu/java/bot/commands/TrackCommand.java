@@ -58,15 +58,15 @@ public class TrackCommand implements Command {
         Long chatId = bot.getChatId(update);
         String url = bot.getMessageText(update);
 
-        if (!checkUrlValid(url)) {
+        if (!UrlWorker.isValidUrl(url)) {
             bot.sendMessage(chatId, "Ссылка не валидна");
             state.clear();
             return;
         }
 
-        if (!isUrlRegistered(url)) {
+        if (RegisteredUrl.getRegisteredUrl(url) == null) {
             bot.sendMessage(
-                chatId, String.format("Сайт %s не отслеживается!", getLinkHost(url))
+                chatId, String.format("Сайт %s не отслеживается!", UrlWorker.getHostFromUrl(url))
             );
             state.clear();
             return;
@@ -91,16 +91,5 @@ public class TrackCommand implements Command {
         return db.checkUserLink(chatId, url);
     }
 
-    private boolean checkUrlValid(String url) {
-        return UrlWorker.isValidUrl(url);
-    }
-
-    private boolean isUrlRegistered(String url) {
-        return RegisteredUrl.getRegisteredUrl(url) != null;
-    }
-
-    private String getLinkHost(String url) {
-        return UrlWorker.getHostFromUrl(url);
-    }
-
 }
+
