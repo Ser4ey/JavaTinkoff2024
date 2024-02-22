@@ -3,8 +3,8 @@ package edu.java.bot.commands;
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.SimpleBot;
 import edu.java.bot.states.State;
-import lombok.NonNull;
 import java.util.regex.Pattern;
+import lombok.NonNull;
 
 public interface Command {
     static boolean isCommand(String text) {
@@ -16,6 +16,7 @@ public interface Command {
 
     @NonNull
     String getName();
+
     @NonNull
     String getDescription();
 }

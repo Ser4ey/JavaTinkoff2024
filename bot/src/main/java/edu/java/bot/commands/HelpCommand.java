@@ -19,7 +19,7 @@ public class HelpCommand implements Command {
     private String buildHelpMessage() {
         StringBuilder helpText = new StringBuilder();
         for (Command command : AllCommands.getAllCommands()) {
-            helpText.append( String.format("%s - %s", command.getName(), command.getDescription())).append("\n");
+            helpText.append(String.format("%s - %s", command.getName(), command.getDescription())).append("\n");
         }
         return helpText.toString();
     }
