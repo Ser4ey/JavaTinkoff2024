@@ -19,3 +19,4 @@ public interface Command {
     @NonNull
     String getDescription();
 }
+

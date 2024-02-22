@@ -2,35 +2,16 @@ package edu.java.bot.handlers;
 
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.SimpleBot;
+import edu.java.bot.commands.AllCommands;
 import edu.java.bot.commands.Command;
-import edu.java.bot.commands.RegisteredCommand;
 import edu.java.bot.states.State;
 import edu.java.bot.states.StateManager;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import lombok.NoArgsConstructor;
 
+
+@NoArgsConstructor
 public class MainHandler {
-    private final Map<String, Command> commands = new HashMap<>();
     private final StateManager stateManager = new StateManager();
-    public void registerCommand(String commandName, Command command) {
-        commands.put(commandName, command);
-    }
-
-    public List<Command> getAllCommands() {
-        return Arrays.stream(RegisteredCommand.values())
-            .map(RegisteredCommand::getCommand)
-            .collect(Collectors.toList());
-    }
-
-    public MainHandler() {
-        for (RegisteredCommand registeredCommand : RegisteredCommand.values()) {
-            Command command = registeredCommand.getCommand();
-            registerCommand(command.getName(), command);
-        }
-    }
 
     @SuppressWarnings("ReturnCount")
     public void handleCommand(SimpleBot bot, Update update) {
@@ -41,7 +22,7 @@ public class MainHandler {
         // при отправки новой команды сбрасываем состояние
         if (Command.isCommand(messageText)) {
             currentChatState.clear();
-            Command command = commands.get(messageText);
+            Command command = AllCommands.getCommand(messageText);
             if (command != null) {
                 command.execute(bot, currentChatState, update);
             } else {
