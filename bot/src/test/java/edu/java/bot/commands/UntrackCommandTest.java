@@ -1,87 +1,93 @@
 package edu.java.bot.commands;
 
-import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.SimpleBot;
+import edu.java.bot.chatbot.ChatBotMessageInterface;
 import edu.java.bot.states.State;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 
-@RunWith(MockitoJUnitRunner.class)
 public class UntrackCommandTest {
-    @Mock
-    SimpleBot bot;
-    @Mock
-    Update update;
-    @Mock
-    State state;
-    @Spy
-    UntrackCommand untrackCommand;
+    private State state;
+    private ChatBotMessageInterface chatMessage;
+    private UntrackCommand untrackCommand;
+
+    @BeforeEach
+    public void init() {
+        state = Mockito.mock(State.class);
+        chatMessage = Mockito.mock(ChatBotMessageInterface.class);
+        untrackCommand = Mockito.spy(new UntrackCommand());
+    }
 
     @Test
     public void testExecuteNoStatus() {
-        Mockito.doNothing().when(untrackCommand).noStatus(any(), any(), any());
+        Mockito.doAnswer(invocation -> null).when(untrackCommand).noStatus(any());
 
         Mockito.when(state.getStepName()).thenReturn(null);
-        untrackCommand.execute(bot, state, update);
+        untrackCommand.execute(chatMessage, state);
 
-        verify(untrackCommand, Mockito.times(1)).noStatus(any(), any(), any());
-        verify(untrackCommand, Mockito.times(0)).statusWaitUrl(any(), any(), any());
+        verify(untrackCommand, Mockito.times(1)).noStatus(any());
+        verify(untrackCommand, never()).statusWaitUrl(any(), any());
     }
 
     @Test
     public void testExecuteStatusWaitUrl() {
-        Mockito.doNothing().when(untrackCommand).statusWaitUrl(any(), any(), any());
+        Mockito.doAnswer(invocation -> null).when(untrackCommand).statusWaitUrl(any(), any());
 
         Mockito.when(state.getStepName()).thenReturn(UntrackCommand.STATUS_WAIT_URL);
-        untrackCommand.execute(bot, state, update);
+        untrackCommand.execute(chatMessage, state);
 
-        verify(untrackCommand, Mockito.times(0)).noStatus(any(), any(), any());
-        verify(untrackCommand, Mockito.times(1)).statusWaitUrl(any(), any(), any());
+        verify(untrackCommand, never()).noStatus(any());
+        verify(untrackCommand, Mockito.times(1)).statusWaitUrl(any(), any());
     }
 
     @Test
     public void testNoStatus() {
-        untrackCommand.execute(bot, state, update);
+        CommandAnswer commandAnswer = untrackCommand.execute(chatMessage, state);
+
+        assertEquals(
+            new CommandAnswer("Введите ссылку для удаления:", false),
+            commandAnswer
+        );
 
         Mockito.verify(state, Mockito.times(1)).setStepName(Mockito.eq(TrackCommand.STATUS_WAIT_URL));
-        Mockito.verify(bot, Mockito.times(1)).sendMessage(anyLong(), Mockito.eq("Введите ссылку для удаления:"));
     }
 
     @Test
     public void testStatusWaitUrl_UrlInDB() {
         Mockito.when(untrackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(true);
-        Mockito.when(bot.getMessageText(any())).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
+        Mockito.when(chatMessage.getMessageText()).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
         Mockito.doNothing().when(untrackCommand).delUrlFromDB(any(), any());
 
-        untrackCommand.statusWaitUrl(bot, state, update);
+        CommandAnswer commandAnswer = untrackCommand.statusWaitUrl(chatMessage, state);
 
-        Mockito.verify(bot, Mockito.times(1)).sendMessage(anyLong(), Mockito.eq("Ссылка успешно удалена!"));
+        assertEquals(
+            new CommandAnswer("Ссылка успешно удалена!", false),
+            commandAnswer
+        );
+
         Mockito.verify(state, Mockito.times(1)).clear();
     }
 
     @Test
     public void testStatusWaitUrl_UrlNotInDB() {
         Mockito.when(untrackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(false);
-        Mockito.when(bot.getMessageText(any())).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
+        Mockito.when(chatMessage.getMessageText()).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
 
-        untrackCommand.statusWaitUrl(bot, state, update);
+        CommandAnswer commandAnswer = untrackCommand.statusWaitUrl(chatMessage, state);
 
-        Mockito.verify(bot, Mockito.times(1)).sendMessage(anyLong(), Mockito.eq("Ссылка не отслеживается!"));
+        assertEquals(
+            new CommandAnswer("Ссылка не отслеживается!", false),
+            commandAnswer
+        );
+
         Mockito.verify(state, Mockito.times(1)).clear();
-
     }
-
-
 }
-
-
 

@@ -28,7 +28,7 @@ public class TrackCommandTest {
     @Test
     public void testExecuteNoStatus() {
         Mockito.doAnswer(invocation -> null).when(trackCommand).noStatus(any());
-        Mockito.when(state.getStepName()).thenReturn("0");
+        Mockito.when(state.getStepName()).thenReturn(null);
 
         trackCommand.execute(chatMessage, state);
 
