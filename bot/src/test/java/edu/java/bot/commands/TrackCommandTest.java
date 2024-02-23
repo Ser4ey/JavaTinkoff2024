@@ -1,122 +1,152 @@
 package edu.java.bot.commands;
 
-import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.SimpleBot;
+import edu.java.bot.chatbot.ChatBotMessageInterface;
 import edu.java.bot.states.State;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
+import java.util.Collections;
+import java.util.List;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-
-@RunWith(MockitoJUnitRunner.class)
 public class TrackCommandTest {
-    @Mock
-    SimpleBot bot;
-    @Mock
-    Update update;
-    @Mock
-    State state;
-    @Spy
-    TrackCommand trackCommand;
-
     @Test
     public void testExecuteNoStatus() {
-        Mockito.doNothing().when(trackCommand).noStatus(any(), any(), any());
+        State state = Mockito.mock(State.class);
+        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
+        TrackCommand trackCommand = Mockito.spy(new TrackCommand());
 
-        Mockito.when(state.getStepName()).thenReturn(null);
-        trackCommand.execute(bot, state, update);
+        Mockito.doAnswer(invocation -> null).when(trackCommand).noStatus(any());
+        Mockito.when(state.getStepName()).thenReturn("0");
 
-        verify(trackCommand, Mockito.times(1)).noStatus(any(), any(), any());
-        verify(trackCommand, Mockito.times(0)).statusWaitUrl(any(), any(), any());
+        trackCommand.execute(chatMessage, state);
+
+        verify(trackCommand, Mockito.times(1)).noStatus(any());
+        verify(trackCommand, never()).statusWaitUrl(any(), any());
     }
 
     @Test
     public void testExecuteStatusWaitUrl() {
-        Mockito.doNothing().when(trackCommand).statusWaitUrl(any(), any(), any());
+        State state = Mockito.mock(State.class);
+        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
+        TrackCommand trackCommand = Mockito.spy(new TrackCommand());
 
+        Mockito.doAnswer(invocation -> null).when(trackCommand).statusWaitUrl(any(), any());
         Mockito.when(state.getStepName()).thenReturn(TrackCommand.STATUS_WAIT_URL);
-        trackCommand.execute(bot, state, update);
 
-        verify(trackCommand, Mockito.times(0)).noStatus(any(), any(), any());
-        verify(trackCommand, Mockito.times(1)).statusWaitUrl(any(), any(), any());
+        trackCommand.execute(chatMessage, state);
+
+        verify(trackCommand, never()).noStatus(any());
+        verify(trackCommand, Mockito.times(1)).statusWaitUrl(any(), any());
     }
 
     @Test
     public void testNoStatus() {
-        trackCommand.execute(bot, state, update);
+        State state = Mockito.mock(State.class);
+        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
+        TrackCommand trackCommand = Mockito.spy(new TrackCommand());
 
-        Mockito.verify(state, Mockito.times(1)).setStepName(Mockito.eq(TrackCommand.STATUS_WAIT_URL));
-        Mockito.verify(bot, Mockito.times(1)).sendMessage(anyLong(), Mockito.eq("Введите ссылку для отслеживания:"));
+        CommandAnswer commandAnswer = trackCommand.execute(chatMessage, state);
+
+        verify(state, Mockito.times(1)).setStepName(Mockito.eq(TrackCommand.STATUS_WAIT_URL));
+        assertEquals(
+            new CommandAnswer("Введите ссылку для отслеживания:", false),
+            commandAnswer
+        );
     }
 
     @Test
     public void testStatusWaitUrl_UrlInDB() {
+        State state = Mockito.mock(State.class);
+        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
+        TrackCommand trackCommand = Mockito.spy(new TrackCommand());
+
         Mockito.when(trackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(true);
-        Mockito.when(bot.getMessageText(any())).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
+        Mockito.when(chatMessage.getMessageText()).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
 
-        trackCommand.statusWaitUrl(bot, state, update);
+        CommandAnswer commandAnswer = trackCommand.statusWaitUrl(chatMessage, state);
 
-        Mockito.verify(bot, Mockito.times(1)).sendMessage(anyLong(), Mockito.eq("Ссылка уже отслеживается"));
+        assertEquals(
+            new CommandAnswer("Ссылка уже отслеживается", false),
+            commandAnswer
+        );
 
-        Mockito.verify(state, Mockito.times(1)).clear();
+        verify(state, Mockito.times(1)).clear();
     }
 
     @Test
     public void testStatusWaitUrl_UrlNotInDB() {
+        State state = Mockito.mock(State.class);
+        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
+        TrackCommand trackCommand = Mockito.spy(new TrackCommand());
+
         Mockito.when(trackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(false);
-        Mockito.when(bot.getMessageText(any())).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
+        Mockito.when(chatMessage.getMessageText()).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
 
-        trackCommand.statusWaitUrl(bot, state, update);
+        CommandAnswer commandAnswer = trackCommand.statusWaitUrl(chatMessage, state);
+        assertNotEquals(commandAnswer.getAnswerText(), "Ссылка уже отслеживается");
 
-        Mockito.verify(bot, never()).sendMessage(anyLong(), Mockito.eq("Ссылка уже отслеживается"));
-
-        Mockito.verify(state, Mockito.times(1)).clear();
-
+        verify(state, Mockito.times(1)).clear();
     }
-
 
     @Test
     public void testStatusWaitUrl_UrlValid() {
+        State state = Mockito.mock(State.class);
+        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
+        TrackCommand trackCommand = Mockito.spy(new TrackCommand());
+
         Mockito.when(trackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(false);
-        Mockito.when(bot.getMessageText(any())).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
+        Mockito.when(chatMessage.getMessageText()).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
 
-        trackCommand.statusWaitUrl(bot, state, update);
+        CommandAnswer commandAnswer = trackCommand.statusWaitUrl(chatMessage, state);
+        assertNotEquals(commandAnswer.getAnswerText(), "Ссылка не валидна");
 
-        Mockito.verify(bot, never()).sendMessage(anyLong(), Mockito.eq("Ссылка не валидна"));
-
-        Mockito.verify(state, Mockito.times(1)).clear();
+        verify(state, Mockito.times(1)).clear();
 
     }
 
     @Test
     public void testStatusWaitUrl_UrlNotValid() {
-        Mockito.when(bot.getMessageText(any())).thenReturn("123");
+        State state = Mockito.mock(State.class);
+        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
+        TrackCommand trackCommand = Mockito.spy(new TrackCommand());
 
-        trackCommand.statusWaitUrl(bot, state, update);
+        Mockito.when(chatMessage.getMessageText()).thenReturn("123");
 
-        Mockito.verify(bot, Mockito.times(1)).sendMessage(anyLong(), Mockito.eq("Ссылка не валидна"));
+        CommandAnswer commandAnswer = trackCommand.statusWaitUrl(chatMessage, state);
 
-        Mockito.verify(state, Mockito.times(1)).clear();
+        assertEquals(
+            new CommandAnswer("Ссылка не валидна", false),
+            commandAnswer
+        );
+
+        verify(state, Mockito.times(1)).clear();
     }
 
     @Test
     public void testStatusWaitUrl_UrlTrack() {
+        State state = Mockito.mock(State.class);
+        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
+        TrackCommand trackCommand = Mockito.spy(new TrackCommand());
+
         Mockito.when(trackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(false);
-        Mockito.when(bot.getMessageText(any())).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
+        Mockito.when(chatMessage.getMessageText()).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
 
-        trackCommand.statusWaitUrl(bot, state, update);
+        CommandAnswer commandAnswer = trackCommand.statusWaitUrl(chatMessage, state);
 
-        Mockito.verify(bot, Mockito.times(1)).sendMessage(anyLong(), Mockito.eq("Ссылка успешно добавлена!"));
+        assertEquals(
+            new CommandAnswer("Ссылка успешно добавлена!", false),
+            commandAnswer
+        );
 
-        Mockito.verify(state, Mockito.times(1)).clear();
+        verify(state, Mockito.times(1)).clear();
     }
 }
 
