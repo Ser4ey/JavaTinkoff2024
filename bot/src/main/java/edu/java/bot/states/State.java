@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-public class State {
+public final class State {
     private final Map<String, String> dict = new HashMap<>();
 
     @Getter

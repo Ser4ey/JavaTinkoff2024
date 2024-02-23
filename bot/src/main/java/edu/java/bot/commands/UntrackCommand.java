@@ -30,40 +30,38 @@ public class UntrackCommand implements Command {
     }
 
     @Override
-    public void execute(SimpleBot bot, State state, Update update) {
-        switch (state.getStepName()) {
-            case null:
-                noStatus(bot, state, update);
-                break;
-            case STATUS_WAIT_URL:
-                statusWaitUrl(bot, state, update);
-                break;
-            default:
+    public CommandAnswer execute(SimpleBot bot, State state, Update update) {
+        return switch (state.getStepName()) {
+            case null -> noStatus(bot, state, update);
+            case STATUS_WAIT_URL -> statusWaitUrl(bot, state, update);
+            default -> {
                 log.error("Неизвестный статус: " + state.getStepName());
-                noStatus(bot, state, update);
-        }
+                yield noStatus(bot, state, update);
+            }
+        };
     }
 
-    public void noStatus(SimpleBot bot, State state, Update update) {
-        Long chatId = bot.getChatId(update);
-        bot.sendMessage(chatId, "Введите ссылку для удаления:");
-
+    public CommandAnswer noStatus(SimpleBot bot, State state, Update update) {
         state.setStepName(STATUS_WAIT_URL);
         state.setCommand(this);
+
+        return new CommandAnswer("Введите ссылку для удаления:", false);
     }
 
-    public void statusWaitUrl(SimpleBot bot, State state, Update update) {
+    public CommandAnswer statusWaitUrl(SimpleBot bot, State state, Update update) {
         Long chatId = bot.getChatId(update);
         String url = bot.getMessageText(update);
 
+        String answerText;
         if (checkUrlAlreadyInDB(chatId, url)) {
             delUrlFromDB(chatId, url);
-            bot.sendMessage(chatId, "Ссылка успешно удалена!");
+            answerText = "Ссылка успешно удалена!";
         } else {
-            bot.sendMessage(chatId, "Ссылка не отслеживается!");
+            answerText = "Ссылка не отслеживается!";
         }
 
         state.clear();
+        return new CommandAnswer(answerText, false);
     }
 
     public void delUrlFromDB(Long chatId, String url) {

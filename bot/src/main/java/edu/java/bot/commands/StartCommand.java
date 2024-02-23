@@ -6,7 +6,10 @@ import edu.java.bot.states.State;
 import lombok.NonNull;
 
 public class StartCommand implements Command {
-    public static final String WELCOME_MESSAGE = "Привет!\nЯ бот для отслеживания обновлений.\nСписок команд: /help";
+    public static final String WELCOME_MESSAGE = """
+            Привет!
+            Я бот для отслеживания обновлений.
+            GitHub проекта: https://github.com/Ser4ey/JavaTinkoff2024""";
 
     @Override
     public @NonNull String getName() {
@@ -19,9 +22,8 @@ public class StartCommand implements Command {
     }
 
     @Override
-    public void execute(SimpleBot bot, State state, Update update) {
-        Long chatId = bot.getChatId(update);
-        bot.sendMessage(chatId, WELCOME_MESSAGE);
+    public CommandAnswer execute(SimpleBot bot, State state, Update update) {
+        return new CommandAnswer(WELCOME_MESSAGE, true);
     }
 }
 

@@ -27,16 +27,15 @@ public class ListCommand implements Command {
     }
 
     @Override
-    public void execute(SimpleBot bot, State state, Update update) {
+    public CommandAnswer execute(SimpleBot bot, State state, Update update) {
         Long chatId = bot.getChatId(update);
 
         List<String> links = getUserLinks(chatId);
         if (links.isEmpty()) {
-            bot.sendMessage(chatId, NO_LINKS);
-            return;
+            return new CommandAnswer(NO_LINKS, false);
         }
 
-        bot.sendMessage(chatId, buildListMessage(links));
+        return new CommandAnswer(buildListMessage(links), false);
     }
 
     private String buildListMessage(List<String> links) {

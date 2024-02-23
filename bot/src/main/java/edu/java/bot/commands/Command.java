@@ -12,7 +12,7 @@ public interface Command {
         return Pattern.matches(regex, text);
     }
 
-    void execute(SimpleBot bot, State state, Update update);
+    CommandAnswer execute(SimpleBot bot, State state, Update update);
 
     @NonNull
     String getName();

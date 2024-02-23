@@ -31,56 +31,50 @@ public class TrackCommand implements Command {
     }
 
     @Override
-    public void execute(SimpleBot bot, State state, Update update) {
-        switch (state.getStepName()) {
-            case null:
-                noStatus(bot, state, update);
-                break;
-            case STATUS_WAIT_URL:
-                statusWaitUrl(bot, state, update);
-                break;
-            default:
+    public CommandAnswer execute(SimpleBot bot, State state, Update update) {
+        return switch (state.getStepName()) {
+            case null -> noStatus(bot, state, update);
+            case STATUS_WAIT_URL -> statusWaitUrl(bot, state, update);
+            default -> {
                 log.error("Неизвестный статус: " + state.getStepName());
-                noStatus(bot, state, update);
-        }
+                yield noStatus(bot, state, update);
+            }
+        };
     }
 
-    public void noStatus(SimpleBot bot, State state, Update update) {
-        Long chatId = bot.getChatId(update);
-        bot.sendMessage(chatId, "Введите ссылку для отслеживания:");
-
+    public CommandAnswer noStatus(SimpleBot bot, State state, Update update) {
         state.setStepName(STATUS_WAIT_URL);
         state.setCommand(this);
+        return new CommandAnswer("Введите ссылку для отслеживания:", false);
     }
 
     @SuppressWarnings("ReturnCount")
-    public void statusWaitUrl(SimpleBot bot, State state, Update update) {
+    public CommandAnswer statusWaitUrl(SimpleBot bot, State state, Update update) {
         Long chatId = bot.getChatId(update);
         String url = bot.getMessageText(update);
 
         if (!UrlWorker.isValidUrl(url)) {
-            bot.sendMessage(chatId, "Ссылка не валидна");
             state.clear();
-            return;
+            return new CommandAnswer("Ссылка не валидна", false);
         }
 
         if (!AllUrls.isAllowedUrl(url)) {
-            bot.sendMessage(
-                chatId, String.format("Сайт %s не отслеживается!", UrlWorker.getHostFromUrl(url))
-            );
             state.clear();
-            return;
+            return new CommandAnswer(
+                String.format("Сайт %s не отслеживается!", UrlWorker.getHostFromUrl(url)),
+                false
+            );
         }
 
         if (checkUrlAlreadyInDB(chatId, url)) {
-            bot.sendMessage(chatId, "Ссылка уже отслеживается");
             state.clear();
-            return;
+            return new CommandAnswer("Ссылка уже отслеживается", false);
         }
 
-        bot.sendMessage(chatId, "Ссылка успешно добавлена!");
         addUrlToDB(chatId, url);
         state.clear();
+        return new CommandAnswer("Ссылка успешно добавлена!", false);
+
     }
 
     public void addUrlToDB(Long chatId, String url) {
