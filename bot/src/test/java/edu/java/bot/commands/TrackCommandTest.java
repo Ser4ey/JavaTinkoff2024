@@ -2,14 +2,11 @@ package edu.java.bot.commands;
 
 import edu.java.bot.chatbot.ChatBotMessageInterface;
 import edu.java.bot.states.State;
-import java.util.Collections;
-import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -17,12 +14,19 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 public class TrackCommandTest {
+    private State state;
+    private ChatBotMessageInterface chatMessage;
+    private TrackCommand trackCommand;
+
+    @BeforeEach
+    public void init() {
+        state = Mockito.mock(State.class);
+        chatMessage = Mockito.mock(ChatBotMessageInterface.class);
+        trackCommand = Mockito.spy(new TrackCommand());
+    }
+
     @Test
     public void testExecuteNoStatus() {
-        State state = Mockito.mock(State.class);
-        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
-        TrackCommand trackCommand = Mockito.spy(new TrackCommand());
-
         Mockito.doAnswer(invocation -> null).when(trackCommand).noStatus(any());
         Mockito.when(state.getStepName()).thenReturn("0");
 
@@ -34,10 +38,6 @@ public class TrackCommandTest {
 
     @Test
     public void testExecuteStatusWaitUrl() {
-        State state = Mockito.mock(State.class);
-        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
-        TrackCommand trackCommand = Mockito.spy(new TrackCommand());
-
         Mockito.doAnswer(invocation -> null).when(trackCommand).statusWaitUrl(any(), any());
         Mockito.when(state.getStepName()).thenReturn(TrackCommand.STATUS_WAIT_URL);
 
@@ -49,10 +49,6 @@ public class TrackCommandTest {
 
     @Test
     public void testNoStatus() {
-        State state = Mockito.mock(State.class);
-        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
-        TrackCommand trackCommand = Mockito.spy(new TrackCommand());
-
         CommandAnswer commandAnswer = trackCommand.execute(chatMessage, state);
 
         verify(state, Mockito.times(1)).setStepName(Mockito.eq(TrackCommand.STATUS_WAIT_URL));
@@ -64,10 +60,6 @@ public class TrackCommandTest {
 
     @Test
     public void testStatusWaitUrl_UrlInDB() {
-        State state = Mockito.mock(State.class);
-        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
-        TrackCommand trackCommand = Mockito.spy(new TrackCommand());
-
         Mockito.when(trackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(true);
         Mockito.when(chatMessage.getMessageText()).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
 
@@ -83,10 +75,6 @@ public class TrackCommandTest {
 
     @Test
     public void testStatusWaitUrl_UrlNotInDB() {
-        State state = Mockito.mock(State.class);
-        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
-        TrackCommand trackCommand = Mockito.spy(new TrackCommand());
-
         Mockito.when(trackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(false);
         Mockito.when(chatMessage.getMessageText()).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
 
@@ -98,10 +86,6 @@ public class TrackCommandTest {
 
     @Test
     public void testStatusWaitUrl_UrlValid() {
-        State state = Mockito.mock(State.class);
-        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
-        TrackCommand trackCommand = Mockito.spy(new TrackCommand());
-
         Mockito.when(trackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(false);
         Mockito.when(chatMessage.getMessageText()).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
 
@@ -114,10 +98,6 @@ public class TrackCommandTest {
 
     @Test
     public void testStatusWaitUrl_UrlNotValid() {
-        State state = Mockito.mock(State.class);
-        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
-        TrackCommand trackCommand = Mockito.spy(new TrackCommand());
-
         Mockito.when(chatMessage.getMessageText()).thenReturn("123");
 
         CommandAnswer commandAnswer = trackCommand.statusWaitUrl(chatMessage, state);
@@ -132,10 +112,6 @@ public class TrackCommandTest {
 
     @Test
     public void testStatusWaitUrl_UrlTrack() {
-        State state = Mockito.mock(State.class);
-        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
-        TrackCommand trackCommand = Mockito.spy(new TrackCommand());
-
         Mockito.when(trackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(false);
         Mockito.when(chatMessage.getMessageText()).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
 
@@ -149,6 +125,4 @@ public class TrackCommandTest {
         verify(state, Mockito.times(1)).clear();
     }
 }
-
-
 
