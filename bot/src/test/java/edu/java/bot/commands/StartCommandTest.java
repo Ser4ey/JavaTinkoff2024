@@ -16,7 +16,6 @@ class StartCommandTest {
         StartCommand startCommand = Mockito.spy(new StartCommand());
 
         CommandAnswer commandAnswer = startCommand.execute(chatMessage, state);
-
         assertNotNull(commandAnswer);
 
         assertEquals(
