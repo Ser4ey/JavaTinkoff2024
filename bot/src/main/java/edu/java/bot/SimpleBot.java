@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.model.BotCommand;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SetMyCommands;
+import edu.java.bot.chatbot.TelegramBotMessage;
 import edu.java.bot.commands.AllCommands;
 import edu.java.bot.commands.Command;
 import edu.java.bot.commands.CommandAnswer;
@@ -48,7 +49,8 @@ public class SimpleBot {
 
     private void processUpdate(Update update) {
         if (update != null && update.message() != null) {
-            CommandAnswer commandAnswer = commandHandler.handleCommand(this, update);
+            TelegramBotMessage telegramMessage = new TelegramBotMessage(update);
+            CommandAnswer commandAnswer = commandHandler.handleCommand(telegramMessage);
 
             if (commandAnswer.isWithPagePreview()) {
                 sendMessageWithWebPagePreview(getChatId(update), commandAnswer.getAnswerText());

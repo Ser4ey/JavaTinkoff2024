@@ -2,6 +2,7 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.SimpleBot;
+import edu.java.bot.chatbot.ChatBotMessageInterface;
 import edu.java.bot.db.LocalDBFactory;
 import edu.java.bot.db.UserLinkDB;
 import edu.java.bot.states.State;
@@ -27,8 +28,8 @@ public class ListCommand implements Command {
     }
 
     @Override
-    public CommandAnswer execute(SimpleBot bot, State state, Update update) {
-        Long chatId = bot.getChatId(update);
+    public CommandAnswer execute(ChatBotMessageInterface chatMessage, State state) {
+        Long chatId = chatMessage.getChatId();
 
         List<String> links = getUserLinks(chatId);
         if (links.isEmpty()) {

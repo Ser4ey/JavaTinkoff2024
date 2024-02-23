@@ -2,6 +2,7 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.SimpleBot;
+import edu.java.bot.chatbot.ChatBotMessageInterface;
 import edu.java.bot.states.State;
 import lombok.NonNull;
 
@@ -25,7 +26,7 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public CommandAnswer execute(SimpleBot bot, State state, Update update) {
+    public CommandAnswer execute(ChatBotMessageInterface chatMessage, State state) {
         return new CommandAnswer(buildHelpMessage(), false);
     }
 

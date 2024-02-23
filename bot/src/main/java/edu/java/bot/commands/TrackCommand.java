@@ -2,6 +2,7 @@ package edu.java.bot.commands;
 
 import com.pengrad.telegrambot.model.Update;
 import edu.java.bot.SimpleBot;
+import edu.java.bot.chatbot.ChatBotMessageInterface;
 import edu.java.bot.db.LocalDBFactory;
 import edu.java.bot.db.UserLinkDB;
 import edu.java.bot.states.State;
@@ -31,27 +32,27 @@ public class TrackCommand implements Command {
     }
 
     @Override
-    public CommandAnswer execute(SimpleBot bot, State state, Update update) {
+    public CommandAnswer execute(ChatBotMessageInterface chatMessage, State state) {
         return switch (state.getStepName()) {
-            case null -> noStatus(bot, state, update);
-            case STATUS_WAIT_URL -> statusWaitUrl(bot, state, update);
+            case null -> noStatus(state);
+            case STATUS_WAIT_URL -> statusWaitUrl(chatMessage, state);
             default -> {
                 log.error("Неизвестный статус: " + state.getStepName());
-                yield noStatus(bot, state, update);
+                yield noStatus(state);
             }
         };
     }
 
-    public CommandAnswer noStatus(SimpleBot bot, State state, Update update) {
+    public CommandAnswer noStatus(State state) {
         state.setStepName(STATUS_WAIT_URL);
         state.setCommand(this);
         return new CommandAnswer("Введите ссылку для отслеживания:", false);
     }
 
     @SuppressWarnings("ReturnCount")
-    public CommandAnswer statusWaitUrl(SimpleBot bot, State state, Update update) {
-        Long chatId = bot.getChatId(update);
-        String url = bot.getMessageText(update);
+    public CommandAnswer statusWaitUrl(ChatBotMessageInterface chatMessage, State state) {
+        Long chatId = chatMessage.getChatId();
+        String url = chatMessage.getMessageText();
 
         if (!UrlWorker.isValidUrl(url)) {
             state.clear();
