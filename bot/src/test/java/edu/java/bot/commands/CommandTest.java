@@ -7,12 +7,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-// JUnit 5 tutorial - https://www.vogella.com/tutorials/JUnit/article.html
-// JUnit 5 Parameterized Tests - https://reflectoring.io/tutorial-junit5-parameterized-tests/
-// AssertJ - https://assertj.github.io/doc/
 
 class CommandTest {
-
     @Test
     void testIsCommand() {
         assertThat(Command.isCommand("/rrr")).isEqualTo(true);

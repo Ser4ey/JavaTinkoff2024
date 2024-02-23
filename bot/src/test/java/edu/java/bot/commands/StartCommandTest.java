@@ -1,23 +1,28 @@
 package edu.java.bot.commands;
 
-import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.SimpleBot;
+import edu.java.bot.chatbot.ChatBotMessageInterface;
 import edu.java.bot.states.State;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class StartCommandTest {
     @Test
     void testExecute() {
-        SimpleBot bot = Mockito.mock(SimpleBot.class);
         State state = Mockito.mock(State.class);
-        Update update = Mockito.mock(Update.class);
+        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
 
         StartCommand startCommand = Mockito.spy(new StartCommand());
 
-        startCommand.execute(bot, state, update);
+        CommandAnswer commandAnswer = startCommand.execute(chatMessage, state);
 
-        Mockito.verify(bot, Mockito.times(1)).sendMessage(anyLong(), Mockito.eq(StartCommand.WELCOME_MESSAGE));
+        assertNotNull(commandAnswer);
+
+        assertEquals(
+            commandAnswer,
+            new CommandAnswer(StartCommand.WELCOME_MESSAGE, true)
+        );
+
     }
 }
