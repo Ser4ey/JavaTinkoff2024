@@ -1,7 +1,5 @@
 package edu.java.bot.handlers;
 
-import com.pengrad.telegrambot.model.Update;
-import edu.java.bot.SimpleBot;
 import edu.java.bot.chatbot.ChatBotMessageInterface;
 import edu.java.bot.commands.AllCommands;
 import edu.java.bot.commands.Command;
