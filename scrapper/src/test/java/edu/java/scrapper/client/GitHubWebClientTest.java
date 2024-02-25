@@ -1,10 +1,8 @@
 package edu.java.scrapper.client;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import java.time.OffsetDateTime;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
@@ -12,23 +10,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+
+@WireMockTest(httpPort = 8080)
 public class GitHubWebClientTest {
-    public WireMockServer wireMockServer;
-    private GitHubWebClient client;
-
-    @BeforeEach
-    public void setUp() {
-        wireMockServer = new WireMockServer();
-        wireMockServer.start();
-        WireMock.configureFor("localhost", 8080);
-
-        client = new GitHubWebClient("http://localhost:8080");
-    }
-
-    @AfterEach
-    public void tearDown() {
-        wireMockServer.stop();
-    }
+    private final GitHubWebClient client = new GitHubWebClient("http://localhost:8080");
 
     @Test
     public void testGetRepository_Success200() {
