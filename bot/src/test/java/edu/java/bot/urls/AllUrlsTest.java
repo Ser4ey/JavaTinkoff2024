@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class AllUrlsTest {
 
     @Test
-    void testGetTrackedUrl() {
+    void testGetRegisteredUrl() {
         assertEquals(
             AllUrls.getRegisteredUrl("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1"),
             "github.com"
@@ -20,7 +20,7 @@ class AllUrlsTest {
     }
 
     @Test
-    void testGetTrackedUrlNull() {
+    void testGetRegisteredUrlNull() {
         assertNull(AllUrls.getRegisteredUrl(null));
 
         assertNull(AllUrls.getRegisteredUrl("123"));

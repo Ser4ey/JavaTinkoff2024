@@ -13,23 +13,17 @@ public class AllUrls {
         URL_HOSTS.add("stackoverflow.com");
     }
 
-    private static boolean isProperUrlHost(String urlHost, String url) {
-        // Имеет ли ссылка url хост urlHost (https://github.com/Ser4ey/JavaTinkoff2024/pull/1 -> github.com)
-        return urlHost.equals(UrlWorker.getHostFromUrl(url));
-    }
-
     public static String getRegisteredUrl(String url) {
+        // если ссылка зарегистрирована получаем её хост, в противном случае null
         boolean isValid = UrlWorker.isValidUrl(url);
         if (!isValid) {
             return null;
         }
 
-        for (String urlHost : URL_HOSTS.toArray(new String[0])) {
-            if (isProperUrlHost(urlHost, url)) {
-                return urlHost;
-            }
+        String urlHost = UrlWorker.getHostFromUrl(url);
+        if (URL_HOSTS.contains(urlHost)) {
+            return urlHost;
         }
-
         return null;
     }
 
