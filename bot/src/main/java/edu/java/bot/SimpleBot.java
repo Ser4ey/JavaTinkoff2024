@@ -41,27 +41,23 @@ public class SimpleBot {
         bot.execute(sendMessage);
     }
 
+    public void sendMessage(Long chatId, CommandAnswer commandAnswer) {
+        if (commandAnswer.isWithPagePreview()) {
+            sendMessageWithWebPagePreview(chatId, commandAnswer.getAnswerText());
+        } else {
+            sendMessage(chatId, commandAnswer.getAnswerText());
+        }
+    }
+
     private void processUpdate(Update update) {
         if (update != null && update.message() != null) {
+            Long chatId = TelegramUtils.getChatId(update);
+            String messageText = TelegramUtils.getMessageText(update);
 
-            TelegramBotMessage telegramMessage = new TelegramBotMessage(
-                TelegramUtils.getChatId(update),
-                TelegramUtils.getMessageText(update)
-            );
-
+            TelegramBotMessage telegramMessage = new TelegramBotMessage(chatId, messageText);
             CommandAnswer commandAnswer = commandHandler.handleCommand(telegramMessage);
 
-            if (commandAnswer.isWithPagePreview()) {
-                sendMessageWithWebPagePreview(
-                    TelegramUtils.getChatId(update),
-                    commandAnswer.getAnswerText()
-                );
-            } else {
-                sendMessage(
-                    TelegramUtils.getChatId(update),
-                    commandAnswer.getAnswerText()
-                );
-            }
+            sendMessage(chatId, commandAnswer);
         }
     }
 
