@@ -10,6 +10,7 @@ import edu.java.bot.chatbot.TelegramBotMessage;
 import edu.java.bot.commands.AllCommands;
 import edu.java.bot.commands.Command;
 import edu.java.bot.commands.CommandAnswer;
+import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.handlers.MainHandler;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,19 +23,12 @@ public class SimpleBot {
     private final TelegramBot bot;
     private final MainHandler commandHandler = new MainHandler();
 
-    public SimpleBot(String botToken) {
-        bot = new TelegramBot(botToken);
+//    public SimpleBot(@Value("${app.telegram-token}") String botToken) {
+    public SimpleBot(ApplicationConfig applicationConfig) {
+        bot = new TelegramBot(applicationConfig.telegramToken());
         setBotCommands();
         start();
         log.info("BOT started!");
-    }
-
-    public Long getChatId(Update update) {
-        return update.message().chat().id();
-    }
-
-    public String getMessageText(Update update) {
-        return update.message().text();
     }
 
     public void sendMessage(Long chatId, String text) {
@@ -49,13 +43,24 @@ public class SimpleBot {
 
     private void processUpdate(Update update) {
         if (update != null && update.message() != null) {
-            TelegramBotMessage telegramMessage = new TelegramBotMessage(update);
+
+            TelegramBotMessage telegramMessage = new TelegramBotMessage(
+                TelegramUtils.getChatId(update),
+                TelegramUtils.getMessageText(update)
+            );
+
             CommandAnswer commandAnswer = commandHandler.handleCommand(telegramMessage);
 
             if (commandAnswer.isWithPagePreview()) {
-                sendMessageWithWebPagePreview(getChatId(update), commandAnswer.getAnswerText());
+                sendMessageWithWebPagePreview(
+                    TelegramUtils.getChatId(update),
+                    commandAnswer.getAnswerText()
+                );
             } else {
-                sendMessage(getChatId(update), commandAnswer.getAnswerText());
+                sendMessage(
+                    TelegramUtils.getChatId(update),
+                    commandAnswer.getAnswerText()
+                );
             }
         }
     }
@@ -74,6 +79,18 @@ public class SimpleBot {
             updates.forEach(this::processUpdate);
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
+    }
+
+    public static class TelegramUtils {
+        private TelegramUtils() {}
+
+        public static Long getChatId(Update update) {
+            return update.message().chat().id();
+        }
+
+        public static String getMessageText(Update update) {
+            return update.message().text();
+        }
     }
 
 }

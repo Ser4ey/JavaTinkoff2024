@@ -17,6 +17,11 @@ public class TelegramBotMessage implements ChatBotMessageInterface {
         }
     }
 
+    public TelegramBotMessage(Long chatId, String messageText) {
+        this.chatId = chatId;
+        this.messageText = messageText;
+    }
+
     @Override
     public Long getChatId() {
         return chatId;
