@@ -7,12 +7,15 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 @Log4j2
 public class StackOverflowWebClient implements StackOverflowClient {
+
+    private static final String DEFAULT_URL = "https://api.stackexchange.com/2.3/";
     private final WebClient webClient;
 
     public StackOverflowWebClient(String baseUrl) {
-        this.webClient = WebClient.builder().baseUrl(baseUrl).build();
-    }
+        String finalUrl = (baseUrl == null || baseUrl.isBlank()) ? DEFAULT_URL : baseUrl;
 
+        this.webClient = WebClient.builder().baseUrl(finalUrl).build();
+    }
 
     @Override
     public StackOverflowQuestionsResponse.StackOverflowQuestion getQuestion(Long id) {

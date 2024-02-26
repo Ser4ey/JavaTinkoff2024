@@ -8,10 +8,14 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 @Log4j2
 public class GitHubWebClient implements GitHubClient {
+
+    private static final String DEFAULT_URL = "https://api.github.com";
     private final WebClient webClient;
 
     public GitHubWebClient(String baseUrl) {
-        this.webClient = WebClient.builder().baseUrl(baseUrl).build();
+        String finalUrl = (baseUrl == null || baseUrl.isBlank()) ? DEFAULT_URL : baseUrl;
+
+        this.webClient = WebClient.builder().baseUrl(finalUrl).build();
     }
 
     @Override
