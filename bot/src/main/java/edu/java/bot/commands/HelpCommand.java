@@ -1,6 +1,6 @@
 package edu.java.bot.commands;
 
-import edu.java.bot.chatbot.ChatBotMessageInterface;
+import edu.java.bot.chatbot.ChatBotMessage;
 import edu.java.bot.states.State;
 import lombok.NonNull;
 
@@ -24,7 +24,7 @@ public class HelpCommand implements Command {
     }
 
     @Override
-    public CommandAnswer execute(ChatBotMessageInterface chatMessage, State state) {
+    public CommandAnswer execute(ChatBotMessage chatMessage, State state) {
         return new CommandAnswer(buildHelpMessage(), false);
     }
 

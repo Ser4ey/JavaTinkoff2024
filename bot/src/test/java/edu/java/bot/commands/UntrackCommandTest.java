@@ -1,6 +1,6 @@
 package edu.java.bot.commands;
 
-import edu.java.bot.chatbot.ChatBotMessageInterface;
+import edu.java.bot.chatbot.ChatBotMessage;
 import edu.java.bot.states.State;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,13 +15,13 @@ import static org.mockito.Mockito.verify;
 
 public class UntrackCommandTest {
     private State state;
-    private ChatBotMessageInterface chatMessage;
+    private ChatBotMessage chatMessage;
     private UntrackCommand untrackCommand;
 
     @BeforeEach
     public void init() {
         state = Mockito.mock(State.class);
-        chatMessage = Mockito.mock(ChatBotMessageInterface.class);
+        chatMessage = Mockito.mock(ChatBotMessage.class);
         untrackCommand = Mockito.spy(new UntrackCommand());
     }
 

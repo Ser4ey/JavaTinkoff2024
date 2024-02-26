@@ -1,6 +1,6 @@
 package edu.java.bot.commands;
 
-import edu.java.bot.chatbot.ChatBotMessageInterface;
+import edu.java.bot.chatbot.ChatBotMessage;
 import edu.java.bot.db.LocalDBFactory;
 import edu.java.bot.db.UserLinkDB;
 import edu.java.bot.states.State;
@@ -30,7 +30,7 @@ public class TrackCommand implements Command {
     }
 
     @Override
-    public CommandAnswer execute(ChatBotMessageInterface chatMessage, State state) {
+    public CommandAnswer execute(ChatBotMessage chatMessage, State state) {
         return switch (state.getStepName()) {
             case null -> noStatus(state);
             case STATUS_WAIT_URL -> statusWaitUrl(chatMessage, state);
@@ -48,7 +48,7 @@ public class TrackCommand implements Command {
     }
 
     @SuppressWarnings("ReturnCount")
-    public CommandAnswer statusWaitUrl(ChatBotMessageInterface chatMessage, State state) {
+    public CommandAnswer statusWaitUrl(ChatBotMessage chatMessage, State state) {
         Long chatId = chatMessage.getChatId();
         String url = chatMessage.getMessageText();
 

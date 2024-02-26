@@ -1,6 +1,6 @@
 package edu.java.bot.commands;
 
-import edu.java.bot.chatbot.ChatBotMessageInterface;
+import edu.java.bot.chatbot.ChatBotMessage;
 import edu.java.bot.states.State;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +16,7 @@ public class ListCommandTest {
     @Test
     public void testExecuteWithNoLinks() {
         State state = Mockito.mock(State.class);
-        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
+        ChatBotMessage chatMessage = Mockito.mock(ChatBotMessage.class);
         ListCommand listCommand = Mockito.spy(new ListCommand());
 
         Mockito.when(listCommand.getUserLinks(anyLong())).thenReturn(Collections.emptyList());
@@ -33,7 +33,7 @@ public class ListCommandTest {
     @Test
     public void testExecuteWithOneLink() {
         State state = Mockito.mock(State.class);
-        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
+        ChatBotMessage chatMessage = Mockito.mock(ChatBotMessage.class);
         ListCommand listCommand = Mockito.spy(new ListCommand());
 
         Mockito.when(listCommand.getUserLinks(anyLong())).thenReturn(Collections.singletonList("https://example.com"));
@@ -48,7 +48,7 @@ public class ListCommandTest {
     @Test
     public void testExecuteWithManyLinks() {
         State state = Mockito.mock(State.class);
-        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
+        ChatBotMessage chatMessage = Mockito.mock(ChatBotMessage.class);
         ListCommand listCommand = Mockito.spy(new ListCommand());
 
         Mockito.when(listCommand.getUserLinks(anyLong())).

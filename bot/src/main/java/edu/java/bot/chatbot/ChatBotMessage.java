@@ -1,6 +1,6 @@
 package edu.java.bot.chatbot;
 
-public interface ChatBotMessageInterface {
+public interface ChatBotMessage {
     Long getChatId();
 
     String getMessageText();

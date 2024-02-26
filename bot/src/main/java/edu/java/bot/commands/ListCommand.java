@@ -1,6 +1,6 @@
 package edu.java.bot.commands;
 
-import edu.java.bot.chatbot.ChatBotMessageInterface;
+import edu.java.bot.chatbot.ChatBotMessage;
 import edu.java.bot.db.LocalDBFactory;
 import edu.java.bot.db.UserLinkDB;
 import edu.java.bot.states.State;
@@ -26,7 +26,7 @@ public class ListCommand implements Command {
     }
 
     @Override
-    public CommandAnswer execute(ChatBotMessageInterface chatMessage, State state) {
+    public CommandAnswer execute(ChatBotMessage chatMessage, State state) {
         Long chatId = chatMessage.getChatId();
 
         List<String> links = getUserLinks(chatId);

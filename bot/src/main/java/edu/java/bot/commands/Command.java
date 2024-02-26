@@ -1,6 +1,6 @@
 package edu.java.bot.commands;
 
-import edu.java.bot.chatbot.ChatBotMessageInterface;
+import edu.java.bot.chatbot.ChatBotMessage;
 import edu.java.bot.states.State;
 import java.util.regex.Pattern;
 import lombok.NonNull;
@@ -11,7 +11,7 @@ public interface Command {
         return Pattern.matches(regex, text);
     }
 
-    CommandAnswer execute(ChatBotMessageInterface chatMessage, State state);
+    CommandAnswer execute(ChatBotMessage chatMessage, State state);
 
     @NonNull
     String getName();

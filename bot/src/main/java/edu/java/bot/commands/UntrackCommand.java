@@ -1,6 +1,6 @@
 package edu.java.bot.commands;
 
-import edu.java.bot.chatbot.ChatBotMessageInterface;
+import edu.java.bot.chatbot.ChatBotMessage;
 import edu.java.bot.db.LocalDBFactory;
 import edu.java.bot.db.UserLinkDB;
 import edu.java.bot.states.State;
@@ -29,7 +29,7 @@ public class UntrackCommand implements Command {
     }
 
     @Override
-    public CommandAnswer execute(ChatBotMessageInterface chatMessage, State state) {
+    public CommandAnswer execute(ChatBotMessage chatMessage, State state) {
         return switch (state.getStepName()) {
             case null -> noStatus(state);
             case STATUS_WAIT_URL -> statusWaitUrl(chatMessage, state);
@@ -47,7 +47,7 @@ public class UntrackCommand implements Command {
         return new CommandAnswer("Введите ссылку для удаления:", false);
     }
 
-    public CommandAnswer statusWaitUrl(ChatBotMessageInterface chatMessage, State state) {
+    public CommandAnswer statusWaitUrl(ChatBotMessage chatMessage, State state) {
         Long chatId = chatMessage.getChatId();
         String url = chatMessage.getMessageText();
 

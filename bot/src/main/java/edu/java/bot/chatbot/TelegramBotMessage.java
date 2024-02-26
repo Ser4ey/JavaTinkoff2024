@@ -3,7 +3,7 @@ package edu.java.bot.chatbot;
 import com.pengrad.telegrambot.model.Update;
 import lombok.NonNull;
 
-public class TelegramBotMessage implements ChatBotMessageInterface {
+public class TelegramBotMessage implements ChatBotMessage {
     private final Long chatId;
     private final String messageText;
 

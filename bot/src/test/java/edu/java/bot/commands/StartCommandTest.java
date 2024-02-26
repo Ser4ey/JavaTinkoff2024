@@ -1,6 +1,6 @@
 package edu.java.bot.commands;
 
-import edu.java.bot.chatbot.ChatBotMessageInterface;
+import edu.java.bot.chatbot.ChatBotMessage;
 import edu.java.bot.states.State;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -11,7 +11,7 @@ class StartCommandTest {
     @Test
     void testExecute() {
         State state = Mockito.mock(State.class);
-        ChatBotMessageInterface chatMessage = Mockito.mock(ChatBotMessageInterface.class);
+        ChatBotMessage chatMessage = Mockito.mock(ChatBotMessage.class);
 
         StartCommand startCommand = Mockito.spy(new StartCommand());
 

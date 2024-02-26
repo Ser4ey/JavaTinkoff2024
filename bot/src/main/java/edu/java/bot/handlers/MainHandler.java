@@ -1,6 +1,6 @@
 package edu.java.bot.handlers;
 
-import edu.java.bot.chatbot.ChatBotMessageInterface;
+import edu.java.bot.chatbot.ChatBotMessage;
 import edu.java.bot.commands.AllCommands;
 import edu.java.bot.commands.Command;
 import edu.java.bot.commands.CommandAnswer;
@@ -14,7 +14,7 @@ public class MainHandler {
     private final StateManager stateManager = new StateManager();
 
     @SuppressWarnings("ReturnCount")
-    public CommandAnswer handleCommand(ChatBotMessageInterface chatMessage) {
+    public CommandAnswer handleCommand(ChatBotMessage chatMessage) {
         Long chatId = chatMessage.getChatId();
         String messageText = chatMessage.getMessageText();
         State currentChatState = stateManager.getState(chatId);
@@ -39,7 +39,7 @@ public class MainHandler {
         return noCommand(chatMessage);
     }
 
-    private CommandAnswer unknownCommand(ChatBotMessageInterface chatMessage) {
+    private CommandAnswer unknownCommand(ChatBotMessage chatMessage) {
         // действия при отправке неизвестной команды
         String text = chatMessage.getMessageText();
 
@@ -47,7 +47,7 @@ public class MainHandler {
         return new CommandAnswer(message, false);
     }
 
-    private CommandAnswer noCommand(ChatBotMessageInterface chatMessage) {
+    private CommandAnswer noCommand(ChatBotMessage chatMessage) {
         // действия при отправке текстка
         Long chatId = chatMessage.getChatId();
         String text = chatMessage.getMessageText();
