@@ -11,13 +11,11 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 public class MainHandler {
-    private final StateManager stateManager = new StateManager();
-
     @SuppressWarnings("ReturnCount")
     public CommandAnswer handleCommand(ChatBotMessage chatMessage) {
         Long chatId = chatMessage.getChatId();
         String messageText = chatMessage.getMessageText();
-        State currentChatState = stateManager.getState(chatId);
+        State currentChatState = StateManager.getState(chatId);
 
         // при отправки новой команды сбрасываем состояние
         if (Command.isCommand(messageText)) {
