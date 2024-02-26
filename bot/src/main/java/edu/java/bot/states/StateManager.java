@@ -8,14 +8,14 @@ import lombok.NonNull;
 public class StateManager {
     private StateManager() {}
 
-    private static final Map<Long, State> usersStates = new HashMap<>();
+    private static final Map<Long, State> USERS_STATES = new HashMap<>();
 
     @NonNull
     public static State getState(Long userId) {
-        State userState = usersStates.get(userId);
+        State userState = USERS_STATES.get(userId);
         if (userState == null) {
             userState = new State();
-            usersStates.put(userId, userState);
+            USERS_STATES.put(userId, userState);
         }
         return userState;
     }
