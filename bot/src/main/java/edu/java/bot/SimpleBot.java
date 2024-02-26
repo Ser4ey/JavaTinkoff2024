@@ -10,7 +10,6 @@ import edu.java.bot.chatbot.TelegramBotMessage;
 import edu.java.bot.commands.AllCommands;
 import edu.java.bot.commands.Command;
 import edu.java.bot.commands.CommandAnswer;
-import edu.java.bot.configuration.ApplicationConfig;
 import edu.java.bot.handlers.MainHandler;
 import java.util.ArrayList;
 import java.util.List;
