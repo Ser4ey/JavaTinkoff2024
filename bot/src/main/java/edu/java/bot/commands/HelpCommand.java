@@ -18,7 +18,7 @@ public class HelpCommand implements Command {
     private String buildHelpMessage() {
         StringBuilder helpText = new StringBuilder();
         for (Command command : AllCommands.getAllCommands()) {
-            helpText.append(String.format("%s - %s", command.getName(), command.getDescription())).append("\n");
+            helpText.append(String.format("%s - %s\n", command.getName(), command.getDescription()));
         }
         return helpText.toString();
     }
