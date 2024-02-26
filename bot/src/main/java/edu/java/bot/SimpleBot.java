@@ -15,6 +15,7 @@ import edu.java.bot.handlers.MainHandler;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Log4j2
@@ -23,9 +24,8 @@ public class SimpleBot {
     private final TelegramBot bot;
     private final MainHandler commandHandler = new MainHandler();
 
-//    public SimpleBot(@Value("${app.telegram-token}") String botToken) {
-    public SimpleBot(ApplicationConfig applicationConfig) {
-        bot = new TelegramBot(applicationConfig.telegramToken());
+    public SimpleBot(@Value("${app.telegram-token}") String botToken) {
+        bot = new TelegramBot(botToken);
         setBotCommands();
         start();
         log.info("BOT started!");
