@@ -20,7 +20,7 @@ public class TgChatController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("")
+    @DeleteMapping("/{id}")
     public ResponseEntity<LinkResponse> deleteChat(@PathVariable Long id) {
         return new ResponseEntity<>(HttpStatus.OK);
     }
