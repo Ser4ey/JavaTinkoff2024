@@ -20,3 +20,6 @@ web-clients:
   github:
     baseurl: https://api.github.com/
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
