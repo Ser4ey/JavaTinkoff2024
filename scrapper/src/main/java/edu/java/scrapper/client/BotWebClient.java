@@ -27,7 +27,7 @@ public class BotWebClient implements BotClient {
             .uri("/updates")
             .bodyValue(linkUpdateRequest)
             .retrieve()
-            .onStatus(HttpStatus.BAD_REQUEST::equals, clientResponse -> clientResponse.bodyToMono(ApiErrorResponse.class)
+            .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(ApiErrorResponse.class)
                 .flatMap(apiErrorResponse -> Mono.error(new CustomRequestException(apiErrorResponse)))
             )
             .toBodilessEntity()

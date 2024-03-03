@@ -1,12 +1,15 @@
 package edu.java.bot.client;
 
+import edu.java.bot.exception.CustomRequestException;
 import edu.java.bot.model.dto.AddLinkRequest;
+import edu.java.bot.model.dto.ApiErrorResponse;
 import edu.java.bot.model.dto.LinkResponse;
 import edu.java.bot.model.dto.ListLinksResponse;
 import edu.java.bot.model.dto.RemoveLinkRequest;
-import java.util.Optional;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 public class ScrapperWebClient implements ScrapperClient {
     private static final String DEFAULT_URL = "http://localhost:8080";
@@ -23,7 +26,10 @@ public class ScrapperWebClient implements ScrapperClient {
         webClient.post()
             .uri("/tg-chat/{id}", id)
             .retrieve()
-            .bodyToMono(String.class)
+            .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(ApiErrorResponse.class)
+                .flatMap(apiErrorResponse -> Mono.error(new CustomRequestException(apiErrorResponse)))
+            )
+            .toBodilessEntity()
             .block();
     }
 
@@ -32,39 +38,51 @@ public class ScrapperWebClient implements ScrapperClient {
         webClient.delete()
             .uri("/tg-chat/{id}", id)
             .retrieve()
-            .bodyToMono(String.class)
+            .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(ApiErrorResponse.class)
+                .flatMap(apiErrorResponse -> Mono.error(new CustomRequestException(apiErrorResponse)))
+            )
+            .toBodilessEntity()
             .block();
     }
 
     @Override
-    public Optional<ListLinksResponse> getLinks(Integer id) {
+    public ListLinksResponse getLinks(Integer id) {
         return webClient.get()
             .uri("/links")
             .header("Tg-Chat-Id", id.toString())
             .retrieve()
+            .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(ApiErrorResponse.class)
+                .flatMap(apiErrorResponse -> Mono.error(new CustomRequestException(apiErrorResponse)))
+            )
             .bodyToMono(ListLinksResponse.class)
-            .blockOptional();
+            .block();
     }
 
     @Override
-    public Optional<LinkResponse> addLink(Integer id, AddLinkRequest addLinkRequest) {
+    public LinkResponse addLink(Integer id, AddLinkRequest addLinkRequest) {
         return webClient.post()
             .uri("/links")
             .header("Tg-Chat-Id", id.toString())
             .bodyValue(addLinkRequest)
             .retrieve()
+            .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(ApiErrorResponse.class)
+                .flatMap(apiErrorResponse -> Mono.error(new CustomRequestException(apiErrorResponse)))
+            )
             .bodyToMono(LinkResponse.class)
-            .blockOptional();
+            .block();
     }
 
     @Override
-    public Optional<LinkResponse> removeLink(Integer id, RemoveLinkRequest removeLinkRequest) {
+    public LinkResponse removeLink(Integer id, RemoveLinkRequest removeLinkRequest) {
         return webClient.method(HttpMethod.DELETE)
             .uri("/links")
             .header("Tg-Chat-Id", id.toString())
             .bodyValue(removeLinkRequest)
             .retrieve()
+            .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(ApiErrorResponse.class)
+                .flatMap(apiErrorResponse -> Mono.error(new CustomRequestException(apiErrorResponse)))
+            )
             .bodyToMono(LinkResponse.class)
-            .blockOptional();
+            .block();
     }
 }

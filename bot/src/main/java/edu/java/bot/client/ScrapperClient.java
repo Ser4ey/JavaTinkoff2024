@@ -12,9 +12,9 @@ public interface ScrapperClient {
 
     void deleteChat(Integer id);
 
-    Optional<ListLinksResponse> getLinks(Integer id);
+    ListLinksResponse getLinks(Integer id);
 
-    Optional<LinkResponse> addLink(Integer id, AddLinkRequest addLinkRequest);
+    LinkResponse addLink(Integer id, AddLinkRequest addLinkRequest);
 
-    Optional<LinkResponse> removeLink(Integer id, RemoveLinkRequest removeLinkRequest);
+    LinkResponse removeLink(Integer id, RemoveLinkRequest removeLinkRequest);
 }
