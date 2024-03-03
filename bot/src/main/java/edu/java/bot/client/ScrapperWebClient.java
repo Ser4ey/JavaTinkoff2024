@@ -6,7 +6,6 @@ import edu.java.bot.model.dto.ApiErrorResponse;
 import edu.java.bot.model.dto.LinkResponse;
 import edu.java.bot.model.dto.ListLinksResponse;
 import edu.java.bot.model.dto.RemoveLinkRequest;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
