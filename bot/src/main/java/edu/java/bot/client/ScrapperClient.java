@@ -1,10 +1,9 @@
-package client;
+package edu.java.bot.client;
 
 import edu.java.bot.model.dto.AddLinkRequest;
 import edu.java.bot.model.dto.LinkResponse;
 import edu.java.bot.model.dto.ListLinksResponse;
 import edu.java.bot.model.dto.RemoveLinkRequest;
-import org.springframework.http.HttpMethod;
 import java.util.Optional;
 
 public interface ScrapperClient {

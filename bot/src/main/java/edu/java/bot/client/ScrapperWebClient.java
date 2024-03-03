@@ -1,4 +1,4 @@
-package client;
+package edu.java.bot.client;
 
 import edu.java.bot.model.dto.AddLinkRequest;
 import edu.java.bot.model.dto.LinkResponse;
@@ -6,10 +6,9 @@ import edu.java.bot.model.dto.ListLinksResponse;
 import edu.java.bot.model.dto.RemoveLinkRequest;
 import java.util.Optional;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
 
-public class ScrapperWebClient implements ScrapperClient{
+public class ScrapperWebClient implements ScrapperClient {
     private static final String DEFAULT_URL = "http://localhost:8080";
     private final WebClient webClient;
 
