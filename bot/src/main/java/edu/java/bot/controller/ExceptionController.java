@@ -1,15 +1,59 @@
 package edu.java.bot.controller;
 
+import edu.java.bot.exception.CustomResponseException;
 import edu.java.bot.model.dto.ApiErrorResponse;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class ExceptionController {
+
+    @ExceptionHandler(CustomResponseException.class)
+    public ResponseEntity<ApiErrorResponse> handleCustomResponseException(CustomResponseException ex) {
+        List<String> stacktrace = Arrays.stream(ex.getStackTrace())
+            .map(StackTraceElement::toString)
+            .toList();
+
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+            ex.getDescription(),
+            String.valueOf(ex.getHttpStatus().value()),
+            ex.getClass().getName(),
+            ex.getExceptionMessage(),
+            stacktrace
+        );
+
+        return new ResponseEntity<>(apiErrorResponse, ex.getHttpStatus());
+    }
+
+    @ExceptionHandler({
+        MethodArgumentNotValidException.class,
+        HandlerMethodValidationException.class,
+        MethodArgumentTypeMismatchException.class,
+        HttpMessageNotReadableException.class
+    })
+    public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(Exception ex) {
+        List<String> stacktrace = Arrays.stream(ex.getStackTrace())
+            .map(StackTraceElement::toString)
+            .toList();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(new ApiErrorResponse(
+                    "Validation failed",
+                    "400",
+                    ex.getClass().getName(),
+                    ex.getMessage(),
+                    stacktrace
+                )
+            );
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleException(Exception ex) {
@@ -19,11 +63,12 @@ public class ExceptionController {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(new ApiErrorResponse(
-                ex.getMessage(),
-                "500",
-                ex.getClass().getName(),
-                ex.getMessage(),
-                stacktrace)
+                    "Unhandled server error",
+                    "500",
+                    ex.getClass().getName(),
+                    ex.getMessage(),
+                    stacktrace
+                )
             );
     }
 }
