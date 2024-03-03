@@ -19,6 +19,8 @@ web-clients:
     baseurl: https://api.stackexchange.com/2.3/
   github:
     baseurl: https://api.github.com/
+  bot:
+    baseurl: http://localhost:8090
 
 springdoc:
   swagger-ui:
