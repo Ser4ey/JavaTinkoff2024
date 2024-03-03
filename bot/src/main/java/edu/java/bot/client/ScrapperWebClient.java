@@ -6,6 +6,7 @@ import edu.java.bot.model.dto.ApiErrorResponse;
 import edu.java.bot.model.dto.LinkResponse;
 import edu.java.bot.model.dto.ListLinksResponse;
 import edu.java.bot.model.dto.RemoveLinkRequest;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -27,7 +28,7 @@ public class ScrapperWebClient implements ScrapperClient {
     }
 
     @Override
-    public void registerChat(Integer id) {
+    public void registerChat(Long id) {
         webClient.post()
             .uri(TG_CHAT_URL, id)
             .retrieve()
@@ -39,7 +40,7 @@ public class ScrapperWebClient implements ScrapperClient {
     }
 
     @Override
-    public void deleteChat(Integer id) {
+    public void deleteChat(Long id) {
         webClient.delete()
             .uri("TG_CHAT_URL", id)
             .retrieve()
@@ -51,7 +52,7 @@ public class ScrapperWebClient implements ScrapperClient {
     }
 
     @Override
-    public ListLinksResponse getLinks(Integer id) {
+    public ListLinksResponse getLinks(Long id) {
         return webClient.get()
             .uri(LINKS_URL)
             .header(TG_CHAT_ID_HEADER, id.toString())
@@ -64,7 +65,7 @@ public class ScrapperWebClient implements ScrapperClient {
     }
 
     @Override
-    public LinkResponse addLink(Integer id, AddLinkRequest addLinkRequest) {
+    public LinkResponse addLink(Long id, AddLinkRequest addLinkRequest) {
         return webClient.post()
             .uri(LINKS_URL)
             .header(TG_CHAT_ID_HEADER, id.toString())
@@ -78,7 +79,7 @@ public class ScrapperWebClient implements ScrapperClient {
     }
 
     @Override
-    public LinkResponse removeLink(Integer id, RemoveLinkRequest removeLinkRequest) {
+    public LinkResponse removeLink(Long id, RemoveLinkRequest removeLinkRequest) {
         return webClient.method(HttpMethod.DELETE)
             .uri(LINKS_URL)
             .header(TG_CHAT_ID_HEADER, id.toString())
