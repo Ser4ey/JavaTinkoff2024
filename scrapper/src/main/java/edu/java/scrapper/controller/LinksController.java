@@ -33,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/links")
 @SuppressWarnings("MagicNumber") // dev
 public class LinksController {
-    @GetMapping("")
+    @GetMapping
     @Operation(summary = "Get all the tracked links", description = "Get all the tracked links")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Success", content = {
@@ -51,7 +51,7 @@ public class LinksController {
         return new ResponseEntity<>(listLinksResponse, HttpStatus.OK);
     }
 
-    @PostMapping("")
+    @PostMapping
     @Operation(summary = "Add tracking link", description = "Start tracking a new link")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Success", content = {
@@ -79,7 +79,7 @@ public class LinksController {
         return new ResponseEntity<>(linkResponse, HttpStatus.OK);
     }
 
-    @DeleteMapping("")
+    @DeleteMapping
     @Operation(summary = "Remove link tracking", description = "The link will no longer be tracked")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "The link was successfully deleted", content = {

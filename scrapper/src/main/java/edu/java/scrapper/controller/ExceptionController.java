@@ -6,12 +6,12 @@ import java.util.Arrays;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-
 @RestControllerAdvice
 public class ExceptionController {
     @ExceptionHandler(CustomResponseException.class)
@@ -34,7 +34,8 @@ public class ExceptionController {
     @ExceptionHandler({
         MethodArgumentNotValidException.class,
         HandlerMethodValidationException.class,
-        MethodArgumentTypeMismatchException.class
+        MethodArgumentTypeMismatchException.class,
+        HttpMessageNotReadableException.class
     })
     public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(Exception ex) {
         List<String> stacktrace = Arrays.stream(ex.getStackTrace())
