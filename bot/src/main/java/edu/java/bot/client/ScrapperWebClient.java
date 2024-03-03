@@ -13,6 +13,11 @@ import reactor.core.publisher.Mono;
 
 public class ScrapperWebClient implements ScrapperClient {
     private static final String DEFAULT_URL = "http://localhost:8080";
+    private static final String TG_CHAT_URL = "/tg-chat/{id}";
+    private static final String LINKS_URL = "/links";
+    private static final String TG_CHAT_ID_HEADER = "Tg-Chat-Id";
+
+
     private final WebClient webClient;
 
     public ScrapperWebClient(String baseUrl) {
@@ -24,7 +29,7 @@ public class ScrapperWebClient implements ScrapperClient {
     @Override
     public void registerChat(Integer id) {
         webClient.post()
-            .uri("/tg-chat/{id}", id)
+            .uri(TG_CHAT_URL, id)
             .retrieve()
             .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(ApiErrorResponse.class)
                 .flatMap(apiErrorResponse -> Mono.error(new CustomRequestException(apiErrorResponse)))
@@ -36,7 +41,7 @@ public class ScrapperWebClient implements ScrapperClient {
     @Override
     public void deleteChat(Integer id) {
         webClient.delete()
-            .uri("/tg-chat/{id}", id)
+            .uri("TG_CHAT_URL", id)
             .retrieve()
             .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(ApiErrorResponse.class)
                 .flatMap(apiErrorResponse -> Mono.error(new CustomRequestException(apiErrorResponse)))
@@ -48,8 +53,8 @@ public class ScrapperWebClient implements ScrapperClient {
     @Override
     public ListLinksResponse getLinks(Integer id) {
         return webClient.get()
-            .uri("/links")
-            .header("Tg-Chat-Id", id.toString())
+            .uri(LINKS_URL)
+            .header(TG_CHAT_ID_HEADER, id.toString())
             .retrieve()
             .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(ApiErrorResponse.class)
                 .flatMap(apiErrorResponse -> Mono.error(new CustomRequestException(apiErrorResponse)))
@@ -61,8 +66,8 @@ public class ScrapperWebClient implements ScrapperClient {
     @Override
     public LinkResponse addLink(Integer id, AddLinkRequest addLinkRequest) {
         return webClient.post()
-            .uri("/links")
-            .header("Tg-Chat-Id", id.toString())
+            .uri(LINKS_URL)
+            .header(TG_CHAT_ID_HEADER, id.toString())
             .bodyValue(addLinkRequest)
             .retrieve()
             .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(ApiErrorResponse.class)
@@ -75,8 +80,8 @@ public class ScrapperWebClient implements ScrapperClient {
     @Override
     public LinkResponse removeLink(Integer id, RemoveLinkRequest removeLinkRequest) {
         return webClient.method(HttpMethod.DELETE)
-            .uri("/links")
-            .header("Tg-Chat-Id", id.toString())
+            .uri(LINKS_URL)
+            .header(TG_CHAT_ID_HEADER, id.toString())
             .bodyValue(removeLinkRequest)
             .retrieve()
             .onStatus(HttpStatusCode::isError, clientResponse -> clientResponse.bodyToMono(ApiErrorResponse.class)

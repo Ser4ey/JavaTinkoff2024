@@ -4,11 +4,9 @@ import edu.java.scrapper.exception.CustomRequestException;
 import edu.java.scrapper.model.dto.ApiErrorResponse;
 import edu.java.scrapper.model.dto.LinkUpdateRequest;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import org.springframework.http.HttpStatusCode;
 
 @Log4j2
 public class BotWebClient implements BotClient {

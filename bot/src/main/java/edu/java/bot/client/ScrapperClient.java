@@ -4,7 +4,6 @@ import edu.java.bot.model.dto.AddLinkRequest;
 import edu.java.bot.model.dto.LinkResponse;
 import edu.java.bot.model.dto.ListLinksResponse;
 import edu.java.bot.model.dto.RemoveLinkRequest;
-import java.util.Optional;
 
 public interface ScrapperClient {
 
