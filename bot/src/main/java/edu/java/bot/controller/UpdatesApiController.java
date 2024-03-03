@@ -24,7 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UpdatesApiController {
     @PostMapping
     @Operation(summary = "Send update",
-               description = "Send information that the source has been updated so that the bot sends notifications to users.")
+               description = "Send information that the source has been updated so that the bot "
+                   + "sends notifications to users.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "The update has been processed"),
         @ApiResponse(responseCode = "400", description = "Invalid request parameters", content = {
