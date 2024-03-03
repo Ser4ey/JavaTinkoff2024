@@ -1,6 +1,5 @@
 package edu.java.scrapper.exception;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.http.HttpStatus;

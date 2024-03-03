@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Links", description = "Links API")
 @RestController
 @RequestMapping("/links")
+@SuppressWarnings("MagicNumber") // dev
 public class LinksController {
     @GetMapping("")
     @Operation(summary = "Get all the tracked links", description = "Get all the tracked links")
