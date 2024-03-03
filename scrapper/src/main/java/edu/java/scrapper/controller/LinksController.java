@@ -1,5 +1,8 @@
 package edu.java.scrapper.controller;
 
+import edu.java.scrapper.exception.CustomResponseException;
+import edu.java.scrapper.exception.ResponseException400;
+import edu.java.scrapper.exception.ResponseException404;
 import edu.java.scrapper.model.dto.AddLinkRequest;
 import edu.java.scrapper.model.dto.LinkResponse;
 import edu.java.scrapper.model.dto.ListLinksResponse;
@@ -14,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping("/links")
 public class LinksController {
@@ -28,7 +30,15 @@ public class LinksController {
     public ResponseEntity<LinkResponse> createLink(
         @RequestHeader("Tg-Chat-Id") Long chatId,
         @RequestBody @Valid AddLinkRequest addLinkRequest
-    ) {
+    ) throws CustomResponseException {
+        if (chatId == 1) {
+            throw new ResponseException404(
+                "The link was not found",
+                "The link has already been deleted or never existed"
+            );
+        }
+        System.out.println(addLinkRequest);
+
         LinkResponse linkResponse = new LinkResponse(1L, null);
         return new ResponseEntity<>(linkResponse, HttpStatus.OK);
     }
