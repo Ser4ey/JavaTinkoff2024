@@ -1,9 +1,8 @@
 package edu.java.bot.client;
 
-import edu.java.bot.model.dto.AddLinkRequest;
 import edu.java.bot.model.dto.LinkResponse;
 import edu.java.bot.model.dto.ListLinksResponse;
-import edu.java.bot.model.dto.RemoveLinkRequest;
+import java.net.URI;
 
 public interface ScrapperClient {
 
@@ -13,7 +12,7 @@ public interface ScrapperClient {
 
     ListLinksResponse getLinks(Long id);
 
-    LinkResponse addLink(Long id, AddLinkRequest addLinkRequest);
+    LinkResponse addLink(Long id, URI link);
 
-    LinkResponse removeLink(Long id, RemoveLinkRequest removeLinkRequest);
+    LinkResponse removeLink(Long id, URI link);
 }

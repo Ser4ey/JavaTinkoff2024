@@ -6,6 +6,7 @@ import edu.java.bot.model.dto.ApiErrorResponse;
 import edu.java.bot.model.dto.LinkResponse;
 import edu.java.bot.model.dto.ListLinksResponse;
 import edu.java.bot.model.dto.RemoveLinkRequest;
+import java.net.URI;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -64,7 +65,9 @@ public class ScrapperWebClient implements ScrapperClient {
     }
 
     @Override
-    public LinkResponse addLink(Long id, AddLinkRequest addLinkRequest) {
+    public LinkResponse addLink(Long id, URI link) {
+        AddLinkRequest addLinkRequest = new AddLinkRequest(link);
+
         return webClient.post()
             .uri(LINKS_URL)
             .header(TG_CHAT_ID_HEADER, id.toString())
@@ -78,7 +81,9 @@ public class ScrapperWebClient implements ScrapperClient {
     }
 
     @Override
-    public LinkResponse removeLink(Long id, RemoveLinkRequest removeLinkRequest) {
+    public LinkResponse removeLink(Long id, URI link) {
+        RemoveLinkRequest removeLinkRequest = new RemoveLinkRequest(link);
+
         return webClient.method(HttpMethod.DELETE)
             .uri(LINKS_URL)
             .header(TG_CHAT_ID_HEADER, id.toString())

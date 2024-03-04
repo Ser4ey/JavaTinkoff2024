@@ -10,8 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +30,8 @@ public class UpdatesApiController {
             @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
         })
     })
-    public ResponseEntity<Void> updateUrls(@RequestBody @Valid LinkUpdateRequest linkUpdateRequest) {
-        return new ResponseEntity<>(HttpStatus.OK);
+    public void updateUrls(@RequestBody @Valid LinkUpdateRequest linkUpdateRequest) {
+
     }
 }
 

@@ -18,8 +18,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import java.net.URI;
 import java.util.List;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,12 +41,12 @@ public class LinksController {
             @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
         })
     })
-    public ResponseEntity<ListLinksResponse> getAllLinks(@RequestHeader("Tg-Chat-Id") @Min(1) Long chatId) {
+    public ListLinksResponse getAllLinks(@RequestHeader("Tg-Chat-Id") @Min(1) Long chatId) {
         LinkResponse link1 = new LinkResponse(100L, URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
         LinkResponse link2 = new LinkResponse(101L, URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw3"));
         ListLinksResponse listLinksResponse = new ListLinksResponse(List.of(link1, link2), 2);
 
-        return new ResponseEntity<>(listLinksResponse, HttpStatus.OK);
+        return listLinksResponse;
     }
 
     @PostMapping
@@ -64,7 +62,7 @@ public class LinksController {
             @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
         })
     })
-    public ResponseEntity<LinkResponse> createLink(
+    public LinkResponse createLink(
         @RequestHeader("Tg-Chat-Id") @Min(1) Long chatId, @RequestBody @Valid AddLinkRequest addLinkRequest
     ) throws CustomResponseException {
         // тестовый вариант, вынесу логику в @Service
@@ -75,8 +73,7 @@ public class LinksController {
             );
         }
 
-        LinkResponse linkResponse = new LinkResponse(993L, addLinkRequest.link());
-        return new ResponseEntity<>(linkResponse, HttpStatus.OK);
+        return new LinkResponse(993L, addLinkRequest.link());
     }
 
     @DeleteMapping
@@ -92,7 +89,7 @@ public class LinksController {
             @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
         })
     })
-    public ResponseEntity<LinkResponse> deleteLink(
+    public LinkResponse deleteLink(
         @RequestHeader("Tg-Chat-Id") @Min(1) Long chatId, @RequestBody @Valid RemoveLinkRequest removeLinkRequest
     ) {
         if (chatId == 1) {
@@ -102,7 +99,6 @@ public class LinksController {
             );
         }
 
-        LinkResponse linkResponse = new LinkResponse(986L, removeLinkRequest.link());
-        return new ResponseEntity<>(linkResponse, HttpStatus.OK);
+        return new LinkResponse(986L, removeLinkRequest.link());
     }
 }

@@ -3,7 +3,6 @@ package edu.java.scrapper.controller;
 import edu.java.scrapper.exception.ResponseException404;
 import edu.java.scrapper.exception.ResponseException409;
 import edu.java.scrapper.model.dto.ApiErrorResponse;
-import edu.java.scrapper.model.dto.LinkResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -11,8 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +32,7 @@ public class TgChatController {
             @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
         })
     })
-    public ResponseEntity<Void> registerChat(@PathVariable @Min(1) Long id) {
+    public void registerChat(@PathVariable @Min(1) Long id) {
         // временное решение. Вся логика будет в @Service
         if (id == 1) {
             throw new ResponseException409(
@@ -44,7 +41,6 @@ public class TgChatController {
             );
         }
 
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -58,7 +54,7 @@ public class TgChatController {
             @Content(mediaType = "application/json", schema = @Schema(implementation = ApiErrorResponse.class))
         })
     })
-    public ResponseEntity<LinkResponse> deleteChat(@PathVariable @Min(1) Long id) {
+    public void deleteChat(@PathVariable @Min(1) Long id) {
         // временное решение. Вся логика будет в @Service
         if (id == 1) {
             throw new ResponseException404(
@@ -67,7 +63,6 @@ public class TgChatController {
             );
         }
 
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

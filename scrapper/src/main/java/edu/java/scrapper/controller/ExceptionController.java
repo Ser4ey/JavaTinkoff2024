@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -38,36 +39,34 @@ public class ExceptionController {
         MethodArgumentTypeMismatchException.class,
         HttpMessageNotReadableException.class
     })
-    public ResponseEntity<ApiErrorResponse> handleMethodArgumentNotValidException(Exception ex) {
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ApiErrorResponse handleMethodArgumentNotValidException(Exception ex) {
         List<String> stacktrace = Arrays.stream(ex.getStackTrace())
             .map(StackTraceElement::toString)
             .toList();
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body(new ApiErrorResponse(
+        return new ApiErrorResponse(
                     "Validation failed",
                     "400",
                     ex.getClass().getName(),
                     ex.getMessage(),
                     stacktrace
-                )
             );
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiErrorResponse> handleException(Exception ex) {
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    public ApiErrorResponse handleException(Exception ex) {
         List<String> stacktrace = Arrays.stream(ex.getStackTrace())
             .map(StackTraceElement::toString)
             .toList();
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(new ApiErrorResponse(
+        return new ApiErrorResponse(
                     "Unhandled server error",
                     "500",
                     ex.getClass().getName(),
                     ex.getMessage(),
                     stacktrace
-                )
             );
     }
 }
