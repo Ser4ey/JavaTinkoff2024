@@ -1,6 +1,6 @@
 package edu.java.scrapper.client;
 
-import edu.java.scrapper.response_dto.GitHubOwnerRepoResponse;
+import edu.java.scrapper.model.dto.GitHubOwnerRepoResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;

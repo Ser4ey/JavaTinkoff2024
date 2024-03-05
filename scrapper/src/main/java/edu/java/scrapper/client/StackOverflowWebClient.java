@@ -1,6 +1,6 @@
 package edu.java.scrapper.client;
 
-import edu.java.scrapper.response_dto.StackOverflowQuestionsResponse;
+import edu.java.scrapper.model.dto.StackOverflowQuestionsResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;

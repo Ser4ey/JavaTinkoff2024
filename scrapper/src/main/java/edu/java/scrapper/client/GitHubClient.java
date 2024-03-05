@@ -1,6 +1,6 @@
 package edu.java.scrapper.client;
 
-import edu.java.scrapper.response_dto.GitHubOwnerRepoResponse;
+import edu.java.scrapper.model.dto.GitHubOwnerRepoResponse;
 
 
 public interface GitHubClient {
