@@ -32,8 +32,8 @@ public class ContainerTest {
 
     @Test
     public void testContainer_INSERT_and_SELECT() {
-        jdbcTemplate.update("INSERT INTO chat (id, chat_id) VALUES (?, ?)", 1, 409524113L);
-        Long chatId = jdbcTemplate.queryForObject("SELECT chat_id FROM chat WHERE id = (?)", Long.class, 1);
+        jdbcTemplate.update("INSERT INTO chat (unique_chat_id) VALUES (?)", 409524113L);
+        Long chatId = jdbcTemplate.queryForObject("SELECT unique_chat_id FROM chat WHERE id = (?)", Long.class, 1);
 
         Assertions.assertThat(409524113L).isEqualTo(chatId);
     }
