@@ -1,5 +1,6 @@
 package edu.java.scrapper.repository.jdbc;
 
+import edu.java.scrapper.IntegrationTest;
 import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.repository.ChatRepository;
 import org.junit.jupiter.api.Test;
@@ -13,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-class JdbcChatDAOTest {
+class JdbcChatDAOTest extends IntegrationTest {
     @Autowired
     private ChatRepository chatRepository;
 
@@ -32,7 +33,7 @@ class JdbcChatDAOTest {
     @Test
     @Transactional
     @Rollback
-    void findByUniqueChatId() {
+    void testFindByUniqueChatId() {
         chatRepository.add(777L);
 
         Optional<Chat> chat_exist = chatRepository.findByUniqueChatId(777L);
@@ -44,9 +45,10 @@ class JdbcChatDAOTest {
         assertEquals(chat_exist.get().uniqueChatId(), 777L);
     }
 
-
     @Test
-    void remove() {
+    @Transactional
+    @Rollback
+    void testRemove() {
         chatRepository.add(777L);
         Optional<Chat> chat = chatRepository.findByUniqueChatId(777L);
         assertFalse(chat.isEmpty());

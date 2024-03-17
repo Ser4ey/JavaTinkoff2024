@@ -35,20 +35,15 @@ public class JdbcLinkDAO implements LinkRepository {
 
     @Override
     public List<Link> findAll() {
-        var l = jdbcTemplate.query("SELECT * FROM link", linkRowMapper);
-        var c_l = jdbcTemplate.query("SELECT * FROM chat_link", chatLinkRowMapper);
-        System.out.println(l);
-        System.out.println(c_l);
-
         return jdbcTemplate.query("SELECT * FROM link", linkRowMapper);
     }
 
     @Override
     public List<Link> findAll(Integer chatId) {
         return jdbcTemplate.query(
-            "SELECT DISTINCT id, url, last_update " +
-                "FROM link JOIN chat_link ON link.id = chat_link.link_id " +
-                "WHERE chat_id = ?",
+            "SELECT DISTINCT id, url, last_update "
+                + "FROM link JOIN chat_link ON link.id = chat_link.link_id "
+                + "WHERE chat_id = ?",
             linkRowMapper,
             chatId);
     }

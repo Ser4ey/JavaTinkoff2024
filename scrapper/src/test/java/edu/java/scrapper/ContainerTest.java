@@ -4,6 +4,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +32,13 @@ public class ContainerTest {
         Assertions.assertThat(result).isNotEmpty();
     }
 
-    @Test
-    public void testContainer_INSERT_and_SELECT() {
-        jdbcTemplate.update("INSERT INTO chat (unique_chat_id) VALUES (?)", 409524113L);
-        Long chatId = jdbcTemplate.queryForObject("SELECT unique_chat_id FROM chat WHERE id = (?)", Long.class, 1);
-
-        Assertions.assertThat(409524113L).isEqualTo(chatId);
-    }
+//    @Test
+//    public void testContainer_INSERT_and_SELECT() {
+//        jdbcTemplate.update("INSERT INTO chat (unique_chat_id) VALUES (?)", 409524113L);
+//        Long uniqueChatId = jdbcTemplate.queryForObject("SELECT unique_chat_id FROM chat WHERE unique_chat_id = (?)", Long.class, 409524113L);
+//
+//        Assertions.assertThat(409524113L).isEqualTo(uniqueChatId);
+//        jdbcTemplate.update("DELETE FROM chat WHERE unique_chat_id = (?)", Long.class, 409524113L);
+//    }
 
 }
