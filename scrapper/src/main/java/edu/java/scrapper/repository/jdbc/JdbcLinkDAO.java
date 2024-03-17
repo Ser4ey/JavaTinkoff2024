@@ -85,4 +85,11 @@ public class JdbcLinkDAO implements LinkRepository {
             id);
     }
 
+    @Override
+    public void remove(Integer chatId, Integer linkId) {
+        jdbcTemplate.update(
+            "DELETE FROM chat_link WHERE chat_id = ? AND link_id = ?",
+            chatId, linkId);
+    }
+
 }

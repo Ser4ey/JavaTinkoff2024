@@ -15,4 +15,6 @@ public interface LinkRepository {
     void add(Integer chatId, URI url);
 
     void remove(Integer id);
+
+    void remove(Integer chatId, Integer linkId);
 }
