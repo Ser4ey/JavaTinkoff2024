@@ -9,7 +9,7 @@ public interface ChatRepository {
 
     Optional<Chat> findByUniqueChatId(Long uniqueChatId);
 
-    Chat add(Long uniqueChatId);
+    void add(Long uniqueChatId);
 
     void remove(Integer id);
 }
