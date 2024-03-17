@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Log4j2
+@Service
 public class JdbcLinkService implements LinkService {
     private final ChatRepository chatRepository;
     private final LinkRepository linkRepository;
@@ -33,6 +35,7 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
+    @SuppressWarnings("ReturnCount")
     public void remove(long chatId, URI url) {
         var chat = chatRepository.findByUniqueChatId(chatId);
         if (chat.isEmpty()) {

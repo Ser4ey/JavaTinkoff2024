@@ -7,6 +7,8 @@ import java.util.Optional;
 
 public interface LinkService {
     Optional<Link> add(long chatId, URI url);
+
     void remove(long chatId, URI url);
+
     List<Link> listAll(long chatId);
 }
