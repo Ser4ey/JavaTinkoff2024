@@ -59,7 +59,25 @@ class JdbcLinkDAOTest extends IntegrationTest {
 
         assertEquals(links1.getFirst().url().toString(), "https://github.com/Ser4ey/JavaTinkoff2024/tree/hw4");
         assertEquals(links2.getFirst().url().toString(), "https://github.com/Ser4ey/JavaTinkoff2024/tree/hw5");
+    }
 
+    @Test
+    @Transactional
+    @Rollback
+    void testAddToManyChat() {
+        Long chatId1 = 420L;
+        chatRepository.add(chatId1);
+
+        Long chatId2 = 3552L;
+        chatRepository.add(chatId2);
+
+        var uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024");
+        linkRepository.add(chatId1, uri);
+
+        assertEquals(linkRepository.findAll().size(), 1);
+        linkRepository.add(chatId2, uri);
+
+        assertEquals(linkRepository.findAll().size(), 1);
     }
 
     @Test
@@ -109,9 +127,38 @@ class JdbcLinkDAOTest extends IntegrationTest {
         Integer linkId = links.getFirst().id();
 
         linkRepository.removeLinkRelation(chatId, linkId);
-        links = linkRepository.findAll(chatId);
-        assertTrue(links.isEmpty());
+        assertTrue(linkRepository.findAll().isEmpty());
+        assertTrue(linkRepository.findAll(chatId).isEmpty());
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    void testRemoveLinkRelation2() {
+        Long chatId1 = 420L;
+        Long chatId2 = 7532L;
+        chatRepository.add(chatId1);
+        chatRepository.add(chatId2);
+
+        var uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024");
+        linkRepository.add(chatId1, uri);
+        linkRepository.add(chatId2, uri);
+
+        var link = linkRepository.findByUrl(uri);
+        assertFalse(link.isEmpty());
+
+        linkRepository.removeLinkRelation(chatId1, link.get().id());
+        link = linkRepository.findByUrl(uri);
+        assertFalse(link.isEmpty());
+        assertFalse(linkRepository.findAll().isEmpty());
+
+
+        linkRepository.removeLinkRelation(chatId2, link.get().id());
+        link = linkRepository.findByUrl(uri);
+        assertTrue(link.isEmpty());
+        assertTrue(linkRepository.findAll().isEmpty());
+    }
+
 
 }
 

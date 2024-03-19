@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
+@SuppressWarnings("MultipleStringLiterals")
 public class JdbcLinkDAO implements LinkRepository {
     private final JdbcTemplate jdbcTemplate;
 
@@ -35,6 +36,10 @@ public class JdbcLinkDAO implements LinkRepository {
 
     @Override
     public List<Link> findAll() {
+        var chatLinkRelations = jdbcTemplate.query(
+            "SELECT * FROM chat_link",
+            chatLinkRowMapper);
+
         return jdbcTemplate.query("SELECT * FROM link", linkRowMapper);
     }
 
@@ -66,11 +71,16 @@ public class JdbcLinkDAO implements LinkRepository {
     @Override
     @Transactional
     public void add(Long chatId, URI url) {
-        jdbcTemplate.update(
+        var link = findByUrl(url);
+        if (link.isEmpty()) {
+            jdbcTemplate.update(
             "INSERT INTO link (url) VALUES (?)",
-            url.toString());
+                url.toString());
 
-        var linkId = findByUrl(url).get().id();
+            link = findByUrl(url);
+        }
+
+        Integer linkId = link.get().id();
 
         jdbcTemplate.update(
             "INSERT INTO chat_link (chat_id, link_id) VALUES (?, ?)",
@@ -78,6 +88,7 @@ public class JdbcLinkDAO implements LinkRepository {
     }
 
     @Override
+    @Transactional
     public void remove(Integer id) {
         jdbcTemplate.update(
             "DELETE FROM link WHERE id = ?",
@@ -85,10 +96,20 @@ public class JdbcLinkDAO implements LinkRepository {
     }
 
     @Override
+    @Transactional
     public void removeLinkRelation(Long chatId, Integer linkId) {
         jdbcTemplate.update(
             "DELETE FROM chat_link WHERE chat_id = ? AND link_id = ?",
             chatId, linkId);
+
+        var chatLinkRelations = jdbcTemplate.query(
+            "SELECT * FROM chat_link WHERE link_id = ?",
+            chatLinkRowMapper,
+            linkId);
+
+        if (chatLinkRelations.isEmpty()) {
+            remove(linkId);
+        }
     }
 
 }

@@ -25,6 +25,16 @@ public class JdbcChatDAO implements ChatRepository {
     }
 
     @Override
+    public List<Chat> findAll(Integer linkId) {
+        return jdbcTemplate.query(
+            "SELECT DISTINCT chat.chat_id FROM chat "
+                + "JOIN chat_link ON chat.chat_id = chat_link.chat_id "
+                + "WHERE link_id = ?",
+            chatRowMapper,
+            linkId);
+    }
+
+    @Override
     @Transactional
     public boolean isChatExist(Long chatId) {
         var chats = jdbcTemplate.query(
@@ -32,7 +42,6 @@ public class JdbcChatDAO implements ChatRepository {
 
         return !chats.isEmpty();
     }
-
 
     @Override
     @Transactional
