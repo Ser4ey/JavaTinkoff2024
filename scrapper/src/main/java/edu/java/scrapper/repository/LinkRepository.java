@@ -8,13 +8,13 @@ import java.util.Optional;
 public interface LinkRepository {
     List<Link> findAll();
 
-    List<Link> findAll(Integer chatId);
+    List<Link> findAll(Long chatId);
 
     Optional<Link> findByUrl(URI url);
 
-    void add(Integer chatId, URI url);
+    void add(Long chatId, URI url);
 
     void remove(Integer id);
 
-    void remove(Integer chatId, Integer linkId);
+    void removeLinkRelation(Long chatId, Integer linkId); // удаление из таблицы chat_link
 }

@@ -7,9 +7,9 @@ import java.util.Optional;
 public interface ChatRepository {
     List<Chat> findAll();
 
-    Optional<Chat> findByUniqueChatId(Long uniqueChatId);
+    boolean isChatExist(Long uniqueChatId);
 
-    void add(Long uniqueChatId);
+    void add(Long chatId);
 
-    void remove(Integer id);
+    void remove(Long chatId);
 }

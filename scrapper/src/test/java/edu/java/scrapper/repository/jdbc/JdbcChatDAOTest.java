@@ -1,14 +1,12 @@
 package edu.java.scrapper.repository.jdbc;
 
 import edu.java.scrapper.IntegrationTest;
-import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.repository.ChatRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,26 +21,25 @@ class JdbcChatDAOTest extends IntegrationTest {
     @Rollback
     void testAdd_FindAll() {
         chatRepository.add(409233092L);
-        chatRepository.add(1L);
+        chatRepository.add(18L);
 
         var chats = chatRepository.findAll();
         System.out.println(chats);
         assertEquals(chats.size(), 2);
+        assertEquals(chats.getFirst().chatId(), 409233092L);
+        assertEquals(chats.getLast().chatId(), 18L);
     }
 
     @Test
     @Transactional
     @Rollback
-    void testFindByUniqueChatId() {
+    void testIsChatExist() {
         chatRepository.add(777L);
 
-        Optional<Chat> chat_exist = chatRepository.findByUniqueChatId(777L);
-        Optional<Chat> chat_not_exist = chatRepository.findByUniqueChatId(123L);
+        assertTrue(chatRepository.isChatExist(777L));
 
-        assertFalse(chat_exist.isEmpty());
-        assertTrue(chat_not_exist.isEmpty());
+        assertFalse(chatRepository.isChatExist(123L));
 
-        assertEquals(chat_exist.get().uniqueChatId(), 777L);
     }
 
     @Test
@@ -50,12 +47,12 @@ class JdbcChatDAOTest extends IntegrationTest {
     @Rollback
     void testRemove() {
         chatRepository.add(777L);
-        Optional<Chat> chat = chatRepository.findByUniqueChatId(777L);
-        assertFalse(chat.isEmpty());
+        assertTrue(chatRepository.isChatExist(777L));
 
-        chatRepository.remove(chat.get().id());
+        chatRepository.remove(777L);
 
-        chat = chatRepository.findByUniqueChatId(777L);
-        assertTrue(chat.isEmpty());
+        assertFalse(chatRepository.isChatExist(777L));
+
+        assertTrue(chatRepository.findAll().isEmpty());
     }
 }

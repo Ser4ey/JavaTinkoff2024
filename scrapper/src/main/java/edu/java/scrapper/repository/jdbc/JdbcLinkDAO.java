@@ -20,7 +20,7 @@ public class JdbcLinkDAO implements LinkRepository {
 
     private final RowMapper<Chat> chatRowMapper =
         (resultSet, rowNum) ->
-            new Chat(resultSet.getInt("id"), resultSet.getLong("unique_chat_id"));
+            new Chat(resultSet.getLong("chat_id"));
 
     private final RowMapper<Link> linkRowMapper =
         (resultSet, rowNum) ->
@@ -39,7 +39,7 @@ public class JdbcLinkDAO implements LinkRepository {
     }
 
     @Override
-    public List<Link> findAll(Integer chatId) {
+    public List<Link> findAll(Long chatId) {
         return jdbcTemplate.query(
             "SELECT DISTINCT id, url, last_update "
                 + "FROM link JOIN chat_link ON link.id = chat_link.link_id "
@@ -63,10 +63,9 @@ public class JdbcLinkDAO implements LinkRepository {
         return Optional.of(links.getFirst());
     }
 
-
     @Override
     @Transactional
-    public void add(Integer chatId, URI url) {
+    public void add(Long chatId, URI url) {
         jdbcTemplate.update(
             "INSERT INTO link (url) VALUES (?)",
             url.toString());
@@ -86,7 +85,7 @@ public class JdbcLinkDAO implements LinkRepository {
     }
 
     @Override
-    public void remove(Integer chatId, Integer linkId) {
+    public void removeLinkRelation(Long chatId, Integer linkId) {
         jdbcTemplate.update(
             "DELETE FROM chat_link WHERE chat_id = ? AND link_id = ?",
             chatId, linkId);

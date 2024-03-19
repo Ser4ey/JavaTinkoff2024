@@ -3,7 +3,6 @@ package edu.java.scrapper.repository.jdbc;
 import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.repository.ChatRepository;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -17,42 +16,37 @@ public class JdbcChatDAO implements ChatRepository {
 
     private final RowMapper<Chat> chatRowMapper =
         (resultSet, rowNum) ->
-            new Chat(resultSet.getInt("id"), resultSet.getLong("unique_chat_id"));
+            new Chat(resultSet.getLong("chat_id"));
 
     @Override
     @Transactional
     public List<Chat> findAll() {
-        return jdbcTemplate.query("SELECT id, unique_chat_id FROM chat", chatRowMapper);
+        return jdbcTemplate.query("SELECT chat_id FROM chat", chatRowMapper);
     }
 
     @Override
     @Transactional
-    public Optional<Chat> findByUniqueChatId(Long uniqueChatId) {
+    public boolean isChatExist(Long chatId) {
         var chats = jdbcTemplate.query(
-            "SELECT * FROM chat WHERE unique_chat_id = ?",
-            chatRowMapper,
-            uniqueChatId);
+            "SELECT * FROM chat WHERE chat_id = ?", chatRowMapper, chatId);
 
-        if (chats.isEmpty()) {
-            return Optional.empty();
-        }
+        return !chats.isEmpty();
+    }
 
-        return Optional.of(chats.getFirst());
+
+    @Override
+    @Transactional
+    public void add(Long chatId) {
+        jdbcTemplate.update(
+            "INSERT INTO chat (chat_id) VALUES (?)",
+            chatId);
     }
 
     @Override
     @Transactional
-    public void add(Long uniqueChatId) {
+    public void remove(Long chatId) {
         jdbcTemplate.update(
-            "INSERT INTO chat (unique_chat_id) VALUES (?)",
-            uniqueChatId);
-    }
-
-    @Override
-    public void remove(Integer id) {
-        jdbcTemplate.update(
-            "DELETE FROM chat WHERE id = ?",
-            id);
+            "DELETE FROM chat WHERE chat_id = ?", chatId);
     }
 
 }
