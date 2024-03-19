@@ -83,16 +83,58 @@ class JdbcLinkDAOTest extends IntegrationTest {
     @Test
     @Transactional
     @Rollback
+    void testFindById() {
+        Long chatId = 420L;
+        chatRepository.add(chatId);
+
+        var uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024");
+
+        linkRepository.add(chatId, uri);
+
+        var link_id = linkRepository.findByUrl(uri).get().id();
+
+        var link = linkRepository.findById(link_id);
+
+        assertFalse(link.isEmpty());
+        assertEquals(link.get().url(), uri);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
     void testFindByUrl() {
         Long chatId = 420L;
         chatRepository.add(chatId);
 
-        linkRepository.add(chatId, URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
+        var uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024");
 
-        var link = linkRepository.findByUrl(URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
+        linkRepository.add(chatId, uri);
+
+        var link = linkRepository.findByUrl(uri);
 
         assertFalse(link.isEmpty());
-        assertEquals(link.get().url(), URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
+        assertEquals(link.get().url(), uri);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void testFindByChatIdAndLinkId() {
+        Long chatId = 420L;
+        chatRepository.add(chatId);
+
+        var uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024");
+
+        linkRepository.add(chatId, uri);
+
+        var link_id = linkRepository.findByUrl(uri).get().id();
+
+        var link = linkRepository.findByChatIdAndLinkId(chatId, link_id);
+        assertFalse(link.isEmpty());
+        assertEquals(link.get().url(), uri);
+
+        assertTrue(linkRepository.findByChatIdAndLinkId(-1L, link_id).isEmpty());
+        assertTrue(linkRepository.findByChatIdAndLinkId(111L, link_id).isEmpty());
     }
 
     @Test

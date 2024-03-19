@@ -36,10 +36,6 @@ public class JdbcLinkDAO implements LinkRepository {
 
     @Override
     public List<Link> findAll() {
-        var chatLinkRelations = jdbcTemplate.query(
-            "SELECT * FROM chat_link",
-            chatLinkRowMapper);
-
         return jdbcTemplate.query("SELECT * FROM link", linkRowMapper);
     }
 
@@ -51,6 +47,21 @@ public class JdbcLinkDAO implements LinkRepository {
                 + "WHERE chat_id = ?",
             linkRowMapper,
             chatId);
+    }
+
+    @Override
+    @Transactional
+    public Optional<Link> findById(Integer chatId) {
+        var links = jdbcTemplate.query(
+            "SELECT * FROM link WHERE id = ?",
+            linkRowMapper,
+            chatId);
+
+        if (links.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(links.getFirst());
     }
 
     @Override
@@ -70,7 +81,21 @@ public class JdbcLinkDAO implements LinkRepository {
 
     @Override
     @Transactional
-    public void add(Long chatId, URI url) {
+    public Optional<Link> findByChatIdAndLinkId(Long chatId, Integer linkId) {
+        var chatLink = jdbcTemplate.query(
+            "SELECT * FROM chat_link WHERE chat_link.chat_id = ? AND chat_link.link_id = ?",
+            chatLinkRowMapper,
+            chatId, linkId);
+
+        if (chatLink.isEmpty()) {
+            return Optional.empty();
+        }
+        return findById(linkId);
+    }
+
+    @Override
+    @Transactional
+    public Link add(Long chatId, URI url) {
         var link = findByUrl(url);
         if (link.isEmpty()) {
             jdbcTemplate.update(
@@ -85,6 +110,8 @@ public class JdbcLinkDAO implements LinkRepository {
         jdbcTemplate.update(
             "INSERT INTO chat_link (chat_id, link_id) VALUES (?, ?)",
             chatId, linkId);
+
+        return link.get();
     }
 
     @Override
@@ -113,3 +140,4 @@ public class JdbcLinkDAO implements LinkRepository {
     }
 
 }
+

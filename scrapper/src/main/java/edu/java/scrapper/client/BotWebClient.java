@@ -1,6 +1,6 @@
 package edu.java.scrapper.client;
 
-import edu.java.scrapper.exception.CustomRequestException;
+import edu.java.scrapper.exception.request_response_exceptions.CustomRequestException;
 import edu.java.scrapper.model.dto.ApiErrorResponse;
 import edu.java.scrapper.model.dto.LinkUpdateRequest;
 import lombok.extern.log4j.Log4j2;

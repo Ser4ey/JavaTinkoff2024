@@ -1,4 +1,4 @@
-package edu.java.scrapper.exception;
+package edu.java.scrapper.exception.request_response_exceptions;
 
 import org.springframework.http.HttpStatus;
 

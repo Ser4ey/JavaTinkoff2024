@@ -1,16 +1,16 @@
 package edu.java.scrapper.service.jdbc;
 
+import edu.java.scrapper.exception.service_exceptions.LinkAlreadyTracking;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.repository.ChatRepository;
 import edu.java.scrapper.repository.LinkRepository;
 import edu.java.scrapper.service.LinkService;
 import java.net.URI;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Log4j2
@@ -19,26 +19,30 @@ public class JdbcLinkService implements LinkService {
     private final ChatRepository chatRepository;
     private final LinkRepository linkRepository;
 
-    private static final String NO_CHAT_LOG = "Чата с {} не существует";
     private static final String NO_LINK_LOG = "Ссылки {} не существует";
 
     @Override
-    public Optional<Link> add(long chatId, URI url) {
+    @Transactional
+    public Link add(long chatId, URI url) throws LinkAlreadyTracking {
         if (!chatRepository.isChatExist(chatId)) {
-            log.info(NO_CHAT_LOG, chatId);
-            return Optional.empty();
+            chatRepository.add(chatId);
         }
 
-        linkRepository.add(chatId, url);
-        return linkRepository.findByUrl(url);
+        var link = linkRepository.findByUrl(url);
+        if (link.isPresent()) {
+            if (linkRepository.findByChatIdAndLinkId(chatId, link.get().id()).isPresent()) {
+                throw new LinkAlreadyTracking();
+            }
+        }
+
+        return linkRepository.add(chatId, url);
     }
 
     @Override
     @SuppressWarnings("ReturnCount")
     public void remove(long chatId, URI url) {
         if (!chatRepository.isChatExist(chatId)) {
-            log.info(NO_CHAT_LOG, chatId);
-            return;
+            chatRepository.add(chatId);
         }
 
         var link = linkRepository.findByUrl(url);
@@ -53,8 +57,7 @@ public class JdbcLinkService implements LinkService {
     @Override
     public List<Link> listAll(long chatId) {
         if (!chatRepository.isChatExist(chatId)) {
-            log.info(NO_CHAT_LOG, chatId);
-            return Collections.emptyList();
+            chatRepository.add(chatId);
         }
 
         return linkRepository.findAll(chatId);

@@ -1,6 +1,6 @@
 package edu.java.scrapper.controller;
 
-import edu.java.scrapper.exception.CustomResponseException;
+import edu.java.scrapper.exception.request_response_exceptions.CustomResponseException;
 import edu.java.scrapper.model.dto.ApiErrorResponse;
 import java.util.Arrays;
 import java.util.List;

@@ -10,9 +10,13 @@ public interface LinkRepository {
 
     List<Link> findAll(Long chatId);
 
+    Optional<Link> findById(Integer chatId);
+
     Optional<Link> findByUrl(URI url);
 
-    void add(Long chatId, URI url);
+    Optional<Link> findByChatIdAndLinkId(Long chatId, Integer linkId);
+
+    Link add(Long chatId, URI url);
 
     void remove(Integer id);
 

@@ -1,7 +1,7 @@
 package edu.java.scrapper.controller;
 
-import edu.java.scrapper.exception.ResponseException404;
-import edu.java.scrapper.exception.ResponseException409;
+import edu.java.scrapper.exception.request_response_exceptions.ResponseException404;
+import edu.java.scrapper.exception.request_response_exceptions.ResponseException409;
 import edu.java.scrapper.model.dto.ApiErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
