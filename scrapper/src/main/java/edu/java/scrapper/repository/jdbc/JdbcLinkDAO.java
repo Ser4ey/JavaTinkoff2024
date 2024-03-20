@@ -4,6 +4,7 @@ import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.repository.LinkRepository;
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
@@ -112,6 +113,12 @@ public class JdbcLinkDAO implements LinkRepository {
             chatId, linkId);
 
         return link.get();
+    }
+
+    @Override
+    public void update(Integer id, OffsetDateTime lastCheckTime) {
+        String sql = "UPDATE link SET last_update = ? WHERE id = ?";
+        jdbcTemplate.update(sql, lastCheckTime, id);
     }
 
     @Override

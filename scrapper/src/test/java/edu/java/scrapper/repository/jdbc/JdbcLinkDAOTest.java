@@ -4,6 +4,8 @@ import edu.java.scrapper.IntegrationTest;
 import edu.java.scrapper.repository.ChatRepository;
 import edu.java.scrapper.repository.LinkRepository;
 import java.net.URI;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -136,6 +138,26 @@ class JdbcLinkDAOTest extends IntegrationTest {
         assertTrue(linkRepository.findByChatIdAndLinkId(-1L, link_id).isEmpty());
         assertTrue(linkRepository.findByChatIdAndLinkId(111L, link_id).isEmpty());
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    void testUpdate() {
+        Long chatId = 420L;
+        chatRepository.add(chatId);
+
+        var uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024");
+        linkRepository.add(chatId, uri);
+
+        var link = linkRepository.findByUrl(uri);
+
+        OffsetDateTime dateTime = OffsetDateTime.of(2000, 2, 20, 0, 0, 0, 0, ZoneOffset.UTC);
+        linkRepository.update(link.get().id(), dateTime);
+
+        link = linkRepository.findByUrl(uri);
+        assertEquals(link.get().lastCheckTime(), dateTime);
+    }
+
 
     @Test
     @Transactional
