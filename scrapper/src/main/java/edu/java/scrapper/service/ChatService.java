@@ -1,7 +1,10 @@
 package edu.java.scrapper.service;
 
-public interface ChatService {
-    void register(long chatId);
+import edu.java.scrapper.exception.service_exceptions.ChatAlreadyRegistered;
+import edu.java.scrapper.exception.service_exceptions.ChatNotFound;
 
-    void unregister(long chatId);
+public interface ChatService {
+    void register(long chatId) throws ChatAlreadyRegistered;
+
+    void unregister(long chatId) throws ChatNotFound;
 }

@@ -2,7 +2,10 @@ package edu.java.scrapper.controller;
 
 import edu.java.scrapper.exception.request_response_exceptions.ResponseException404;
 import edu.java.scrapper.exception.request_response_exceptions.ResponseException409;
+import edu.java.scrapper.exception.service_exceptions.ChatAlreadyRegistered;
+import edu.java.scrapper.exception.service_exceptions.ChatNotFound;
 import edu.java.scrapper.model.dto.ApiErrorResponse;
+import edu.java.scrapper.service.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Telegram Chat", description = "Telegram Chat API")
 @RestController
 @RequestMapping("/tg-chat")
+@RequiredArgsConstructor
 public class TgChatController {
+    private final ChatService chatService;
 
     @PostMapping("/{id}")
     @Operation(summary = "Register a chat", description = "Register a new chat with a user")
@@ -33,14 +39,14 @@ public class TgChatController {
         })
     })
     public void registerChat(@PathVariable @Min(1) Long id) {
-        // временное решение. Вся логика будет в @Service
-        if (id == 1) {
+        try {
+            chatService.register(id);
+        } catch (ChatAlreadyRegistered e) {
             throw new ResponseException409(
                 "The chat is already registered",
                 "You cannot register a chat 2 times in a row"
             );
         }
-
     }
 
     @DeleteMapping("/{id}")
@@ -55,14 +61,14 @@ public class TgChatController {
         })
     })
     public void deleteChat(@PathVariable @Min(1) Long id) {
-        // временное решение. Вся логика будет в @Service
-        if (id == 1) {
+        try {
+            chatService.unregister(id);
+        } catch (ChatNotFound e) {
             throw new ResponseException404(
                 "The chat was not found",
                 "You can't delete something that doesn't exist"
             );
         }
-
     }
 
 }

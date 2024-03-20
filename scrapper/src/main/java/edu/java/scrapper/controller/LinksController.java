@@ -3,8 +3,8 @@ package edu.java.scrapper.controller;
 import edu.java.scrapper.exception.request_response_exceptions.CustomResponseException;
 import edu.java.scrapper.exception.request_response_exceptions.ResponseException404;
 import edu.java.scrapper.exception.request_response_exceptions.ResponseException409;
-import edu.java.scrapper.exception.service_exceptions.LinkAlreadyNotTracking;
 import edu.java.scrapper.exception.service_exceptions.LinkAlreadyTracking;
+import edu.java.scrapper.exception.service_exceptions.LinkNotFound;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.model.dto.AddLinkRequest;
 import edu.java.scrapper.model.dto.ApiErrorResponse;
@@ -116,7 +116,7 @@ public class LinksController {
             linkService.remove(chatId, removeLinkRequest.link());
 
             return new LinkResponse(0L, removeLinkRequest.link());
-        } catch (LinkAlreadyNotTracking e) {
+        } catch (LinkNotFound e) {
             throw new ResponseException404(
                 "The link is not tracked. You can't delete something that doesn't exist.",
                 "You can't delete something that doesn't exist"

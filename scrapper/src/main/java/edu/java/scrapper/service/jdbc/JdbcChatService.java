@@ -1,5 +1,7 @@
 package edu.java.scrapper.service.jdbc;
 
+import edu.java.scrapper.exception.service_exceptions.ChatAlreadyRegistered;
+import edu.java.scrapper.exception.service_exceptions.ChatNotFound;
 import edu.java.scrapper.repository.ChatRepository;
 import edu.java.scrapper.service.ChatService;
 import lombok.RequiredArgsConstructor;
@@ -13,16 +15,20 @@ public class JdbcChatService implements ChatService {
     private final ChatRepository chatRepository;
 
     @Override
-    public void register(long chatId) {
+    public void register(long chatId) throws ChatAlreadyRegistered {
         try {
             chatRepository.add(chatId);
         } catch (Exception e) {
-            log.info("Чат с {} уже существует", chatId, e);
+            throw new ChatAlreadyRegistered();
         }
     }
 
     @Override
-    public void unregister(long chatId) {
+    public void unregister(long chatId) throws ChatNotFound {
+        if (!chatRepository.isChatExist(chatId)) {
+            throw new ChatNotFound();
+        }
+
         chatRepository.remove(chatId);
     }
 }
