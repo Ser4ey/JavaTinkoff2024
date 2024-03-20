@@ -1,5 +1,6 @@
 package edu.java.scrapper.service.jdbc;
 
+import edu.java.scrapper.exception.service_exceptions.LinkAlreadyNotTracking;
 import edu.java.scrapper.exception.service_exceptions.LinkAlreadyTracking;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.repository.ChatRepository;
@@ -19,8 +20,6 @@ public class JdbcLinkService implements LinkService {
     private final ChatRepository chatRepository;
     private final LinkRepository linkRepository;
 
-    private static final String NO_LINK_LOG = "Ссылки {} не существует";
-
     @Override
     @Transactional
     public Link add(long chatId, URI url) throws LinkAlreadyTracking {
@@ -39,16 +38,21 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
+    @Transactional
     @SuppressWarnings("ReturnCount")
-    public void remove(long chatId, URI url) {
+    public void remove(long chatId, URI url) throws LinkAlreadyNotTracking {
         if (!chatRepository.isChatExist(chatId)) {
             chatRepository.add(chatId);
         }
 
         var link = linkRepository.findByUrl(url);
+
         if (link.isEmpty()) {
-            log.info(NO_LINK_LOG, url);
-            return;
+            throw new LinkAlreadyNotTracking();
+        }
+
+        if (linkRepository.findByChatIdAndLinkId(chatId, link.get().id()).isEmpty()) {
+            throw new LinkAlreadyNotTracking();
         }
 
         linkRepository.removeLinkRelation(chatId, link.get().id());
