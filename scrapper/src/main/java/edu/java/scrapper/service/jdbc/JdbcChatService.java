@@ -2,8 +2,10 @@ package edu.java.scrapper.service.jdbc;
 
 import edu.java.scrapper.exception.service_exceptions.ChatAlreadyRegistered;
 import edu.java.scrapper.exception.service_exceptions.ChatNotFound;
+import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.repository.ChatRepository;
 import edu.java.scrapper.service.ChatService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -30,5 +32,15 @@ public class JdbcChatService implements ChatService {
         }
 
         chatRepository.remove(chatId);
+    }
+
+    @Override
+    public List<Chat> findAll() {
+        return chatRepository.findAll();
+    }
+
+    @Override
+    public List<Chat> findAll(Integer linkId) {
+        return chatRepository.findAll(linkId);
     }
 }

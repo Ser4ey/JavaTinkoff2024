@@ -19,9 +19,7 @@ public class LinkUpdaterScheduler {
     @Scheduled(fixedRateString = "#{@scheduler.interval().toMillis()}")
     public void update() {
         log.info("Обновляем ссылки");
-//        var links = linkUpdater.update();
-//        for (Link link : links) {
-//            log.info("no links yet");
-//        }
+        int numberOfUpdatedLinks = linkUpdater.update();
+        log.info("Обновлено ссылок: {}", numberOfUpdatedLinks);
     }
 }

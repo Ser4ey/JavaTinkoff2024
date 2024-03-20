@@ -1,8 +1,8 @@
 app:
   scheduler:
     enable: true
-    interval: 120s
-    force-check-delay: 120s
+    interval: 10s
+    force-check-delay: 10s
 
 spring:
   application:
