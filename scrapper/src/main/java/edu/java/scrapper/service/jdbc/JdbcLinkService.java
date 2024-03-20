@@ -7,6 +7,7 @@ import edu.java.scrapper.repository.ChatRepository;
 import edu.java.scrapper.repository.LinkRepository;
 import edu.java.scrapper.service.LinkService;
 import java.net.URI;
+import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -38,6 +39,11 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
+    public void update(Integer id, OffsetDateTime lastCheckTime) {
+        linkRepository.update(id, lastCheckTime);
+    }
+
+    @Override
     @Transactional
     @SuppressWarnings("ReturnCount")
     public void remove(long chatId, URI url) throws LinkNotFound {
@@ -66,4 +72,10 @@ public class JdbcLinkService implements LinkService {
 
         return linkRepository.findAll(chatId);
     }
+
+    @Override
+    public List<Link> listAll() {
+        return linkRepository.findAll();
+    }
 }
+

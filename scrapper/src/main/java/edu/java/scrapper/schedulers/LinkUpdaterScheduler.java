@@ -1,6 +1,5 @@
 package edu.java.scrapper.schedulers;
 
-import edu.java.scrapper.model.Link;
 import edu.java.scrapper.service.LinkUpdater;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -20,9 +19,9 @@ public class LinkUpdaterScheduler {
     @Scheduled(fixedRateString = "#{@scheduler.interval().toMillis()}")
     public void update() {
         log.info("Обновляем ссылки");
-        var links = linkUpdater.update();
-        for (Link link : links) {
-            log.info("no links yet");
-        }
+//        var links = linkUpdater.update();
+//        for (Link link : links) {
+//            log.info("no links yet");
+//        }
     }
 }
