@@ -1,12 +1,16 @@
 package edu.java.scrapper.service.impl;
 
 import edu.java.scrapper.client.BotClient;
+import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.model.Link;
+import edu.java.scrapper.model.dto.LinkUpdateRequest;
 import edu.java.scrapper.service.ChatService;
 import edu.java.scrapper.service.LinkService;
 import edu.java.scrapper.service.LinkUpdater;
 import edu.java.scrapper.urls.UrlsApi;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -58,7 +62,21 @@ public class ImplLinkUpdater implements LinkUpdater {
         linkService.update(link.id(), newTime.get());
 
         var chats = chatService.findAll(link.id());
+        List<Long> chatIds = new ArrayList<>();
+        for (Chat chat : chats) {
+            chatIds.add(chat.chatId());
+        }
+
+
         log.info("Отправляем обновление для: {}", chats);
+        LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(
+            System.currentTimeMillis(),
+           link.url(),
+           "Новое обновление для: " + link.url().toString(),
+            chatIds
+        );
+        botClient.sendUpdates(linkUpdateRequest);
+
         return true;
     }
 
