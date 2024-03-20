@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/updates")
 @AllArgsConstructor
+@Log4j2
 public class UpdatesApiController {
     @PostMapping
     @Operation(summary = "Send update",
@@ -31,7 +33,7 @@ public class UpdatesApiController {
         })
     })
     public void updateUrls(@RequestBody @Valid LinkUpdateRequest linkUpdateRequest) {
-
+        log.info("Получено обновление {}", linkUpdateRequest);
     }
 }
 
