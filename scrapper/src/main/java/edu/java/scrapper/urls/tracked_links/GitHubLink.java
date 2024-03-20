@@ -6,9 +6,9 @@ import java.time.OffsetDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 
-//@RequiredArgsConstructor
 @Log4j2
 @Component
 @RequiredArgsConstructor
@@ -16,14 +16,20 @@ import org.springframework.stereotype.Component;
 public class GitHubLink implements TrackedLink {
     private final GitHubClient gitHubClient;
     private static final String LINK_HOST = "github.com";
+    private static final String UNKNOWN_GITHUB_API_ERROR = "Неизвестная ошибка при запросе к GitHub API";
 
 //    public GitHubLink(GitHubClient gitHubClient) {
 //        this.gitHubClient = gitHubClient;
-//
+//        System.out.println("------------------------");
 //        System.out.println(isWorkingUrl(
 //            URI.create("https://github.com/Ser4ey/JavaTinkoff2024/pull/6")
 //        ));
+//        System.out.println(getLastActivityTime(
+//            URI.create("https://github.com/Ser4ey/JavaTinkoff2024/pull/6")
+//        ));
+//        System.out.println("------------------------");
 //    }
+
     @Override
     public boolean isCurrentLinkHost(URI url) {
         var linkHost = TrackedLink.getHostFromUrl(url);
@@ -32,29 +38,25 @@ public class GitHubLink implements TrackedLink {
 
     @Override
     public boolean isWorkingUrl(URI url) {
-        // https://github.com/Ser4ey/JavaTinkoff2024/pull/6
         if (!isCurrentLinkHost(url)) {
             return false;
         }
 
-        String path = url.getPath();
-        String[] parts = path.split("/");
-        if (parts.length < 3) {
-            return false;
-        }
-
-        String owner = parts[1];
-        String repo = parts[2];
-
         try {
+            var ownerRepoPair = getOwnerAndRepo(url);
+            if (ownerRepoPair.isEmpty()) {
+                return false;
+            }
+            String owner = ownerRepoPair.get().getLeft();
+            String repo = ownerRepoPair.get().getRight();
+
             var answer = gitHubClient.getRepository(owner, repo);
-            log.info("Ответ: {}", answer);
+            log.info("Ответ от GitHub API: {}", answer);
             if (answer == null) {
                 return false;
             }
-
         } catch (Exception e) {
-            log.warn("Неизвестная ошибка при запросе к GitHub API", e);
+            log.warn(UNKNOWN_GITHUB_API_ERROR, e);
             return false;
         }
 
@@ -63,6 +65,37 @@ public class GitHubLink implements TrackedLink {
 
     @Override
     public Optional<OffsetDateTime> getLastActivityTime(URI url) {
-        return null;
+        try {
+            var ownerRepoPair = getOwnerAndRepo(url);
+            if (ownerRepoPair.isEmpty()) {
+                return Optional.empty();
+            }
+            String owner = ownerRepoPair.get().getLeft();
+            String repo = ownerRepoPair.get().getRight();
+
+
+            var answer = gitHubClient.getRepository(owner, repo);
+            if (answer == null) {
+                return Optional.empty();
+            }
+            return Optional.ofNullable(answer.updatedAt());
+
+        } catch (Exception e) {
+            log.warn(UNKNOWN_GITHUB_API_ERROR, e);
+            return Optional.empty();
+        }
+    }
+
+    private static Optional<Pair<String, String>> getOwnerAndRepo(URI url) {
+        String path = url.getPath();
+        String[] parts = path.split("/");
+        if (parts.length < 3) {
+            return Optional.empty();
+        }
+
+        String owner = parts[1];
+        String repo = parts[2];
+        Pair<String, String> ownerRepo = Pair.of(owner, repo);
+        return Optional.of(ownerRepo);
     }
 }
