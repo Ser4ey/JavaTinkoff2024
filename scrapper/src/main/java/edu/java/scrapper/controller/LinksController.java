@@ -1,6 +1,7 @@
 package edu.java.scrapper.controller;
 
 import edu.java.scrapper.exception.request_response_exceptions.CustomResponseException;
+import edu.java.scrapper.exception.request_response_exceptions.ResponseException400;
 import edu.java.scrapper.exception.request_response_exceptions.ResponseException404;
 import edu.java.scrapper.exception.request_response_exceptions.ResponseException409;
 import edu.java.scrapper.exception.service_exceptions.LinkAlreadyTracking;
@@ -12,6 +13,7 @@ import edu.java.scrapper.model.dto.LinkResponse;
 import edu.java.scrapper.model.dto.ListLinksResponse;
 import edu.java.scrapper.model.dto.RemoveLinkRequest;
 import edu.java.scrapper.service.LinkService;
+import edu.java.scrapper.urls.UrlsApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,6 +40,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class LinksController {
     private final LinkService linkService;
+
+    private final UrlsApi urlsApi;
 
     @GetMapping
     @Operation(summary = "Get all the tracked links", description = "Get all the tracked links")
@@ -82,7 +86,13 @@ public class LinksController {
     public LinkResponse createLink(
         @RequestHeader("Tg-Chat-Id") @Min(1) Long chatId, @RequestBody @Valid AddLinkRequest addLinkRequest
     ) throws CustomResponseException {
-        // добавить проверку на валидность ссылки
+        boolean isWorkingUrl = urlsApi.isWorkingUrl(addLinkRequest.link());
+        if (!isWorkingUrl) {
+            throw new ResponseException400(
+                "The link didn't pass the work check",
+                "The link is not available for updating via the API. Check that the link is correct."
+            );
+        }
 
         try {
             var link = linkService.add(chatId, addLinkRequest.link());

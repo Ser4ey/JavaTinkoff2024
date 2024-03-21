@@ -11,7 +11,7 @@ public interface LinkRepository {
 
     List<Link> findAll(Long chatId);
 
-    Optional<Link> findById(Integer chatId);
+    Optional<Link> findById(Integer linkId);
 
     Optional<Link> findByUrl(URI url);
 

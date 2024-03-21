@@ -52,11 +52,11 @@ public class JdbcLinkDAO implements LinkRepository {
 
     @Override
     @Transactional
-    public Optional<Link> findById(Integer chatId) {
+    public Optional<Link> findById(Integer linkId) {
         var links = jdbcTemplate.query(
             "SELECT * FROM link WHERE id = ?",
             linkRowMapper,
-            chatId);
+            linkId);
 
         if (links.isEmpty()) {
             return Optional.empty();
