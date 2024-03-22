@@ -1,11 +1,6 @@
 package edu.java.scrapper.controller;
 
-import edu.java.scrapper.exception.request_response_exceptions.CustomResponseException;
-import edu.java.scrapper.exception.request_response_exceptions.ResponseException400;
-import edu.java.scrapper.exception.request_response_exceptions.ResponseException404;
-import edu.java.scrapper.exception.request_response_exceptions.ResponseException409;
-import edu.java.scrapper.exception.service.LinkAlreadyTracking;
-import edu.java.scrapper.exception.service.LinkNotFound;
+import edu.java.scrapper.exception.service.LinkDoNotWorking;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.model.dto.AddLinkRequest;
 import edu.java.scrapper.model.dto.ApiErrorResponse;
@@ -39,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SuppressWarnings("MagicNumber") // dev
 @RequiredArgsConstructor
 public class LinksController {
+
     private final LinkService linkService;
 
     private final UrlsApi urlsApi;
@@ -85,25 +81,16 @@ public class LinksController {
     })
     public LinkResponse createLink(
         @RequestHeader("Tg-Chat-Id") @Min(1) Long chatId, @RequestBody @Valid AddLinkRequest addLinkRequest
-    ) throws CustomResponseException {
+    ) {
         boolean isWorkingUrl = urlsApi.isWorkingUrl(addLinkRequest.link());
+
         if (!isWorkingUrl) {
-            throw new ResponseException400(
-                "The link didn't pass the work check",
-                "The link is not available for updating via the API. Check that the link is correct."
-            );
+            throw new LinkDoNotWorking();
         }
 
-        try {
-            var link = linkService.add(chatId, addLinkRequest.link());
+        var link = linkService.add(chatId, addLinkRequest.link());
 
-            return new LinkResponse(link.id().longValue(), link.url());
-        } catch (LinkAlreadyTracking e) {
-            throw new ResponseException409(
-                "The link is already registered",
-                "You cannot register a link 2 times in a row"
-            );
-        }
+        return new LinkResponse(link.id().longValue(), link.url());
     }
 
     @DeleteMapping
@@ -122,16 +109,9 @@ public class LinksController {
     public LinkResponse deleteLink(
         @RequestHeader("Tg-Chat-Id") @Min(1) Long chatId, @RequestBody @Valid RemoveLinkRequest removeLinkRequest
     ) {
-        try {
-            linkService.remove(chatId, removeLinkRequest.link());
+        linkService.remove(chatId, removeLinkRequest.link());
 
-            return new LinkResponse(0L, removeLinkRequest.link());
-        } catch (LinkNotFound e) {
-            throw new ResponseException404(
-                "The link is not tracked. You can't delete something that doesn't exist.",
-                "You can't delete something that doesn't exist"
-            );
-        }
+        return new LinkResponse(0L, removeLinkRequest.link());
     }
 
 }

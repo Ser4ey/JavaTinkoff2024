@@ -3,6 +3,9 @@ package edu.java.scrapper.controller;
 import edu.java.scrapper.exception.request_response_exceptions.CustomResponseException;
 import edu.java.scrapper.exception.service.ChatAlreadyRegistered;
 import edu.java.scrapper.exception.service.ChatNotFound;
+import edu.java.scrapper.exception.service.LinkAlreadyTracking;
+import edu.java.scrapper.exception.service.LinkDoNotWorking;
+import edu.java.scrapper.exception.service.LinkNotFound;
 import edu.java.scrapper.model.dto.ApiErrorResponse;
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +20,7 @@ import org.springframework.web.method.annotation.HandlerMethodValidationExceptio
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
+@SuppressWarnings("MultipleStringLiterals")
 public class ExceptionController {
     @ExceptionHandler(CustomResponseException.class)
     public ResponseEntity<ApiErrorResponse> handleCustomResponseException(CustomResponseException ex) {
@@ -55,6 +59,7 @@ public class ExceptionController {
                     stacktrace
             );
     }
+
     // ---
 
     @ExceptionHandler(ChatAlreadyRegistered.class)
@@ -89,6 +94,55 @@ public class ExceptionController {
         );
     }
 
+    // ---
+
+    @ExceptionHandler(LinkAlreadyTracking.class)
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    public ApiErrorResponse handleLinkAlreadyTracking(Exception ex) {
+        List<String> stacktrace = Arrays.stream(ex.getStackTrace())
+            .map(StackTraceElement::toString)
+            .toList();
+
+        return new ApiErrorResponse(
+            "This link is already registered",
+            "409",
+            ex.getClass().getName(),
+            "You cannot register a link 2 times in a row",
+            stacktrace
+        );
+    }
+
+    @ExceptionHandler(LinkNotFound.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ApiErrorResponse handleLinkNotFound(Exception ex) {
+        List<String> stacktrace = Arrays.stream(ex.getStackTrace())
+            .map(StackTraceElement::toString)
+            .toList();
+
+        return new ApiErrorResponse(
+            "This link is not tracked. You can't delete something that doesn't exist.",
+            "404",
+            ex.getClass().getName(),
+            "You can't delete something that doesn't exist",
+            stacktrace
+        );
+    }
+
+    @ExceptionHandler(LinkDoNotWorking.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ApiErrorResponse handleLinkDoNotWorking(Exception ex) {
+        List<String> stacktrace = Arrays.stream(ex.getStackTrace())
+            .map(StackTraceElement::toString)
+            .toList();
+
+        return new ApiErrorResponse(
+            "The link didn't pass the work check",
+            "400",
+            ex.getClass().getName(),
+            "The link is not available for updating via the API. Check that the link is correct.",
+            stacktrace
+        );
+    }
 
     // ---
 
