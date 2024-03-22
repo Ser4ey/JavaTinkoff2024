@@ -1,7 +1,7 @@
 package edu.java.scrapper.service.jdbc;
 
-import edu.java.scrapper.exception.service_exceptions.ChatAlreadyRegistered;
-import edu.java.scrapper.exception.service_exceptions.ChatNotFound;
+import edu.java.scrapper.exception.service.ChatAlreadyRegistered;
+import edu.java.scrapper.exception.service.ChatNotFound;
 import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.repository.ChatRepository;
 import edu.java.scrapper.service.ChatService;

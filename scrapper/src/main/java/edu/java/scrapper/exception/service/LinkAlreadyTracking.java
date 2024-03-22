@@ -1,4 +1,4 @@
-package edu.java.scrapper.exception.service_exceptions;
+package edu.java.scrapper.exception.service;
 
 public class LinkAlreadyTracking extends RuntimeException {
 

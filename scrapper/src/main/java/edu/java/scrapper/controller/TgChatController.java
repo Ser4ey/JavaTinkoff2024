@@ -2,8 +2,8 @@ package edu.java.scrapper.controller;
 
 import edu.java.scrapper.exception.request_response_exceptions.ResponseException404;
 import edu.java.scrapper.exception.request_response_exceptions.ResponseException409;
-import edu.java.scrapper.exception.service_exceptions.ChatAlreadyRegistered;
-import edu.java.scrapper.exception.service_exceptions.ChatNotFound;
+import edu.java.scrapper.exception.service.ChatAlreadyRegistered;
+import edu.java.scrapper.exception.service.ChatNotFound;
 import edu.java.scrapper.model.dto.ApiErrorResponse;
 import edu.java.scrapper.service.ChatService;
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,7 +1,7 @@
 package edu.java.scrapper.service;
 
-import edu.java.scrapper.exception.service_exceptions.LinkAlreadyTracking;
-import edu.java.scrapper.exception.service_exceptions.LinkNotFound;
+import edu.java.scrapper.exception.service.LinkAlreadyTracking;
+import edu.java.scrapper.exception.service.LinkNotFound;
 import edu.java.scrapper.model.Link;
 import java.net.URI;
 import java.time.OffsetDateTime;

@@ -4,8 +4,8 @@ import edu.java.scrapper.exception.request_response_exceptions.CustomResponseExc
 import edu.java.scrapper.exception.request_response_exceptions.ResponseException400;
 import edu.java.scrapper.exception.request_response_exceptions.ResponseException404;
 import edu.java.scrapper.exception.request_response_exceptions.ResponseException409;
-import edu.java.scrapper.exception.service_exceptions.LinkAlreadyTracking;
-import edu.java.scrapper.exception.service_exceptions.LinkNotFound;
+import edu.java.scrapper.exception.service.LinkAlreadyTracking;
+import edu.java.scrapper.exception.service.LinkNotFound;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.model.dto.AddLinkRequest;
 import edu.java.scrapper.model.dto.ApiErrorResponse;
