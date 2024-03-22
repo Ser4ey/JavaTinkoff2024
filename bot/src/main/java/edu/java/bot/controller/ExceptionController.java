@@ -1,11 +1,9 @@
 package edu.java.bot.controller;
 
-import edu.java.bot.exception.CustomResponseException;
 import edu.java.bot.model.dto.ApiErrorResponse;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,23 +14,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 @RestControllerAdvice
 public class ExceptionController {
-
-    @ExceptionHandler(CustomResponseException.class)
-    public ResponseEntity<ApiErrorResponse> handleCustomResponseException(CustomResponseException ex) {
-        List<String> stacktrace = Arrays.stream(ex.getStackTrace())
-            .map(StackTraceElement::toString)
-            .toList();
-
-        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
-            ex.getDescription(),
-            String.valueOf(ex.getHttpStatus().value()),
-            ex.getClass().getName(),
-            ex.getExceptionMessage(),
-            stacktrace
-        );
-
-        return new ResponseEntity<>(apiErrorResponse, ex.getHttpStatus());
-    }
 
     @ExceptionHandler({
         MethodArgumentNotValidException.class,

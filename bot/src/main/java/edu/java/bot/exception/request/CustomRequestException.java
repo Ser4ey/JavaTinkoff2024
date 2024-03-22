@@ -1,4 +1,4 @@
-package edu.java.bot.exception;
+package edu.java.bot.exception.request;
 
 import edu.java.bot.model.dto.ApiErrorResponse;
 import lombok.Data;

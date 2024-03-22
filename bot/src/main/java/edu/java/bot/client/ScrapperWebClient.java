@@ -1,6 +1,6 @@
 package edu.java.bot.client;
 
-import edu.java.bot.exception.CustomRequestException;
+import edu.java.bot.exception.request.CustomRequestException;
 import edu.java.bot.model.dto.AddLinkRequest;
 import edu.java.bot.model.dto.ApiErrorResponse;
 import edu.java.bot.model.dto.LinkResponse;
