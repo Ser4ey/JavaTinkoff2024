@@ -1,9 +1,5 @@
 package edu.java.scrapper.controller;
 
-import edu.java.scrapper.exception.request_response_exceptions.ResponseException404;
-import edu.java.scrapper.exception.request_response_exceptions.ResponseException409;
-import edu.java.scrapper.exception.service.ChatAlreadyRegistered;
-import edu.java.scrapper.exception.service.ChatNotFound;
 import edu.java.scrapper.model.dto.ApiErrorResponse;
 import edu.java.scrapper.service.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,14 +35,7 @@ public class TgChatController {
         })
     })
     public void registerChat(@PathVariable @Min(1) Long id) {
-        try {
-            chatService.register(id);
-        } catch (ChatAlreadyRegistered e) {
-            throw new ResponseException409(
-                "The chat is already registered",
-                "You cannot register a chat 2 times in a row"
-            );
-        }
+        chatService.register(id);
     }
 
     @DeleteMapping("/{id}")
@@ -61,14 +50,7 @@ public class TgChatController {
         })
     })
     public void deleteChat(@PathVariable @Min(1) Long id) {
-        try {
-            chatService.unregister(id);
-        } catch (ChatNotFound e) {
-            throw new ResponseException404(
-                "The chat was not found",
-                "You can't delete something that doesn't exist"
-            );
-        }
+        chatService.unregister(id);
     }
 
 }

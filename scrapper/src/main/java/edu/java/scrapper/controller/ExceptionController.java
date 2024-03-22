@@ -1,6 +1,8 @@
 package edu.java.scrapper.controller;
 
 import edu.java.scrapper.exception.request_response_exceptions.CustomResponseException;
+import edu.java.scrapper.exception.service.ChatAlreadyRegistered;
+import edu.java.scrapper.exception.service.ChatNotFound;
 import edu.java.scrapper.model.dto.ApiErrorResponse;
 import java.util.Arrays;
 import java.util.List;
@@ -53,6 +55,42 @@ public class ExceptionController {
                     stacktrace
             );
     }
+    // ---
+
+    @ExceptionHandler(ChatAlreadyRegistered.class)
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    public ApiErrorResponse handleChatAlreadyRegistered(Exception ex) {
+        List<String> stacktrace = Arrays.stream(ex.getStackTrace())
+            .map(StackTraceElement::toString)
+            .toList();
+
+        return new ApiErrorResponse(
+            "The chat is already registered",
+            "409",
+            ex.getClass().getName(),
+            "You cannot register a chat 2 times in a row",
+            stacktrace
+        );
+    }
+
+    @ExceptionHandler(ChatNotFound.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public ApiErrorResponse handleChatNotFound(Exception ex) {
+        List<String> stacktrace = Arrays.stream(ex.getStackTrace())
+            .map(StackTraceElement::toString)
+            .toList();
+
+        return new ApiErrorResponse(
+            "The chat was not found",
+            "404",
+            ex.getClass().getName(),
+            "You can't delete something that doesn't exist",
+            stacktrace
+        );
+    }
+
+
+    // ---
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
