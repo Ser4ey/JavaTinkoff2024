@@ -50,18 +50,18 @@ public class ImplLinkUpdater implements LinkUpdater {
             return false;
         }
 
-        log.debug("Старое время: {} Новок время: {}", link.lastCheckTime(), newTime.get());
+        log.debug("Старое время: {} Новок время: {}", link.lastUpdateTime(), newTime.get());
 
-        if (link.lastCheckTime().isEqual(newTime.get()) || link.lastCheckTime().isAfter(newTime.get())) {
+        if (link.lastUpdateTime().isEqual(newTime.get()) || link.lastUpdateTime().isAfter(newTime.get())) {
             log.info("Нет новых обновлений для ссылки: {}", link.url().toString());
             return false;
         }
 
 
         log.info("Новое обновление для ссылки: {}", link.url().toString());
-        linkService.update(link.id(), newTime.get());
+        linkService.updateLastUpdateTime(link.id(), newTime.get());
 
-        var chats = chatService.findAll(link.id());
+        var chats = chatService.findAllByLinkId(link.id());
         List<Long> chatIds = new ArrayList<>();
         for (Chat chat : chats) {
             chatIds.add(chat.chatId());

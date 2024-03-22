@@ -55,7 +55,7 @@ public class LinksController {
     })
     public ListLinksResponse getAllLinks(@RequestHeader("Tg-Chat-Id") @Min(1) Long chatId) {
 
-        List<Link> links = linkService.listAll(chatId);
+        List<Link> links = linkService.listAllByChatId(chatId);
 
         List<LinkResponse> linkResponseList = new LinkedList<>();
 

@@ -39,8 +39,13 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public void update(Integer id, OffsetDateTime lastCheckTime) {
-        linkRepository.update(id, lastCheckTime);
+    public void updateLastUpdateTime(Integer id, OffsetDateTime lastUpdateTime) {
+        linkRepository.updateLastUpdateTime(id, lastUpdateTime);
+    }
+
+    @Override
+    public void updateLastCheckTime(Integer id, OffsetDateTime lastCheckTime) {
+        linkRepository.updateLastCheckTime(id, lastCheckTime);
     }
 
     @Override
@@ -65,12 +70,12 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public List<Link> listAll(long chatId) {
+    public List<Link> listAllByChatId(long chatId) {
         if (!chatRepository.isChatExist(chatId)) {
             chatRepository.add(chatId);
         }
 
-        return linkRepository.findAll(chatId);
+        return linkRepository.findAllByChatId(chatId);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package edu.java.scrapper.repository.jdbc;
 
-import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.repository.LinkRepository;
 import java.net.URI;
@@ -16,38 +15,44 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
-@SuppressWarnings("MultipleStringLiterals")
+@SuppressWarnings({"MultipleStringLiterals", "InnerTypeLast"})
 public class JdbcLinkDAO implements LinkRepository {
+
     private final JdbcTemplate jdbcTemplate;
 
-    private final RowMapper<Chat> chatRowMapper =
-        (resultSet, rowNum) ->
-            new Chat(resultSet.getLong("chat_id"));
+    private static final class CustomRowMapper {
+        private static final RowMapper<Link> LINK_ROW_MAPPER =
+            (resultSet, rowNum) ->
+                new Link(
+                    resultSet.getInt("id"),
+                    URI.create(resultSet.getString("url")),
+                    resultSet.getTimestamp("last_update").toInstant().atOffset(ZoneOffset.UTC),
+                    resultSet.getTimestamp("last_check").toInstant().atOffset(ZoneOffset.UTC)
+                );
 
-    private final RowMapper<Link> linkRowMapper =
-        (resultSet, rowNum) ->
-            new Link(
-                resultSet.getInt("id"),
-                URI.create(resultSet.getString("url")),
-                resultSet.getTimestamp("last_update").toInstant().atOffset(ZoneOffset.UTC)
-            );
+        private static final RowMapper<String> CHAT_LINK_ROW_MAPPER =
+            (resultSet, rowNum) -> resultSet.getInt("chat_id") + ":" + resultSet.getInt("link_id");
 
-    private final RowMapper<String> chatLinkRowMapper =
-        (resultSet, rowNum) -> resultSet.getInt("chat_id") + ":" + resultSet.getInt("link_id");
-
-    @Override
-    public List<Link> findAll() {
-        return jdbcTemplate.query("SELECT * FROM link", linkRowMapper);
     }
 
     @Override
-    public List<Link> findAll(Long chatId) {
+    public List<Link> findAll() {
+        return jdbcTemplate.query("SELECT * FROM link", CustomRowMapper.LINK_ROW_MAPPER);
+    }
+
+    @Override
+    public List<Link> findAllByChatId(Long chatId) {
+        String sql = """
+            SELECT DISTINCT *
+            FROM link JOIN chat_link ON link.id = chat_link.link_id
+            WHERE chat_id = ?
+            """;
+
         return jdbcTemplate.query(
-            "SELECT DISTINCT id, url, last_update "
-                + "FROM link JOIN chat_link ON link.id = chat_link.link_id "
-                + "WHERE chat_id = ?",
-            linkRowMapper,
-            chatId);
+            sql,
+            CustomRowMapper.LINK_ROW_MAPPER,
+            chatId
+        );
     }
 
     @Override
@@ -55,8 +60,9 @@ public class JdbcLinkDAO implements LinkRepository {
     public Optional<Link> findById(Integer linkId) {
         var links = jdbcTemplate.query(
             "SELECT * FROM link WHERE id = ?",
-            linkRowMapper,
-            linkId);
+            CustomRowMapper.LINK_ROW_MAPPER,
+            linkId
+        );
 
         if (links.isEmpty()) {
             return Optional.empty();
@@ -70,8 +76,9 @@ public class JdbcLinkDAO implements LinkRepository {
     public Optional<Link> findByUrl(URI url) {
         var links = jdbcTemplate.query(
             "SELECT * FROM link WHERE url = ?",
-            linkRowMapper,
-            url.toString());
+            CustomRowMapper.LINK_ROW_MAPPER,
+            url.toString()
+        );
 
         if (links.isEmpty()) {
             return Optional.empty();
@@ -85,8 +92,9 @@ public class JdbcLinkDAO implements LinkRepository {
     public Optional<Link> findByChatIdAndLinkId(Long chatId, Integer linkId) {
         var chatLink = jdbcTemplate.query(
             "SELECT * FROM chat_link WHERE chat_link.chat_id = ? AND chat_link.link_id = ?",
-            chatLinkRowMapper,
-            chatId, linkId);
+            CustomRowMapper.CHAT_LINK_ROW_MAPPER,
+            chatId, linkId
+        );
 
         if (chatLink.isEmpty()) {
             return Optional.empty();
@@ -100,8 +108,9 @@ public class JdbcLinkDAO implements LinkRepository {
         var link = findByUrl(url);
         if (link.isEmpty()) {
             jdbcTemplate.update(
-            "INSERT INTO link (url) VALUES (?)",
-                url.toString());
+                "INSERT INTO link (url) VALUES (?)",
+                url.toString()
+            );
 
             link = findByUrl(url);
         }
@@ -110,14 +119,21 @@ public class JdbcLinkDAO implements LinkRepository {
 
         jdbcTemplate.update(
             "INSERT INTO chat_link (chat_id, link_id) VALUES (?, ?)",
-            chatId, linkId);
+            chatId, linkId
+        );
 
         return link.get();
     }
 
     @Override
-    public void update(Integer id, OffsetDateTime lastCheckTime) {
+    public void updateLastUpdateTime(Integer id, OffsetDateTime lastUpdateTime) {
         String sql = "UPDATE link SET last_update = ? WHERE id = ?";
+        jdbcTemplate.update(sql, lastUpdateTime, id);
+    }
+
+    @Override
+    public void updateLastCheckTime(Integer id, OffsetDateTime lastCheckTime) {
+        String sql = "UPDATE link SET last_check = ? WHERE id = ?";
         jdbcTemplate.update(sql, lastCheckTime, id);
     }
 
@@ -126,7 +142,8 @@ public class JdbcLinkDAO implements LinkRepository {
     public void remove(Integer id) {
         jdbcTemplate.update(
             "DELETE FROM link WHERE id = ?",
-            id);
+            id
+        );
     }
 
     @Override
@@ -134,12 +151,14 @@ public class JdbcLinkDAO implements LinkRepository {
     public void removeLinkRelation(Long chatId, Integer linkId) {
         jdbcTemplate.update(
             "DELETE FROM chat_link WHERE chat_id = ? AND link_id = ?",
-            chatId, linkId);
+            chatId, linkId
+        );
 
         var chatLinkRelations = jdbcTemplate.query(
             "SELECT * FROM chat_link WHERE link_id = ?",
-            chatLinkRowMapper,
-            linkId);
+            CustomRowMapper.CHAT_LINK_ROW_MAPPER,
+            linkId
+        );
 
         if (chatLinkRelations.isEmpty()) {
             remove(linkId);

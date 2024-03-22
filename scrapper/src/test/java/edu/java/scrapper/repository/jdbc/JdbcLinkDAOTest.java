@@ -51,9 +51,9 @@ class JdbcLinkDAOTest extends IntegrationTest {
         linkRepository.add(chatId1, URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw4"));
         linkRepository.add(chatId2, URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw5"));
 
-        var links1 = linkRepository.findAll(chatId1);
-        var links2 = linkRepository.findAll(chatId2);
-        var links3 = linkRepository.findAll(chatId3);
+        var links1 = linkRepository.findAllByChatId(chatId1);
+        var links2 = linkRepository.findAllByChatId(chatId2);
+        var links3 = linkRepository.findAllByChatId(chatId3);
 
         assertEquals(links1.size(), 1);
         assertEquals(links2.size(), 1);
@@ -142,7 +142,7 @@ class JdbcLinkDAOTest extends IntegrationTest {
     @Test
     @Transactional
     @Rollback
-    void testUpdate() {
+    void testUpdateLastUpdateTime() {
         Long chatId = 420L;
         chatRepository.add(chatId);
 
@@ -152,10 +152,10 @@ class JdbcLinkDAOTest extends IntegrationTest {
         var link = linkRepository.findByUrl(uri);
 
         OffsetDateTime dateTime = OffsetDateTime.of(2000, 2, 20, 0, 0, 0, 0, ZoneOffset.UTC);
-        linkRepository.update(link.get().id(), dateTime);
+        linkRepository.updateLastUpdateTime(link.get().id(), dateTime);
 
         link = linkRepository.findByUrl(uri);
-        assertEquals(link.get().lastCheckTime(), dateTime);
+        assertEquals(link.get().lastUpdateTime(), dateTime);
     }
 
 
@@ -186,13 +186,13 @@ class JdbcLinkDAOTest extends IntegrationTest {
 
         linkRepository.add(chatId, URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
 
-        var links = linkRepository.findAll(chatId);
+        var links = linkRepository.findAllByChatId(chatId);
         assertFalse(links.isEmpty());
         Integer linkId = links.getFirst().id();
 
         linkRepository.removeLinkRelation(chatId, linkId);
         assertTrue(linkRepository.findAll().isEmpty());
-        assertTrue(linkRepository.findAll(chatId).isEmpty());
+        assertTrue(linkRepository.findAllByChatId(chatId).isEmpty());
     }
 
     @Test

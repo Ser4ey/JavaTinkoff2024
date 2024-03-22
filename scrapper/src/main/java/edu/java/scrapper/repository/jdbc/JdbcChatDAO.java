@@ -11,26 +11,31 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
+@SuppressWarnings("InnerTypeLast")
 public class JdbcChatDAO implements ChatRepository {
+
     private final JdbcTemplate jdbcTemplate;
 
-    private final RowMapper<Chat> chatRowMapper =
-        (resultSet, rowNum) ->
-            new Chat(resultSet.getLong("chat_id"));
+    private static final class CustomRowMapper {
+        private static final RowMapper<Chat> CHAT_ROW_MAPPER =
+            (resultSet, rowNum) ->
+                new Chat(resultSet.getLong("chat_id"));
+
+    }
 
     @Override
     @Transactional
     public List<Chat> findAll() {
-        return jdbcTemplate.query("SELECT chat_id FROM chat", chatRowMapper);
+        return jdbcTemplate.query("SELECT chat_id FROM chat", CustomRowMapper.CHAT_ROW_MAPPER);
     }
 
     @Override
-    public List<Chat> findAll(Integer linkId) {
+    public List<Chat> findAllByLinkId(Integer linkId) {
         return jdbcTemplate.query(
             "SELECT DISTINCT chat.chat_id FROM chat "
                 + "JOIN chat_link ON chat.chat_id = chat_link.chat_id "
                 + "WHERE link_id = ?",
-            chatRowMapper,
+            CustomRowMapper.CHAT_ROW_MAPPER,
             linkId);
     }
 
@@ -38,7 +43,7 @@ public class JdbcChatDAO implements ChatRepository {
     @Transactional
     public boolean isChatExist(Long chatId) {
         var chats = jdbcTemplate.query(
-            "SELECT * FROM chat WHERE chat_id = ?", chatRowMapper, chatId);
+            "SELECT * FROM chat WHERE chat_id = ?", CustomRowMapper.CHAT_ROW_MAPPER, chatId);
 
         return !chats.isEmpty();
     }

@@ -12,5 +12,5 @@ public interface ChatService {
 
     List<Chat> findAll();
 
-    List<Chat> findAll(Integer linkId);
+    List<Chat> findAllByLinkId(Integer linkId);
 }

@@ -10,11 +10,14 @@ import java.util.List;
 public interface LinkService {
     Link add(long chatId, URI url) throws LinkAlreadyTracking;
 
-    void update(Integer id, OffsetDateTime lastCheckTime);
+
+    void updateLastUpdateTime(Integer id, OffsetDateTime lastUpdateTime);
+
+    void updateLastCheckTime(Integer id, OffsetDateTime lastCheckTime);
 
     void remove(long chatId, URI url) throws LinkNotFound;
 
-    List<Link> listAll(long chatId);
+    List<Link> listAllByChatId(long chatId);
 
     List<Link> listAll();
 

@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface LinkRepository {
     List<Link> findAll();
 
-    List<Link> findAll(Long chatId);
+    List<Link> findAllByChatId(Long chatId);
 
     Optional<Link> findById(Integer linkId);
 
@@ -19,7 +19,9 @@ public interface LinkRepository {
 
     Link add(Long chatId, URI url);
 
-    void update(Integer id, OffsetDateTime lastCheckTime);
+    void updateLastUpdateTime(Integer id, OffsetDateTime lastUpdateTime);
+
+    void updateLastCheckTime(Integer id, OffsetDateTime lastCheckTime);
 
     void remove(Integer id);
 

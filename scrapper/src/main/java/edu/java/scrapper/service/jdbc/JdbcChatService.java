@@ -40,7 +40,7 @@ public class JdbcChatService implements ChatService {
     }
 
     @Override
-    public List<Chat> findAll(Integer linkId) {
-        return chatRepository.findAll(linkId);
+    public List<Chat> findAllByLinkId(Integer linkId) {
+        return chatRepository.findAllByLinkId(linkId);
     }
 }
