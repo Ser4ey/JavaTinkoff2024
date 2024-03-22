@@ -1,4 +1,4 @@
-package edu.java.scrapper.exception.request_response_exceptions;
+package edu.java.scrapper.exception.request;
 
 import edu.java.scrapper.model.dto.ApiErrorResponse;
 import lombok.Data;
