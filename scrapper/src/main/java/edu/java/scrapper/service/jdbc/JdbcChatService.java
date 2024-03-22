@@ -17,7 +17,7 @@ public class JdbcChatService implements ChatService {
     private final ChatRepository chatRepository;
 
     @Override
-    public void register(long chatId) throws ChatAlreadyRegistered {
+    public void register(long chatId) {
         try {
             chatRepository.add(chatId);
         } catch (Exception e) {
@@ -26,7 +26,7 @@ public class JdbcChatService implements ChatService {
     }
 
     @Override
-    public void unregister(long chatId) throws ChatNotFound {
+    public void unregister(long chatId) {
         if (!chatRepository.isChatExist(chatId)) {
             throw new ChatNotFound();
         }

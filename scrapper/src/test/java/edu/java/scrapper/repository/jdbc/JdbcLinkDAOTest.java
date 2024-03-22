@@ -158,6 +158,25 @@ class JdbcLinkDAOTest extends IntegrationTest {
         assertEquals(link.get().lastUpdateTime(), dateTime);
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    void testUpdateLastCheckTime() {
+        Long chatId = 420L;
+        chatRepository.add(chatId);
+
+        var uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024");
+        linkRepository.add(chatId, uri);
+
+        var link = linkRepository.findByUrl(uri);
+
+        OffsetDateTime dateTime = OffsetDateTime.of(2002, 2, 20, 0, 0, 0, 0, ZoneOffset.UTC);
+        linkRepository.updateLastCheckTime(link.get().id(), dateTime);
+
+        link = linkRepository.findByUrl(uri);
+        assertEquals(link.get().lastCheckTime(), dateTime);
+    }
+
 
     @Test
     @Transactional

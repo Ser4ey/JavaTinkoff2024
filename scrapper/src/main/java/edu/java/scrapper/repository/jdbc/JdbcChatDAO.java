@@ -31,10 +31,13 @@ public class JdbcChatDAO implements ChatRepository {
 
     @Override
     public List<Chat> findAllByLinkId(Integer linkId) {
-        return jdbcTemplate.query(
-            "SELECT DISTINCT chat.chat_id FROM chat "
-                + "JOIN chat_link ON chat.chat_id = chat_link.chat_id "
-                + "WHERE link_id = ?",
+        String sql = """
+            SELECT DISTINCT chat.chat_id FROM chat
+            JOIN chat_link ON chat.chat_id = chat_link.chat_id
+            WHERE link_id = ?
+            """;
+
+        return jdbcTemplate.query(sql,
             CustomRowMapper.CHAT_ROW_MAPPER,
             linkId);
     }

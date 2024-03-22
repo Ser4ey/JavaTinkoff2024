@@ -10,7 +10,6 @@ import java.util.List;
 public interface LinkService {
     Link add(long chatId, URI url) throws LinkAlreadyTracking;
 
-
     void updateLastUpdateTime(Integer id, OffsetDateTime lastUpdateTime);
 
     void updateLastCheckTime(Integer id, OffsetDateTime lastCheckTime);

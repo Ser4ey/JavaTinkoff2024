@@ -23,7 +23,7 @@ public class JdbcLinkService implements LinkService {
 
     @Override
     @Transactional
-    public Link add(long chatId, URI url) throws LinkAlreadyTracking {
+    public Link add(long chatId, URI url) {
         if (!chatRepository.isChatExist(chatId)) {
             chatRepository.add(chatId);
         }
@@ -51,7 +51,7 @@ public class JdbcLinkService implements LinkService {
     @Override
     @Transactional
     @SuppressWarnings("ReturnCount")
-    public void remove(long chatId, URI url) throws LinkNotFound {
+    public void remove(long chatId, URI url) {
         if (!chatRepository.isChatExist(chatId)) {
             chatRepository.add(chatId);
         }
