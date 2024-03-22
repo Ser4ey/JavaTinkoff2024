@@ -3,42 +3,39 @@ package edu.java.scrapper.urls;
 import edu.java.scrapper.urls.tracked_links.TrackedLink;
 import java.net.URI;
 import java.time.OffsetDateTime;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
-import org.springframework.context.ApplicationContext;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class UrlsApiImpl implements UrlsApi {
-    private final Map<String, TrackedLink> trackedLinkMap;
 
-    public UrlsApiImpl(ApplicationContext applicationContext) {
-        this.trackedLinkMap = applicationContext.getBeansOfType(TrackedLink.class);
-    }
+    private final List<TrackedLink> trackedLinks;
 
     @Override
     public boolean isWorkingUrl(URI url) {
-        for (String key : trackedLinkMap.keySet()) {
-            if (!trackedLinkMap.get(key).isCurrentLinkHost(url)) {
+        for (TrackedLink tackedLink : trackedLinks) {
+            if (!tackedLink.isCurrentLinkHost(url)) {
                 continue;
             }
-            if (trackedLinkMap.get(key).isWorkingUrl(url)) {
+            if (tackedLink.isWorkingUrl(url)) {
                 return true;
             }
         }
-
         return false;
     }
 
     @Override
     public Optional<OffsetDateTime> getLastActivity(URI url) {
-        for (String key : trackedLinkMap.keySet()) {
-            if (!trackedLinkMap.get(key).isCurrentLinkHost(url)) {
+        for (TrackedLink tackedLink : trackedLinks) {
+            if (!tackedLink.isCurrentLinkHost(url)) {
                 continue;
             }
-            return trackedLinkMap.get(key).getLastActivityTime(url);
-        }
+            return tackedLink.getLastActivityTime(url);
 
+        }
         return Optional.empty();
     }
 

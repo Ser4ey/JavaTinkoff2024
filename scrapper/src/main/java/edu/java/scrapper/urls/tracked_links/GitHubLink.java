@@ -18,18 +18,6 @@ public class GitHubLink implements TrackedLink {
     private static final String LINK_HOST = "github.com";
     private static final String UNKNOWN_GITHUB_API_ERROR = "Неизвестная ошибка при запросе к GitHub API";
 
-//    public GitHubLink(GitHubClient gitHubClient) {
-//        this.gitHubClient = gitHubClient;
-//        System.out.println("------------------------");
-//        System.out.println(isWorkingUrl(
-//            URI.create("https://github.com/Ser4ey/JavaTinkoff2024/pull/6")
-//        ));
-//        System.out.println(getLastActivityTime(
-//            URI.create("https://github.com/Ser4ey/JavaTinkoff2024/pull/6")
-//        ));
-//        System.out.println("------------------------");
-//    }
-
     @Override
     public boolean isCurrentLinkHost(URI url) {
         var linkHost = TrackedLink.getHostFromUrl(url);

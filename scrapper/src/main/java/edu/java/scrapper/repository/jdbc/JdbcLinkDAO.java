@@ -8,6 +8,7 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -58,48 +59,51 @@ public class JdbcLinkDAO implements LinkRepository {
     @Override
     @Transactional
     public Optional<Link> findById(Integer linkId) {
-        var links = jdbcTemplate.query(
-            "SELECT * FROM link WHERE id = ?",
-            CustomRowMapper.LINK_ROW_MAPPER,
-            linkId
-        );
+        try {
+            var link = jdbcTemplate.queryForObject(
+                "SELECT * FROM link WHERE id = ?",
+                CustomRowMapper.LINK_ROW_MAPPER,
+                linkId);
 
-        if (links.isEmpty()) {
+            return Optional.ofNullable(link);
+        } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
-
-        return Optional.of(links.getFirst());
     }
 
     @Override
     @Transactional
     public Optional<Link> findByUrl(URI url) {
-        var links = jdbcTemplate.query(
-            "SELECT * FROM link WHERE url = ?",
-            CustomRowMapper.LINK_ROW_MAPPER,
-            url.toString()
-        );
+        try {
+            var link = jdbcTemplate.queryForObject(
+                "SELECT * FROM link WHERE url = ?",
+                CustomRowMapper.LINK_ROW_MAPPER,
+                url.toString()
+            );
 
-        if (links.isEmpty()) {
+            return Optional.ofNullable(link);
+        } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
-
-        return Optional.of(links.getFirst());
     }
 
     @Override
     @Transactional
     public Optional<Link> findByChatIdAndLinkId(Long chatId, Integer linkId) {
-        var chatLink = jdbcTemplate.query(
-            "SELECT * FROM chat_link WHERE chat_link.chat_id = ? AND chat_link.link_id = ?",
-            CustomRowMapper.CHAT_LINK_ROW_MAPPER,
-            chatId, linkId
-        );
+        try {
+            var chatLink = jdbcTemplate.queryForObject(
+                "SELECT * FROM chat_link WHERE chat_link.chat_id = ? AND chat_link.link_id = ?",
+                CustomRowMapper.CHAT_LINK_ROW_MAPPER,
+                chatId, linkId
+            );
+            if (chatLink == null || chatLink.isEmpty()) {
+                return Optional.empty();
+            }
 
-        if (chatLink.isEmpty()) {
+            return findById(linkId);
+        } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
-        return findById(linkId);
     }
 
     @Override

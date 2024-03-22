@@ -18,24 +18,6 @@ public class StackOverflowLink implements TrackedLink {
     private static final String LINK_HOST = "stackoverflow.com";
     private static final String UNKNOWN_STACKOVERFLOW_API_ERROR = "Неизвестная ошибка при запросе к StackOverflow API";
 
-//    public StackOverflowLink(StackOverflowClient stackOverflowClient) {
-//        this.stackOverflowClient = stackOverflowClient;
-//        System.out.println("------------------------");
-//
-//        System.out.println(
-//            isWorkingUrl(
-//                URI.create("https://stackoverflow.com/questions/45784119/cannot-instantiate-the-type-pair-although-not-abstract")
-//            )
-//        );
-//        System.out.println(
-//            getLastActivityTime(
-//                URI.create("https://stackoverflow.com/questions/45784119/cannot-instantiate-the-type-pair-although-not-abstract")
-//            )
-//        );
-//
-//        System.out.println("------------------------");
-//    }
-
     @Override
     public boolean isCurrentLinkHost(URI url) {
         var linkHost = TrackedLink.getHostFromUrl(url);
