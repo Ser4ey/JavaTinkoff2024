@@ -15,6 +15,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 
 @Log4j2
 @Service
@@ -44,6 +45,8 @@ public class ImplLinkUpdater implements LinkUpdater {
     }
 
     private boolean updateLink(Link link) {
+        linkService.updateLastCheckTime(link.id(), OffsetDateTime.now());
+
         Optional<OffsetDateTime> newTime = urlsApi.getLastActivity(link.url());
         if (newTime.isEmpty()) {
             log.warn("Не удалось получить обновление для ссылки: {}", link.url().toString());
@@ -51,7 +54,6 @@ public class ImplLinkUpdater implements LinkUpdater {
         }
 
         log.debug("Старое время: {} Новок время: {}", link.lastUpdateTime(), newTime.get());
-
         if (link.lastUpdateTime().isEqual(newTime.get()) || link.lastUpdateTime().isAfter(newTime.get())) {
             log.info("Нет новых обновлений для ссылки: {}", link.url().toString());
             return false;
@@ -59,14 +61,11 @@ public class ImplLinkUpdater implements LinkUpdater {
 
 
         log.info("Новое обновление для ссылки: {}", link.url().toString());
-        linkService.updateLastUpdateTime(link.id(), newTime.get());
-
         var chats = chatService.findAllByLinkId(link.id());
         List<Long> chatIds = new ArrayList<>();
         for (Chat chat : chats) {
             chatIds.add(chat.chatId());
         }
-
 
         log.info("Отправляем обновление для: {}", chats);
         LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(
@@ -75,7 +74,14 @@ public class ImplLinkUpdater implements LinkUpdater {
            "Информация по ссылке обновилась",
             chatIds
         );
-        botClient.sendUpdates(linkUpdateRequest);
+
+        try {
+            botClient.sendUpdates(linkUpdateRequest);
+            linkService.updateLastUpdateTime(link.id(), newTime.get());
+        } catch (WebClientRequestException ex) {
+            log.error("Не удалось отправить обновление боту", ex);
+            return false;
+        }
 
         return true;
     }

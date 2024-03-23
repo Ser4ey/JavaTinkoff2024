@@ -28,7 +28,7 @@ public class JdbcChatService implements ChatService {
     @Override
     public void unregister(long chatId) {
         if (!chatRepository.isChatExist(chatId)) {
-            throw new ChatNotFound();
+            throw new ChatNotFound("You can't delete something that doesn't exist");
         }
 
         chatRepository.remove(chatId);

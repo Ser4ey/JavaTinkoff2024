@@ -61,7 +61,7 @@ public class ExceptionController {
 
     @ExceptionHandler(ChatNotFound.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
-    public ApiErrorResponse handleChatNotFound(Exception ex) {
+    public ApiErrorResponse handleChatNotFound(ChatNotFound ex) {
         List<String> stacktrace = Arrays.stream(ex.getStackTrace())
             .map(StackTraceElement::toString)
             .toList();
@@ -70,7 +70,7 @@ public class ExceptionController {
             "The chat was not found",
             "404",
             ex.getClass().getName(),
-            "You can't delete something that doesn't exist",
+            ex.getExceptionMessage(),
             stacktrace
         );
     }

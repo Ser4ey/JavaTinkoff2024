@@ -1,6 +1,5 @@
 package edu.java.scrapper.controller;
 
-import edu.java.scrapper.exception.service.LinkDoNotWorking;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.model.dto.AddLinkRequest;
 import edu.java.scrapper.model.dto.ApiErrorResponse;
@@ -8,7 +7,6 @@ import edu.java.scrapper.model.dto.LinkResponse;
 import edu.java.scrapper.model.dto.ListLinksResponse;
 import edu.java.scrapper.model.dto.RemoveLinkRequest;
 import edu.java.scrapper.service.LinkService;
-import edu.java.scrapper.urls.UrlsApi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,8 +34,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class LinksController {
 
     private final LinkService linkService;
-
-    private final UrlsApi urlsApi;
 
     @GetMapping
     @Operation(summary = "Get all the tracked links", description = "Get all the tracked links")
@@ -82,12 +78,6 @@ public class LinksController {
     public LinkResponse createLink(
         @RequestHeader("Tg-Chat-Id") @Min(1) Long chatId, @RequestBody @Valid AddLinkRequest addLinkRequest
     ) {
-        boolean isWorkingUrl = urlsApi.isWorkingUrl(addLinkRequest.link());
-
-        if (!isWorkingUrl) {
-            throw new LinkDoNotWorking();
-        }
-
         var link = linkService.add(chatId, addLinkRequest.link());
 
         return new LinkResponse(link.id().longValue(), link.url());
