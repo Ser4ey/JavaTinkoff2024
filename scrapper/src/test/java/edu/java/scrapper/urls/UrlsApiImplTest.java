@@ -4,22 +4,21 @@ import edu.java.scrapper.IntegrationTest;
 import edu.java.scrapper.urls.tracked_links.GitHubLink;
 import edu.java.scrapper.urls.tracked_links.StackOverflowLink;
 import edu.java.scrapper.urls.tracked_links.TrackedLink;
-import org.junit.jupiter.api.BeforeAll;
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.time.OffsetDateTime;
-import java.util.Arrays;
-import java.util.List;
-import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import java.net.URI;
-import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class UrlsApiImplTest extends IntegrationTest {
@@ -34,10 +33,6 @@ class UrlsApiImplTest extends IntegrationTest {
 
     private static final OffsetDateTime CURRENT_TIME = OffsetDateTime.now();
 
-    @BeforeAll
-    public static void init() {
-
-    }
 
     @BeforeEach
     public void setUp() {
