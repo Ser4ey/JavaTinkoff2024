@@ -42,11 +42,21 @@ class JdbcChatDAOTest extends IntegrationTest {
         Long chatId = 420L;
         chatRepository.add(chatId);
 
-        linkRepository.add(chatId, URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw4"));
-        linkRepository.add(chatId, URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw5"));
+        var added_link1 = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw4"));
+        var added_link2 = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw5"));
+        linkRepository.addLinkRelation(chatId, added_link1.id());
+        linkRepository.addLinkRelation(chatId, added_link2.id());
+
 
         var links = linkRepository.findAll();
         assertEquals(links.size(), 2);
+
+
+        var links2 = linkRepository.findAllByChatId(chatId);
+        assertEquals(links2.size(), 2);
+
+        var links3 = linkRepository.findAllByChatId(-1L);
+        assertEquals(links3.size(), 0);
     }
 
     @Test

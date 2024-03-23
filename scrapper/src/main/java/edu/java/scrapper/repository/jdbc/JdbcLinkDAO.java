@@ -108,25 +108,23 @@ public class JdbcLinkDAO implements LinkRepository {
 
     @Override
     @Transactional
-    public Link add(Long chatId, URI url) {
+    public Link addLink(URI url) {
+        jdbcTemplate.update(
+            "INSERT INTO link (url) VALUES (?)",
+            url.toString()
+        );
+
         var link = findByUrl(url);
-        if (link.isEmpty()) {
-            jdbcTemplate.update(
-                "INSERT INTO link (url) VALUES (?)",
-                url.toString()
-            );
+        return link.get();
+    }
 
-            link = findByUrl(url);
-        }
-
-        Integer linkId = link.get().id();
-
+    @Override
+    @Transactional
+    public void addLinkRelation(Long chatId, Integer linkId) {
         jdbcTemplate.update(
             "INSERT INTO chat_link (chat_id, link_id) VALUES (?, ?)",
             chatId, linkId
         );
-
-        return link.get();
     }
 
     @Override

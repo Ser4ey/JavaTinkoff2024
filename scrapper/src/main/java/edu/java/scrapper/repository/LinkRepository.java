@@ -17,7 +17,9 @@ public interface LinkRepository {
 
     Optional<Link> findByChatIdAndLinkId(Long chatId, Integer linkId);
 
-    Link add(Long chatId, URI url);
+    Link addLink(URI url);
+
+    void addLinkRelation(Long chatId, Integer linkId);
 
     void updateLastUpdateTime(Integer id, OffsetDateTime lastUpdateTime);
 

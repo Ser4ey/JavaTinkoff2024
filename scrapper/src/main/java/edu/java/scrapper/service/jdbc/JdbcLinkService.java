@@ -35,7 +35,9 @@ public class JdbcLinkService implements LinkService {
             }
         }
 
-        return linkRepository.add(chatId, url);
+        var newLink = linkRepository.addLink(url);
+        linkRepository.addLinkRelation(chatId, newLink.id());
+        return newLink;
     }
 
     @Override

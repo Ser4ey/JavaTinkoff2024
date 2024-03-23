@@ -72,7 +72,7 @@ public class ImplLinkUpdater implements LinkUpdater {
         LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(
             System.currentTimeMillis(),
            link.url(),
-           "Информация по ссылки обновилась",
+           "Информация по ссылке обновилась",
             chatIds
         );
         botClient.sendUpdates(linkUpdateRequest);

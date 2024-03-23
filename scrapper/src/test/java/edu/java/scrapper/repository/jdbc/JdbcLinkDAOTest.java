@@ -30,8 +30,11 @@ class JdbcLinkDAOTest extends IntegrationTest {
         Long chatId = 420L;
         chatRepository.add(chatId);
 
-        linkRepository.add(chatId, URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw4"));
-        linkRepository.add(chatId, URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw5"));
+        var link1 = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw4"));
+        linkRepository.addLinkRelation(chatId, link1.id());
+
+        var link2 = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw5"));
+        linkRepository.addLinkRelation(chatId, link2.id());
 
         var links = linkRepository.findAll();
         assertEquals(links.size(), 2);
@@ -48,8 +51,11 @@ class JdbcLinkDAOTest extends IntegrationTest {
         chatRepository.add(chatId1);
         chatRepository.add(chatId2);
 
-        linkRepository.add(chatId1, URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw4"));
-        linkRepository.add(chatId2, URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw5"));
+        var link1 = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw4"));
+        linkRepository.addLinkRelation(chatId1, link1.id());
+
+        var link2 = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw5"));
+        linkRepository.addLinkRelation(chatId2, link2.id());
 
         var links1 = linkRepository.findAllByChatId(chatId1);
         var links2 = linkRepository.findAllByChatId(chatId2);
@@ -74,10 +80,12 @@ class JdbcLinkDAOTest extends IntegrationTest {
         chatRepository.add(chatId2);
 
         var uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024");
-        linkRepository.add(chatId1, uri);
+        var link = linkRepository.addLink(uri);
+        linkRepository.addLinkRelation(chatId1, link.id());
 
         assertEquals(linkRepository.findAll().size(), 1);
-        linkRepository.add(chatId2, uri);
+
+        linkRepository.addLinkRelation(chatId2, link.id());
 
         assertEquals(linkRepository.findAll().size(), 1);
     }
@@ -91,14 +99,14 @@ class JdbcLinkDAOTest extends IntegrationTest {
 
         var uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024");
 
-        linkRepository.add(chatId, uri);
+        var link = linkRepository.addLink(uri);
+        linkRepository.addLinkRelation(chatId, link.id());
 
         var link_id = linkRepository.findByUrl(uri).get().id();
 
-        var link = linkRepository.findById(link_id);
-
-        assertFalse(link.isEmpty());
-        assertEquals(link.get().url(), uri);
+        var found_link = linkRepository.findById(link_id);
+        assertFalse(found_link.isEmpty());
+        assertEquals(found_link.get().url(), uri);
     }
 
     @Test
@@ -110,7 +118,8 @@ class JdbcLinkDAOTest extends IntegrationTest {
 
         var uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024");
 
-        linkRepository.add(chatId, uri);
+        var added_link = linkRepository.addLink(uri);
+        linkRepository.addLinkRelation(chatId, added_link.id());
 
         var link = linkRepository.findByUrl(uri);
 
@@ -127,7 +136,8 @@ class JdbcLinkDAOTest extends IntegrationTest {
 
         var uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024");
 
-        linkRepository.add(chatId, uri);
+        var added_link = linkRepository.addLink(uri);
+        linkRepository.addLinkRelation(chatId, added_link.id());
 
         var link_id = linkRepository.findByUrl(uri).get().id();
 
@@ -147,7 +157,8 @@ class JdbcLinkDAOTest extends IntegrationTest {
         chatRepository.add(chatId);
 
         var uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024");
-        linkRepository.add(chatId, uri);
+        var added_link = linkRepository.addLink(uri);
+        linkRepository.addLinkRelation(chatId, added_link.id());
 
         var link = linkRepository.findByUrl(uri);
 
@@ -166,7 +177,8 @@ class JdbcLinkDAOTest extends IntegrationTest {
         chatRepository.add(chatId);
 
         var uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024");
-        linkRepository.add(chatId, uri);
+        var added_link = linkRepository.addLink(uri);
+        linkRepository.addLinkRelation(chatId, added_link.id());
 
         var link = linkRepository.findByUrl(uri);
 
@@ -185,7 +197,8 @@ class JdbcLinkDAOTest extends IntegrationTest {
         Long chatId = 420L;
         chatRepository.add(chatId);
 
-        linkRepository.add(chatId, URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
+        var added_link = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
+        linkRepository.addLinkRelation(chatId, added_link.id());
 
         var link = linkRepository.findByUrl(URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
         assertFalse(link.isEmpty());
@@ -203,7 +216,8 @@ class JdbcLinkDAOTest extends IntegrationTest {
         Long chatId = 420L;
         chatRepository.add(chatId);
 
-        linkRepository.add(chatId, URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
+        var added_link = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
+        linkRepository.addLinkRelation(chatId, added_link.id());
 
         var links = linkRepository.findAllByChatId(chatId);
         assertFalse(links.isEmpty());
@@ -224,8 +238,9 @@ class JdbcLinkDAOTest extends IntegrationTest {
         chatRepository.add(chatId2);
 
         var uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024");
-        linkRepository.add(chatId1, uri);
-        linkRepository.add(chatId2, uri);
+        var added_link = linkRepository.addLink(uri);
+        linkRepository.addLinkRelation(chatId1, added_link.id());
+        linkRepository.addLinkRelation(chatId2, added_link.id());
 
         var link = linkRepository.findByUrl(uri);
         assertFalse(link.isEmpty());
