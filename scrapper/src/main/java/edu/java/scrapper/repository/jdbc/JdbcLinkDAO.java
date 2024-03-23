@@ -155,16 +155,19 @@ public class JdbcLinkDAO implements LinkRepository {
             "DELETE FROM chat_link WHERE chat_id = ? AND link_id = ?",
             chatId, linkId
         );
+    }
 
-        var chatLinkRelations = jdbcTemplate.query(
-            "SELECT * FROM chat_link WHERE link_id = ?",
-            CustomRowMapper.CHAT_LINK_ROW_MAPPER,
-            linkId
-        );
+    @Override
+    @Transactional
+    public void removeLinksWithNoRelations() {
+        String sql = """
+            DELETE FROM link WHERE id IN (
+                SELECT link.id FROM link LEFT JOIN chat_link ON link.id = chat_link.link_id
+                WHERE chat_link.link_id IS NULL
+            )
+            """;
 
-        if (chatLinkRelations.isEmpty()) {
-            remove(linkId);
-        }
+        jdbcTemplate.update(sql);
     }
 
 }

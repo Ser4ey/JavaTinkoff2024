@@ -28,4 +28,7 @@ public interface LinkRepository {
     void remove(Integer id);
 
     void removeLinkRelation(Long chatId, Integer linkId); // удаление из таблицы chat_link
+
+    void removeLinksWithNoRelations();
+
 }

@@ -16,6 +16,8 @@ public interface LinkService {
 
     void remove(long chatId, URI url) throws LinkNotFound;
 
+    void removeLinksWithNoRelations();
+
     List<Link> listAllByChatId(long chatId);
 
     List<Link> listAll();

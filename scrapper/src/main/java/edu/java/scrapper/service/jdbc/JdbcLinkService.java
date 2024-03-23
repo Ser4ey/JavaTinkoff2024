@@ -72,6 +72,11 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
+    public void removeLinksWithNoRelations() {
+        linkRepository.removeLinksWithNoRelations();
+    }
+
+    @Override
     public List<Link> listAllByChatId(long chatId) {
         if (!chatRepository.isChatExist(chatId)) {
             chatRepository.add(chatId);

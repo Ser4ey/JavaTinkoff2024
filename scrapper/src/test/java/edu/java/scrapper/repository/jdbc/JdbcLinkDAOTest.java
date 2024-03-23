@@ -216,7 +216,8 @@ class JdbcLinkDAOTest extends IntegrationTest {
         Long chatId = 420L;
         chatRepository.add(chatId);
 
-        var added_link = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
+        var uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024");
+        var added_link = linkRepository.addLink(uri);
         linkRepository.addLinkRelation(chatId, added_link.id());
 
         var links = linkRepository.findAllByChatId(chatId);
@@ -224,7 +225,7 @@ class JdbcLinkDAOTest extends IntegrationTest {
         Integer linkId = links.getFirst().id();
 
         linkRepository.removeLinkRelation(chatId, linkId);
-        assertTrue(linkRepository.findAll().isEmpty());
+        assertFalse(linkRepository.findAll().isEmpty());
         assertTrue(linkRepository.findAllByChatId(chatId).isEmpty());
     }
 
@@ -244,17 +245,65 @@ class JdbcLinkDAOTest extends IntegrationTest {
 
         var link = linkRepository.findByUrl(uri);
         assertFalse(link.isEmpty());
+        assertFalse(linkRepository.findAllByChatId(chatId1).isEmpty());
+        assertFalse(linkRepository.findAllByChatId(chatId2).isEmpty());
 
         linkRepository.removeLinkRelation(chatId1, link.get().id());
         link = linkRepository.findByUrl(uri);
         assertFalse(link.isEmpty());
         assertFalse(linkRepository.findAll().isEmpty());
-
+        assertTrue(linkRepository.findAllByChatId(chatId1).isEmpty());
+        assertFalse(linkRepository.findAllByChatId(chatId2).isEmpty());
 
         linkRepository.removeLinkRelation(chatId2, link.get().id());
         link = linkRepository.findByUrl(uri);
+        assertTrue(linkRepository.findAllByChatId(chatId1).isEmpty());
+        assertTrue(linkRepository.findAllByChatId(chatId2).isEmpty());
+
+        assertFalse(link.isEmpty());
+        assertFalse(linkRepository.findAll().isEmpty());
+
+        linkRepository.removeLinksWithNoRelations();
+
+        link = linkRepository.findByUrl(uri);
         assertTrue(link.isEmpty());
         assertTrue(linkRepository.findAll().isEmpty());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void testRemoveLinksWithNoRelations() {
+        Long chatId = 420L;
+        chatRepository.add(chatId);
+
+        var uri1 = URI.create("https://github.com/Ser4ey/JavaTinkoff2024/pull/1");
+        var uri2 = URI.create("https://github.com/Ser4ey/JavaTinkoff2024/pull/2");
+        var uri3 = URI.create("https://github.com/Ser4ey/JavaTinkoff2024/pull/3");
+
+        linkRepository.addLink(uri1);
+        linkRepository.addLink(uri2);
+        linkRepository.addLink(uri3);
+
+        assertEquals(linkRepository.findAll().size(), 3);
+        linkRepository.removeLinksWithNoRelations();
+        assertEquals(linkRepository.findAll().size(), 0);
+
+        linkRepository.addLink(uri1);
+        var link2 = linkRepository.addLink(uri2);
+        linkRepository.addLink(uri3);
+        linkRepository.addLinkRelation(chatId, link2.id());
+
+        assertEquals(linkRepository.findAll().size(), 3);
+        linkRepository.removeLinksWithNoRelations();
+        assertEquals(linkRepository.findAll().size(), 1);
+
+        var aliveLink = linkRepository.findByChatIdAndLinkId(chatId, link2.id());
+        assertEquals(aliveLink.get().id(), link2.id());
+        assertEquals(aliveLink.get().url(), link2.url());
+        assertEquals(aliveLink.get().url(), uri2);
+
+        assertEquals(linkRepository.findAllByChatId(chatId).size(), 1);
     }
 
 
