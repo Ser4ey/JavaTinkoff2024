@@ -9,6 +9,9 @@ import java.util.Optional;
 public interface LinkRepository {
     List<Link> findAll();
 
+    // получаем numberOfLink ссылок, которые давно не проверялись
+    List<Link> findNotCheckedForLongTime(Integer numberOfLink);
+
     List<Link> findAllByChatId(Long chatId);
 
     Optional<Link> findById(Integer linkId);

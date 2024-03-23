@@ -1,8 +1,8 @@
 app:
   scheduler:
     enable: true
-    interval: 100s
-    force-check-delay: 100s
+    interval: 10s
+    force-check-delay: 10s
 
 spring:
   application:
@@ -32,3 +32,7 @@ web-clients:
 springdoc:
   swagger-ui:
     path: /swagger-ui
+
+
+number_of_links_checked_at_one_time: 2
+

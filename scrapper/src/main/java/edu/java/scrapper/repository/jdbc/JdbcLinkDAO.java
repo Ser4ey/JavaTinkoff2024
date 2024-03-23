@@ -42,6 +42,12 @@ public class JdbcLinkDAO implements LinkRepository {
     }
 
     @Override
+    public List<Link> findNotCheckedForLongTime(Integer numberOfLink) {
+        return jdbcTemplate.query(
+            "SELECT * FROM link ORDER BY last_check LIMIT ?", CustomRowMapper.LINK_ROW_MAPPER, numberOfLink);
+    }
+
+    @Override
     public List<Link> findAllByChatId(Long chatId) {
         String sql = """
             SELECT DISTINCT *

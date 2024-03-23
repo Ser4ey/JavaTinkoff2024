@@ -33,7 +33,7 @@ public class ImplLinkUpdater implements LinkUpdater {
     @Override
     public int update() {
         int updatedLinkCounter = 0;
-        var allLinks = linkService.listAll();
+        var allLinks = linkService.listNotCheckedForLongTime();
 
         for (Link link : allLinks) {
             if (updateLink(link)) {

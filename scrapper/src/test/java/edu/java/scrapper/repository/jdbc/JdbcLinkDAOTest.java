@@ -72,6 +72,36 @@ class JdbcLinkDAOTest extends IntegrationTest {
     @Test
     @Transactional
     @Rollback
+    void testFindNotCheckedForLongTime() {
+        var link1 = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw4"));
+        var link2 = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw5"));
+        var link3 = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw6"));
+        linkRepository.updateLastCheckTime(link1.id(), OffsetDateTime.MAX);
+        linkRepository.updateLastCheckTime(link2.id(), OffsetDateTime.MIN);
+        link1 = linkRepository.findById(link1.id()).get();
+        link2 = linkRepository.findById(link2.id()).get();
+        link3 = linkRepository.findById(link3.id()).get();
+
+
+
+        var links = linkRepository.findNotCheckedForLongTime(1);
+        assertEquals(links.size(), 1);
+        assertEquals(links.getFirst(), link2);
+
+        links = linkRepository.findNotCheckedForLongTime(2);
+        assertEquals(links.size(), 2);
+        assertEquals(links.getFirst(), link2);
+        assertEquals(links.getLast(), link3);
+
+        links = linkRepository.findNotCheckedForLongTime(3);
+        assertEquals(links.size(), 3);
+        assertEquals(links.getFirst(), link2);
+        assertEquals(links.getLast(), link1);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
     void testAddToManyChat() {
         Long chatId1 = 420L;
         chatRepository.add(chatId1);
