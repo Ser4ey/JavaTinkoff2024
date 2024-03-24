@@ -1,13 +1,12 @@
 package edu.java.scrapper.controller;
 
-import edu.java.scrapper.exception.CustomResponseException;
-import edu.java.scrapper.exception.ResponseException404;
-import edu.java.scrapper.exception.ResponseException409;
+import edu.java.scrapper.model.Link;
 import edu.java.scrapper.model.dto.AddLinkRequest;
 import edu.java.scrapper.model.dto.ApiErrorResponse;
 import edu.java.scrapper.model.dto.LinkResponse;
 import edu.java.scrapper.model.dto.ListLinksResponse;
 import edu.java.scrapper.model.dto.RemoveLinkRequest;
+import edu.java.scrapper.service.LinkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,8 +15,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
-import java.net.URI;
+import java.util.LinkedList;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,7 +30,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/links")
 @SuppressWarnings("MagicNumber") // dev
+@RequiredArgsConstructor
 public class LinksController {
+
+    private final LinkService linkService;
+
     @GetMapping
     @Operation(summary = "Get all the tracked links", description = "Get all the tracked links")
     @ApiResponses(value = {
@@ -42,11 +46,20 @@ public class LinksController {
         })
     })
     public ListLinksResponse getAllLinks(@RequestHeader("Tg-Chat-Id") @Min(1) Long chatId) {
-        LinkResponse link1 = new LinkResponse(100L, URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
-        LinkResponse link2 = new LinkResponse(101L, URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw3"));
-        ListLinksResponse listLinksResponse = new ListLinksResponse(List.of(link1, link2), 2);
 
-        return listLinksResponse;
+        List<Link> links = linkService.listAllByChatId(chatId);
+
+        List<LinkResponse> linkResponseList = new LinkedList<>();
+
+        for (Link link : links) {
+            LinkResponse linkResponse = new LinkResponse(
+                link.id().longValue(),
+                link.url()
+            );
+            linkResponseList.add(linkResponse);
+        }
+
+        return new ListLinksResponse(linkResponseList, linkResponseList.size());
     }
 
     @PostMapping
@@ -64,16 +77,10 @@ public class LinksController {
     })
     public LinkResponse createLink(
         @RequestHeader("Tg-Chat-Id") @Min(1) Long chatId, @RequestBody @Valid AddLinkRequest addLinkRequest
-    ) throws CustomResponseException {
-        // тестовый вариант, вынесу логику в @Service
-        if (chatId == 1) {
-            throw new ResponseException409(
-                "The link is already registered",
-                "You cannot register a link 2 times in a row"
-            );
-        }
+    ) {
+        var link = linkService.add(chatId, addLinkRequest.link());
 
-        return new LinkResponse(993L, addLinkRequest.link());
+        return new LinkResponse(link.id().longValue(), link.url());
     }
 
     @DeleteMapping
@@ -92,13 +99,10 @@ public class LinksController {
     public LinkResponse deleteLink(
         @RequestHeader("Tg-Chat-Id") @Min(1) Long chatId, @RequestBody @Valid RemoveLinkRequest removeLinkRequest
     ) {
-        if (chatId == 1) {
-            throw new ResponseException404(
-                "The chat was not found",
-                "You can't delete something that doesn't exist"
-            );
-        }
+        linkService.remove(chatId, removeLinkRequest.link());
 
-        return new LinkResponse(986L, removeLinkRequest.link());
+        return new LinkResponse(0L, removeLinkRequest.link());
     }
+
 }
+

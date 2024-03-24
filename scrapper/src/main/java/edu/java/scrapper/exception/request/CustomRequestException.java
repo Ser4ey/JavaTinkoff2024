@@ -1,6 +1,6 @@
-package edu.java.bot.exception;
+package edu.java.scrapper.exception.request;
 
-import edu.java.bot.model.dto.ApiErrorResponse;
+import edu.java.scrapper.model.dto.ApiErrorResponse;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
