@@ -67,7 +67,10 @@ class JdbcChatDAOTest extends IntegrationTest {
 
         assertTrue(chatRepository.isChatExist(777L));
 
+        chatRepository.remove(777L);
+
         assertFalse(chatRepository.isChatExist(123L));
+        assertFalse(chatRepository.isChatExist(777L));
     }
 
     @Test

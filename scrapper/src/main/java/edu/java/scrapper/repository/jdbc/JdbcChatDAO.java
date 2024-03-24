@@ -4,7 +4,6 @@ import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.repository.ChatRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -46,14 +45,10 @@ public class JdbcChatDAO implements ChatRepository {
     @Override
     @Transactional
     public boolean isChatExist(Long chatId) {
-        try {
-            var chat = jdbcTemplate.queryForObject(
-                "SELECT * FROM chat WHERE chat_id = ?", CustomRowMapper.CHAT_ROW_MAPPER, chatId);
-            return true;
-        } catch (EmptyResultDataAccessException e) {
-            return false;
-        }
+        var chatCount = jdbcTemplate.queryForObject(
+            "SELECT COUNT(chat_id) FROM chat WHERE chat_id = ?", Integer.class, chatId);
 
+        return chatCount != null && chatCount > 0;
     }
 
     @Override
