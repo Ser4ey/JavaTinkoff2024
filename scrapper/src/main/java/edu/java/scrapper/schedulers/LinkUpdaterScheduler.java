@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class LinkUpdaterScheduler {
     private final LinkUpdater linkUpdater;
 
+//    @Scheduled(cron = "0 0 0 * * *")
     @Scheduled(fixedRateString = "#{@scheduler.interval().toMillis()}")
     public void update() {
         log.info("Обновляем ссылки");

@@ -50,7 +50,7 @@ public class JdbcLinkDAO implements LinkRepository {
     @Override
     public List<Link> findAllByChatId(Long chatId) {
         String sql = """
-            SELECT DISTINCT *
+            SELECT DISTINCT link.id, link.url, link.last_update, link.last_check
             FROM link JOIN chat_link ON link.id = chat_link.link_id
             WHERE chat_id = ?
             """;
