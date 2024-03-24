@@ -27,7 +27,7 @@ public class JdbcLinkService implements LinkService {
     private final UrlsApi urlsApi;
 
     @Value("${number_of_links_checked_at_one_time:#{1}}")
-    Integer numberOfNotCheckedForLongLinks;
+    private Integer numberOfNotCheckedForLongLinks;
 
     private final static String CHAT_NOT_FOUND_EXCEPTION_TEXT = "You need to register!";
 

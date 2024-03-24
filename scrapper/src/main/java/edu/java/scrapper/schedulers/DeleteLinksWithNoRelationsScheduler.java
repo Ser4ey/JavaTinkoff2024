@@ -1,6 +1,7 @@
 package edu.java.scrapper.schedulers;
 
 import edu.java.scrapper.service.LinkService;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -15,7 +16,12 @@ import org.springframework.stereotype.Component;
 public class DeleteLinksWithNoRelationsScheduler {
     private final LinkService linkService;
 
-    @Scheduled(fixedRateString = "PT24H")
+    @PostConstruct
+    public void init() {
+        deleteLinksWithNoRelations();
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
     public void deleteLinksWithNoRelations() {
         log.info("Удаляем ссылки без связей");
         linkService.removeLinksWithNoRelations();
