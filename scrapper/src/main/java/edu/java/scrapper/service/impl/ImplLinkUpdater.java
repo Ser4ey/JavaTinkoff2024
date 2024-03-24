@@ -31,9 +31,9 @@ public class ImplLinkUpdater implements LinkUpdater {
     private final UrlsApi urlsApi;
 
     @Override
-    public int update() {
+    public int update(int checkedLinksBatchSize) {
         int updatedLinkCounter = 0;
-        var allLinks = linkService.listNotCheckedForLongTime();
+        var allLinks = linkService.listNotCheckedForLongTime(checkedLinksBatchSize);
 
         for (Link link : allLinks) {
             if (updateLink(link)) {

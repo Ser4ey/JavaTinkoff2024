@@ -3,6 +3,7 @@ app:
     enable: true
     interval: 10s
     force-check-delay: 10s
+    checked-links-batch-size: 2
 
 spring:
   application:
@@ -32,7 +33,3 @@ web-clients:
 springdoc:
   swagger-ui:
     path: /swagger-ui
-
-
-number_of_links_checked_at_one_time: 2
-

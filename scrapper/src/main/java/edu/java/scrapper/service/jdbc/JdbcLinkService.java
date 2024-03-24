@@ -14,7 +14,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,9 +24,6 @@ public class JdbcLinkService implements LinkService {
     private final ChatRepository chatRepository;
     private final LinkRepository linkRepository;
     private final UrlsApi urlsApi;
-
-    @Value("${number_of_links_checked_at_one_time:#{1}}")
-    private Integer numberOfNotCheckedForLongLinks;
 
     private final static String CHAT_NOT_FOUND_EXCEPTION_TEXT = "You need to register!";
 
@@ -107,8 +103,8 @@ public class JdbcLinkService implements LinkService {
     }
 
     @Override
-    public List<Link> listNotCheckedForLongTime() {
-        return linkRepository.findNotCheckedForLongTime(numberOfNotCheckedForLongLinks);
+    public List<Link> listNotCheckedForLongTime(int numberOfLinks) {
+        return linkRepository.findNotCheckedForLongTime(numberOfLinks);
     }
 }
 

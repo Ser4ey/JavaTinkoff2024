@@ -24,6 +24,6 @@ public interface LinkService {
 
     List<Link> listAll();
 
-    List<Link> listNotCheckedForLongTime();
+    List<Link> listNotCheckedForLongTime(int numberOfLinks);
 
 }
