@@ -30,10 +30,6 @@ public class JdbcLinkDAO implements LinkRepository {
                     resultSet.getTimestamp("last_update").toInstant().atOffset(ZoneOffset.UTC),
                     resultSet.getTimestamp("last_check").toInstant().atOffset(ZoneOffset.UTC)
                 );
-
-        private static final RowMapper<String> CHAT_LINK_ROW_MAPPER =
-            (resultSet, rowNum) -> resultSet.getInt("chat_id") + ":" + resultSet.getInt("link_id");
-
     }
 
     @Override
@@ -96,20 +92,16 @@ public class JdbcLinkDAO implements LinkRepository {
     @Override
     @Transactional
     public Optional<Link> findByChatIdAndLinkId(Long chatId, Integer linkId) {
-        try {
-            var chatLink = jdbcTemplate.queryForObject(
-                "SELECT * FROM chat_link WHERE chat_link.chat_id = ? AND chat_link.link_id = ?",
-                CustomRowMapper.CHAT_LINK_ROW_MAPPER,
-                chatId, linkId
-            );
-            if (chatLink == null || chatLink.isEmpty()) {
-                return Optional.empty();
-            }
+        var chatLinkCount = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM chat_link WHERE chat_link.chat_id = ? AND chat_link.link_id = ?",
+            Integer.class,
+            chatId, linkId
+        );
 
-            return findById(linkId);
-        } catch (EmptyResultDataAccessException e) {
+        if (chatLinkCount == null || chatLinkCount == 0) {
             return Optional.empty();
         }
+        return findById(linkId);
     }
 
     @Override
