@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface JpaChatRepository extends JpaRepository<ChatEntity, Long> {
     Optional<ChatEntity> findByChatId(long chatId);
@@ -13,6 +14,7 @@ public interface JpaChatRepository extends JpaRepository<ChatEntity, Long> {
     boolean existsChatByChatId(long chatId);
 
     @Modifying
+    @Transactional
     @Query(value = "DELETE FROM chat WHERE chat_id = ?", nativeQuery = true)
     void deleteById(@NotNull Long chatId);
 

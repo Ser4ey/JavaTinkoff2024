@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface JpaLinkRepository extends JpaRepository<LinkEntity, Integer> {
     @NotNull
@@ -17,6 +18,7 @@ public interface JpaLinkRepository extends JpaRepository<LinkEntity, Integer> {
     Optional<LinkEntity> findById(@NotNull Integer id);
 
     @Modifying
+    @Transactional
     @Query(value = "DELETE FROM link WHERE id = ?", nativeQuery = true)
     void deleteById(@NotNull Integer id);
 
@@ -29,6 +31,7 @@ public interface JpaLinkRepository extends JpaRepository<LinkEntity, Integer> {
     int countAllByChatIdAndLinkId(long chatId, int linkId);
 
     @Modifying
+    @Transactional
     @Query(value = """
                 DELETE FROM link WHERE id IN (
                 SELECT link.id FROM link LEFT JOIN chat_link ON link.id = chat_link.link_id

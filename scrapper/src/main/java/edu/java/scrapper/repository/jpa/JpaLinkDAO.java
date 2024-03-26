@@ -8,7 +8,6 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -17,9 +16,11 @@ public class JpaLinkDAO implements LinkRepository {
     private final JpaLinkRepository jpaLinkRepository;
 
     private List<Link> convertListOfLinkEntityToListOfLink(List<LinkEntity> listOfLinkEntity) {
-        return listOfLinkEntity.stream()
-            .map(LinkEntity::toLink)
-            .collect(Collectors.toList());
+        var listOfLinks = new ArrayList<Link>();
+        for (LinkEntity linkEntity : listOfLinkEntity) {
+            listOfLinks.add(linkEntity.toLink());
+        }
+        return listOfLinks;
     }
 
     @Override

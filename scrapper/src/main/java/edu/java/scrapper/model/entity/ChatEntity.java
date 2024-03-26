@@ -28,7 +28,7 @@ public class ChatEntity {
     @Column(name = "chat_id")
     private Long chatId;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
         name = "chat_link",
         joinColumns = @JoinColumn(name = "chat_id", referencedColumnName = "chat_id"),

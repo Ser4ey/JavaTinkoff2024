@@ -14,9 +14,11 @@ public class JpaChatDAO implements ChatRepository {
     private final JpaLinkRepository jpaLinkRepository;
 
     private List<Chat> convertListOfChatEntityToListOfChat(List<ChatEntity> listOfChatEntity) {
-        return listOfChatEntity.stream()
-            .map(ChatEntity::toChat)
-            .collect(Collectors.toList());
+        var listOfChats = new ArrayList<Chat>();
+        for (ChatEntity chatEntity : listOfChatEntity) {
+            listOfChats.add(chatEntity.toChat());
+        }
+        return listOfChats;
     }
 
     @Override
