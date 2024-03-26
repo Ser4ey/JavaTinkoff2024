@@ -1,6 +1,7 @@
 package edu.java.scrapper.repository.jpa;
 
 import edu.java.scrapper.model.Chat;
+import edu.java.scrapper.model.entity.ChatEntity;
 import edu.java.scrapper.repository.ChatRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,14 +37,14 @@ public class JpaChatDAO implements ChatRepository {
     @Override
     public void add(Long chatId) {
         jpaChatRepository.save(
-            new edu.java.scrapper.model.entity.Chat(chatId)
+            new ChatEntity(chatId)
         );
     }
 
     @Override
     public void remove(Long chatId) {
         jpaChatRepository.delete(
-            new edu.java.scrapper.model.entity.Chat(chatId)
+            new ChatEntity(chatId)
         );
     }
 }

@@ -1,7 +1,7 @@
 package edu.java.scrapper.repository.jpa;
 
 import edu.java.scrapper.IntegrationTest;
-import edu.java.scrapper.model.entity.Link;
+import edu.java.scrapper.model.entity.LinkEntity;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +23,12 @@ class JpaLinkRepositoryTest extends IntegrationTest {
     void testFindById() {
 
         jpaLinkRepository.save(
-            new Link("link_1", OffsetDateTime.now(), OffsetDateTime.now())
+            new LinkEntity("link_1", OffsetDateTime.now(), OffsetDateTime.now())
         );
 
 
         jpaLinkRepository.save(
-            new Link("link_2", OffsetDateTime.now(), OffsetDateTime.now())
+            new LinkEntity("link_2", OffsetDateTime.now(), OffsetDateTime.now())
         );
 
         System.out.println(jpaLinkRepository.findAll());

@@ -22,7 +22,7 @@ import lombok.Setter;
 @Getter
 //@ToString
 @NoArgsConstructor
-public class Chat {
+public class ChatEntity {
     @Id
     @Column(name = "chat_id")
     private Long chatId;
@@ -33,9 +33,9 @@ public class Chat {
         joinColumns = @JoinColumn(name = "chat_id", referencedColumnName = "chat_id"),
         inverseJoinColumns = @JoinColumn(name = "link_id", referencedColumnName = "id")
     )
-    private List<Link> links = new ArrayList<>();
+    private List<LinkEntity> links = new ArrayList<>();
 
-    public Chat(long chatId) {
+    public ChatEntity(long chatId) {
         this.chatId = chatId;
     }
 }

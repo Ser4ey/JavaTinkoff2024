@@ -21,7 +21,7 @@ import lombok.Setter;
 @Getter
 //@ToString
 @NoArgsConstructor
-public class Link {
+public class LinkEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -36,9 +36,9 @@ public class Link {
     private OffsetDateTime lastCheck;
 
     @ManyToMany(mappedBy = "links", fetch = FetchType.LAZY)
-    private List<Chat> chats = new ArrayList<>();
+    private List<ChatEntity> chats = new ArrayList<>();
 
-    public Link(String url, OffsetDateTime lastUpdate, OffsetDateTime lastCheck) {
+    public LinkEntity(String url, OffsetDateTime lastUpdate, OffsetDateTime lastCheck) {
         this.url = url;
         this.lastUpdate = lastUpdate;
         this.lastCheck = lastCheck;
