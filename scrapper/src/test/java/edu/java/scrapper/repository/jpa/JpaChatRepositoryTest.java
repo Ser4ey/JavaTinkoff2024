@@ -43,7 +43,7 @@ class JpaChatRepositoryTest extends IntegrationTest {
         );
 
         var l = jpaLinkRepository.save(
-            new LinkEntity("link_1", OffsetDateTime.now(), OffsetDateTime.now())
+            new LinkEntity("link_1")
         );
 
 //        linkRepository.addLinkRelation(c.getChatId(), l.getId());

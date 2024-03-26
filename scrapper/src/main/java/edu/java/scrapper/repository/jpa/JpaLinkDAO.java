@@ -5,6 +5,7 @@ import edu.java.scrapper.model.entity.LinkEntity;
 import edu.java.scrapper.repository.LinkRepository;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,70 +16,117 @@ public class JpaLinkDAO implements LinkRepository {
     private final JpaChatRepository jpaChatRepository;
     private final JpaLinkRepository jpaLinkRepository;
 
-    @Override
-    public List<Link> findAll() {
-        return jpaLinkRepository.findAll().stream()
+    private List<Link> convertListOfLinkEntityToListOfLink(List<LinkEntity> listOfLinkEntity) {
+        return listOfLinkEntity.stream()
             .map(LinkEntity::toLink)
             .collect(Collectors.toList());
     }
 
     @Override
+    public List<Link> findAll() {
+        return convertListOfLinkEntityToListOfLink(jpaLinkRepository.findAll());
+    }
+
+    @Override
     public List<Link> findNotCheckedForLongTime(Integer numberOfLink) {
-        return null;
+        return convertListOfLinkEntityToListOfLink(
+            jpaLinkRepository.findNotCheckedForLongTime(numberOfLink));
     }
 
     @Override
     public List<Link> findAllByChatId(Long chatId) {
-        return null;
+        var chatEntity = jpaChatRepository.findByChatId(chatId);
+        if (chatEntity.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return convertListOfLinkEntityToListOfLink(chatEntity.get().getLinks());
     }
 
     @Override
     public Optional<Link> findById(Integer linkId) {
-        return Optional.empty();
+        var linkEntity = jpaLinkRepository.findById(linkId);
+        return linkEntity.map(LinkEntity::toLink);
     }
 
     @Override
     public Optional<Link> findByUrl(URI url) {
-        return Optional.empty();
+        var linkEntity = jpaLinkRepository.findByUrl(url.toString());
+        return linkEntity.map(LinkEntity::toLink);
     }
 
     @Override
     public Optional<Link> findByChatIdAndLinkId(Long chatId, Integer linkId) {
-        return Optional.empty();
+        int count = jpaLinkRepository.countAllByChatIdAndLinkId(chatId, linkId);
+        if (count == 0) {
+            return Optional.empty();
+        }
+
+        return findById(linkId);
     }
 
     @Override
     public Link addLink(URI url) {
-        return null;
+        jpaLinkRepository.save(
+            new LinkEntity(url.toString())
+        );
+        return findByUrl(url).get();
     }
 
     @Override
     public void addLinkRelation(Long chatId, Integer linkId) {
+        var chatEntity = jpaChatRepository.findById(chatId);
+        var linkEntity = jpaLinkRepository.findById(linkId);
 
+        chatEntity.get().getLinks().add(linkEntity.get());
+        linkEntity.get().getChats().add(chatEntity.get());
+
+        jpaChatRepository.save(chatEntity.get());
+        jpaLinkRepository.save(linkEntity.get());
     }
 
     @Override
     public void updateLastUpdateTime(Integer id, OffsetDateTime lastUpdateTime) {
-
+        var linkEntity = jpaLinkRepository.findById(id);
+        if (linkEntity.isEmpty()) {
+            return;
+        }
+        linkEntity.get().setLastUpdate(lastUpdateTime);
+        jpaLinkRepository.save(linkEntity.get());
     }
 
     @Override
     public void updateLastCheckTime(Integer id, OffsetDateTime lastCheckTime) {
-
+        var linkEntity = jpaLinkRepository.findById(id);
+        if (linkEntity.isEmpty()) {
+            return;
+        }
+        linkEntity.get().setLastCheck(lastCheckTime);
+        jpaLinkRepository.save(linkEntity.get());
     }
 
     @Override
     public void remove(Integer id) {
-
+        jpaLinkRepository.deleteById(id);
     }
 
     @Override
     public void removeLinkRelation(Long chatId, Integer linkId) {
+        var chatEntity = jpaChatRepository.findByChatId(chatId);
+        var linkEntity = jpaLinkRepository.findById(linkId);
+        if (chatEntity.isEmpty() || linkEntity.isEmpty()) {
+            return;
+        }
 
+        chatEntity.get().getLinks().remove(linkEntity.get());
+        linkEntity.get().getChats().remove(chatEntity.get());
+
+        jpaChatRepository.save(chatEntity.get());
+        jpaLinkRepository.save(linkEntity.get());
     }
 
     @Override
     public void removeLinksWithNoRelations() {
-
+        jpaLinkRepository.deleteLinksWithNoRelations();
     }
 }

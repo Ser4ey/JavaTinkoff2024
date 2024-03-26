@@ -37,29 +37,29 @@ class JpaChatDAOTest extends IntegrationTest{
         assertEquals(chats.getLast().chatId(), 18L);
     }
 
-//    @Test
-//    @Transactional
-//    @Rollback
-//    void testFindAllByLinkId() {
-//        Long chatId = 420L;
-//        chatRepository.add(chatId);
-//
-//        var added_link1 = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw4"));
-//        var added_link2 = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw5"));
-//        linkRepository.addLinkRelation(chatId, added_link1.id());
-//        linkRepository.addLinkRelation(chatId, added_link2.id());
-//
-//
-//        var links = linkRepository.findAll();
-//        assertEquals(links.size(), 2);
-//
-//
-//        var links2 = linkRepository.findAllByChatId(chatId);
-//        assertEquals(links2.size(), 2);
-//
-//        var links3 = linkRepository.findAllByChatId(-1L);
-//        assertEquals(links3.size(), 0);
-//    }
+    @Test
+    @Transactional
+    @Rollback
+    void testFindAllByLinkId() {
+        Long chatId = 420L;
+        chatRepository.add(chatId);
+
+        var added_link1 = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw4"));
+        var added_link2 = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw5"));
+        linkRepository.addLinkRelation(chatId, added_link1.id());
+        linkRepository.addLinkRelation(chatId, added_link2.id());
+
+
+        var links = linkRepository.findAll();
+        assertEquals(links.size(), 2);
+
+
+        var links2 = linkRepository.findAllByChatId(chatId);
+        assertEquals(links2.size(), 2);
+
+        var links3 = linkRepository.findAllByChatId(-1L);
+        assertEquals(links3.size(), 0);
+    }
 
     @Test
     @Transactional
@@ -88,6 +88,27 @@ class JpaChatDAOTest extends IntegrationTest{
         assertFalse(chatRepository.isChatExist(777L));
         assertFalse(chatRepository.isChatExist(87L));
 
+        assertTrue(chatRepository.findAll().isEmpty());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void testRemove2() {
+        chatRepository.add(777L);
+        var link = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
+
+        assertTrue(chatRepository.isChatExist(777L));
+        assertFalse(chatRepository.findAll().isEmpty());
+
+        linkRepository.addLinkRelation(777L, link.id());
+
+        assertTrue(chatRepository.isChatExist(777L));
+        assertFalse(chatRepository.findAll().isEmpty());
+
+        chatRepository.remove(777L);
+
+        assertFalse(chatRepository.isChatExist(777L));
         assertTrue(chatRepository.findAll().isEmpty());
     }
 }

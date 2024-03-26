@@ -23,12 +23,12 @@ class JpaLinkRepositoryTest extends IntegrationTest {
     void testFindById() {
 
         jpaLinkRepository.save(
-            new LinkEntity("link_1", OffsetDateTime.now(), OffsetDateTime.now())
+            new LinkEntity("link_1")
         );
 
 
         jpaLinkRepository.save(
-            new LinkEntity("link_2", OffsetDateTime.now(), OffsetDateTime.now())
+            new LinkEntity("link_2")
         );
 
         System.out.println(jpaLinkRepository.findAll());

@@ -1,6 +1,7 @@
 package edu.java.scrapper.model.entity;
 
 import edu.java.scrapper.model.Link;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -37,13 +38,13 @@ public class LinkEntity {
     @Column(name = "last_check", nullable = false)
     private OffsetDateTime lastCheck;
 
-    @ManyToMany(mappedBy = "links", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "links", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ChatEntity> chats = new ArrayList<>();
 
-    public LinkEntity(String url, OffsetDateTime lastUpdate, OffsetDateTime lastCheck) {
+    public LinkEntity(String url) {
         this.url = url;
-        this.lastUpdate = lastUpdate;
-        this.lastCheck = lastCheck;
+        lastUpdate = OffsetDateTime.now();
+        lastCheck = OffsetDateTime.now();
     }
 
     public Link toLink() {

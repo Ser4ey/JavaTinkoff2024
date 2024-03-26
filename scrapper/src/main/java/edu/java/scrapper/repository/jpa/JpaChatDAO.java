@@ -3,6 +3,7 @@ package edu.java.scrapper.repository.jpa;
 import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.model.entity.ChatEntity;
 import edu.java.scrapper.repository.ChatRepository;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,12 @@ import lombok.RequiredArgsConstructor;
 public class JpaChatDAO implements ChatRepository {
     private final JpaChatRepository jpaChatRepository;
     private final JpaLinkRepository jpaLinkRepository;
+
+    private List<Chat> convertListOfChatEntityToListOfChat(List<ChatEntity> listOfChatEntity) {
+        return listOfChatEntity.stream()
+            .map(ChatEntity::toChat)
+            .collect(Collectors.toList());
+    }
 
     @Override
     public List<Chat> findAll() {
@@ -21,7 +28,12 @@ public class JpaChatDAO implements ChatRepository {
 
     @Override
     public List<Chat> findAllByLinkId(Integer linkId) {
-        return null;
+        var linkEntity = jpaLinkRepository.findById(linkId);
+        if (linkEntity.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        return convertListOfChatEntityToListOfChat(linkEntity.get().getChats());
     }
 
     @Override
@@ -38,8 +50,6 @@ public class JpaChatDAO implements ChatRepository {
 
     @Override
     public void remove(Long chatId) {
-        jpaChatRepository.delete(
-            new ChatEntity(chatId)
-        );
+        jpaChatRepository.deleteById(chatId);
     }
 }
