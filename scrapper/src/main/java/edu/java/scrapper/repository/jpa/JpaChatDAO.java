@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JpaChatDAO implements ChatRepository {
@@ -29,6 +30,7 @@ public class JpaChatDAO implements ChatRepository {
     }
 
     @Override
+    @Transactional
     public List<Chat> findAllByLinkId(Integer linkId) {
         var linkEntity = jpaLinkRepository.findById(linkId);
         if (linkEntity.isEmpty()) {
@@ -44,6 +46,7 @@ public class JpaChatDAO implements ChatRepository {
     }
 
     @Override
+    @Transactional
     public void add(Long chatId) {
         jpaChatRepository.save(
             new ChatEntity(chatId)
@@ -51,6 +54,7 @@ public class JpaChatDAO implements ChatRepository {
     }
 
     @Override
+    @Transactional
     public void remove(Long chatId) {
         jpaChatRepository.deleteById(chatId);
     }

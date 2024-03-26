@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 public class JpaLinkDAO implements LinkRepository {
@@ -35,6 +36,7 @@ public class JpaLinkDAO implements LinkRepository {
     }
 
     @Override
+    @Transactional
     public List<Link> findAllByChatId(Long chatId) {
         var chatEntity = jpaChatRepository.findByChatId(chatId);
         if (chatEntity.isEmpty()) {
@@ -57,6 +59,7 @@ public class JpaLinkDAO implements LinkRepository {
     }
 
     @Override
+    @Transactional
     public Optional<Link> findByChatIdAndLinkId(Long chatId, Integer linkId) {
         int count = jpaLinkRepository.countAllByChatIdAndLinkId(chatId, linkId);
         if (count == 0) {
@@ -75,6 +78,7 @@ public class JpaLinkDAO implements LinkRepository {
     }
 
     @Override
+    @Transactional
     public void addLinkRelation(Long chatId, Integer linkId) {
         var chatEntity = jpaChatRepository.findById(chatId);
         var linkEntity = jpaLinkRepository.findById(linkId);
@@ -87,6 +91,7 @@ public class JpaLinkDAO implements LinkRepository {
     }
 
     @Override
+    @Transactional
     public void updateLastUpdateTime(Integer id, OffsetDateTime lastUpdateTime) {
         var linkEntity = jpaLinkRepository.findById(id);
         if (linkEntity.isEmpty()) {
@@ -97,6 +102,7 @@ public class JpaLinkDAO implements LinkRepository {
     }
 
     @Override
+    @Transactional
     public void updateLastCheckTime(Integer id, OffsetDateTime lastCheckTime) {
         var linkEntity = jpaLinkRepository.findById(id);
         if (linkEntity.isEmpty()) {
@@ -107,11 +113,13 @@ public class JpaLinkDAO implements LinkRepository {
     }
 
     @Override
+    @Transactional
     public void remove(Integer id) {
         jpaLinkRepository.deleteById(id);
     }
 
     @Override
+    @Transactional
     public void removeLinkRelation(Long chatId, Integer linkId) {
         var chatEntity = jpaChatRepository.findByChatId(chatId);
         var linkEntity = jpaLinkRepository.findById(linkId);
@@ -127,6 +135,7 @@ public class JpaLinkDAO implements LinkRepository {
     }
 
     @Override
+    @Transactional
     public void removeLinksWithNoRelations() {
         jpaLinkRepository.deleteLinksWithNoRelations();
     }

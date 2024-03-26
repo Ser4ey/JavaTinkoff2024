@@ -26,6 +26,7 @@ public interface JpaLinkRepository extends JpaRepository<LinkEntity, Integer> {
     @Query(value = "SELECT * FROM link ORDER BY last_check LIMIT :numberOfLink", nativeQuery = true)
     List<LinkEntity> findNotCheckedForLongTime(@Param("numberOfLink") int numberOfLink);
 
+    @Transactional
     @Query(value = "SELECT COUNT(*) FROM chat_link WHERE chat_link.chat_id = :chatId AND chat_link.link_id = :linkId",
            nativeQuery = true)
     int countAllByChatIdAndLinkId(long chatId, int linkId);

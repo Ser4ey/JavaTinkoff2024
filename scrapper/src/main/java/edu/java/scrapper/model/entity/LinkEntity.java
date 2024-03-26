@@ -38,7 +38,8 @@ public class LinkEntity {
     @Column(name = "last_check", nullable = false)
     private OffsetDateTime lastCheck;
 
-    @ManyToMany(mappedBy = "links", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @ManyToMany(mappedBy = "links", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "links", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ChatEntity> chats = new ArrayList<>();
 
     public LinkEntity(String url) {
