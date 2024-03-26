@@ -20,11 +20,11 @@ public class JpaAccessConfiguration {
 
     @Bean
     public ChatRepository jpaChatDAO() {
-        return new JpaChatDAO(jpaChatRepository);
+        return new JpaChatDAO(jpaChatRepository, jpaLinkRepository);
     }
 
     @Bean
     public LinkRepository jpaLinkDAO() {
-        return new JpaLinkDAO(jpaLinkRepository);
+        return new JpaLinkDAO(jpaChatRepository, jpaLinkRepository);
     }
 }

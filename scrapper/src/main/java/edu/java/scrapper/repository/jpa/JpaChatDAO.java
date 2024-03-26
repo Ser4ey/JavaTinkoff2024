@@ -3,25 +3,20 @@ package edu.java.scrapper.repository.jpa;
 import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.model.entity.ChatEntity;
 import edu.java.scrapper.repository.ChatRepository;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class JpaChatDAO implements ChatRepository {
     private final JpaChatRepository jpaChatRepository;
+    private final JpaLinkRepository jpaLinkRepository;
 
     @Override
     public List<Chat> findAll() {
-        var chats = jpaChatRepository.findAll();
-
-        List<Chat> newChats = new ArrayList<>();
-        for (var c : chats) {
-            newChats.add(
-                new Chat(c.getChatId())
-            );
-        }
-        return newChats;
+        return jpaChatRepository.findAll().stream()
+            .map(ChatEntity::toChat)
+            .collect(Collectors.toList());
     }
 
     @Override

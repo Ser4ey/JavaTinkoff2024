@@ -19,8 +19,8 @@ class JpaChatDAOTest extends IntegrationTest{
 
     public JpaChatDAOTest(@Autowired JpaChatRepository jpaChatRepository,
         @Autowired JpaLinkRepository jpaLinkRepository) {
-        this.chatRepository = new JpaChatDAO(jpaChatRepository);
-        this.linkRepository = new JpaLinkDAO(jpaLinkRepository);
+        this.chatRepository = new JpaChatDAO(jpaChatRepository, jpaLinkRepository);
+        this.linkRepository = new JpaLinkDAO(jpaChatRepository, jpaLinkRepository);
     }
 
     @Test

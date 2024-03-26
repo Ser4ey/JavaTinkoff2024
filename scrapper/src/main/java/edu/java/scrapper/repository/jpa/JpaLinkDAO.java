@@ -1,20 +1,25 @@
 package edu.java.scrapper.repository.jpa;
 
 import edu.java.scrapper.model.Link;
+import edu.java.scrapper.model.entity.LinkEntity;
 import edu.java.scrapper.repository.LinkRepository;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class JpaLinkDAO implements LinkRepository {
+    private final JpaChatRepository jpaChatRepository;
     private final JpaLinkRepository jpaLinkRepository;
 
     @Override
     public List<Link> findAll() {
-        return null;
+        return jpaLinkRepository.findAll().stream()
+            .map(LinkEntity::toLink)
+            .collect(Collectors.toList());
     }
 
     @Override

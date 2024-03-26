@@ -1,5 +1,6 @@
 package edu.java.scrapper.model.entity;
 
+import edu.java.scrapper.model.Link;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -8,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,5 +44,9 @@ public class LinkEntity {
         this.url = url;
         this.lastUpdate = lastUpdate;
         this.lastCheck = lastCheck;
+    }
+
+    public Link toLink() {
+        return new Link(id, URI.create(url), lastUpdate, lastCheck);
     }
 }
