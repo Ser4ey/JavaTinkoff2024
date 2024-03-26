@@ -1,14 +1,13 @@
 package edu.java.scrapper.repository.jdbc;
 
 import edu.java.scrapper.IntegrationTest;
-import edu.java.scrapper.repository.ChatRepository;
-import edu.java.scrapper.repository.LinkRepository;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,11 +16,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class JdbcLinkDAOTest extends IntegrationTest {
-    @Autowired
-    private ChatRepository chatRepository;
+    private final JdbcChatDAO chatRepository;
+    private final JdbcLinkDAO linkRepository;
 
-    @Autowired
-    private LinkRepository linkRepository;
+    JdbcLinkDAOTest(@Autowired JdbcTemplate jdbcTemplate) {
+        this.chatRepository = new JdbcChatDAO(jdbcTemplate);
+        this.linkRepository = new JdbcLinkDAO(jdbcTemplate);
+    }
 
     @Test
     @Transactional

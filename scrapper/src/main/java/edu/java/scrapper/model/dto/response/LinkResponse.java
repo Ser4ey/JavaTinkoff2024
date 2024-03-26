@@ -1,4 +1,4 @@
-package edu.java.scrapper.model.dto;
+package edu.java.scrapper.model.dto.response;
 
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;

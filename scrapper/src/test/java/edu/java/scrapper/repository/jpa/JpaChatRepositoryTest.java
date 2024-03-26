@@ -20,9 +20,6 @@ class JpaChatRepositoryTest extends IntegrationTest {
     @Autowired
     private JpaLinkRepository jpaLinkRepository;
 
-    @Autowired
-    private LinkRepository linkRepository;
-
     @Test
     @Transactional
     @Rollback
@@ -51,11 +48,25 @@ class JpaChatRepositoryTest extends IntegrationTest {
             new Link("link_1", OffsetDateTime.now(), OffsetDateTime.now())
         );
 
-        linkRepository.addLinkRelation(c.getChatId(), l.getId());
+//        linkRepository.addLinkRelation(c.getChatId(), l.getId());
+//        linkRepository.findAll();
+
+        c.getLinks().add(l);
+        jpaChatRepository.save(c);
+
+        l.getChats().add(c);
+        jpaLinkRepository.save(l);
+
+
+        System.out.println(jpaLinkRepository.findByUrl("link_1"));
 
 
         System.out.println(
             jpaChatRepository.findAll()
+        );
+
+        System.out.println(
+            jpaLinkRepository.findAll()
         );
 
     }
