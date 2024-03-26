@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 class JpaLinkRepositoryTest extends IntegrationTest {
     @Autowired
+    private JpaChatRepository jpaChatRepository;
+
+    @Autowired
     private JpaLinkRepository jpaLinkRepository;
 
     @Test
