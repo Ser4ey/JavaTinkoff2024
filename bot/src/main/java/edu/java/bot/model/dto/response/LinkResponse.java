@@ -1,4 +1,4 @@
-package edu.java.bot.model.dto;
+package edu.java.bot.model.dto.response;
 
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;

@@ -1,11 +1,11 @@
 package edu.java.bot.client;
 
 import edu.java.bot.exception.request.CustomRequestException;
-import edu.java.bot.model.dto.AddLinkRequest;
-import edu.java.bot.model.dto.ApiErrorResponse;
-import edu.java.bot.model.dto.LinkResponse;
-import edu.java.bot.model.dto.ListLinksResponse;
-import edu.java.bot.model.dto.RemoveLinkRequest;
+import edu.java.bot.model.dto.request.AddLinkRequest;
+import edu.java.bot.model.dto.request.RemoveLinkRequest;
+import edu.java.bot.model.dto.response.ApiErrorResponse;
+import edu.java.bot.model.dto.response.LinkResponse;
+import edu.java.bot.model.dto.response.ListLinksResponse;
 import java.net.URI;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
