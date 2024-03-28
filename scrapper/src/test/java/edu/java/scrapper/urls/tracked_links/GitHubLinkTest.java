@@ -2,7 +2,7 @@ package edu.java.scrapper.urls.tracked_links;
 
 import edu.java.scrapper.IntegrationTest;
 import edu.java.scrapper.client.GitHubClient;
-import edu.java.scrapper.model.dto.GitHubOwnerRepoResponse;
+import edu.java.scrapper.model.dto.response.GitHubOwnerRepoResponse;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Test;

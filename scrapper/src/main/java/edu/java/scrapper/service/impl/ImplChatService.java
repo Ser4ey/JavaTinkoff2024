@@ -1,4 +1,4 @@
-package edu.java.scrapper.service.jdbc;
+package edu.java.scrapper.service.impl;
 
 import edu.java.scrapper.exception.service.ChatAlreadyRegistered;
 import edu.java.scrapper.exception.service.ChatNotFound;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Log4j2
 @Service
-public class JdbcChatService implements ChatService {
+public class ImplChatService implements ChatService {
     private final ChatRepository chatRepository;
 
     @Override

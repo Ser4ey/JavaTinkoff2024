@@ -1,27 +1,26 @@
-package edu.java.scrapper.repository.jdbc;
+package edu.java.scrapper.repository.jpa;
 
 import edu.java.scrapper.IntegrationTest;
-import java.net.URI;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.net.URI;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 @SpringBootTest
-class JdbcLinkDAOTest extends IntegrationTest {
-    private final JdbcChatDAO chatRepository;
-    private final JdbcLinkDAO linkRepository;
+class JpaLinkDAOTest extends IntegrationTest {
+    private final JpaChatDAO chatRepository;
+    private final JpaLinkDAO linkRepository;
 
-    JdbcLinkDAOTest(@Autowired JdbcTemplate jdbcTemplate) {
-        this.chatRepository = new JdbcChatDAO(jdbcTemplate);
-        this.linkRepository = new JdbcLinkDAO(jdbcTemplate);
+    public JpaLinkDAOTest(@Autowired JpaChatRepository jpaChatRepository,
+        @Autowired JpaLinkRepository jpaLinkRepository) {
+        this.chatRepository = new JpaChatDAO(jpaChatRepository, jpaLinkRepository);
+        this.linkRepository = new JpaLinkDAO(jpaChatRepository, jpaLinkRepository);
     }
 
     @Test
@@ -77,13 +76,16 @@ class JdbcLinkDAOTest extends IntegrationTest {
         var link1 = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw4"));
         var link2 = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw5"));
         var link3 = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw6"));
-        linkRepository.updateLastCheckTime(link1.id(), OffsetDateTime.MAX);
-        linkRepository.updateLastCheckTime(link2.id(), OffsetDateTime.MIN);
+        linkRepository.updateLastCheckTime(link1.id(), OffsetDateTime.now().plusDays(1));
+        linkRepository.updateLastCheckTime(link2.id(), OffsetDateTime.now().minusDays(1));
         link1 = linkRepository.findById(link1.id()).get();
         link2 = linkRepository.findById(link2.id()).get();
         link3 = linkRepository.findById(link3.id()).get();
 
 
+        System.out.println(
+            linkRepository.findAll()
+        );
 
         var links = linkRepository.findNotCheckedForLongTime(1);
         assertEquals(links.size(), 1);
@@ -234,7 +236,11 @@ class JdbcLinkDAOTest extends IntegrationTest {
         var link = linkRepository.findByUrl(URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
         assertFalse(link.isEmpty());
 
+        System.out.println(linkRepository.findAll());
+        System.out.println(link.get().id());
         linkRepository.remove(link.get().id());
+        System.out.println(linkRepository.findAll());
+
 
         link = linkRepository.findByUrl(URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
         assertTrue(link.isEmpty());
@@ -337,6 +343,4 @@ class JdbcLinkDAOTest extends IntegrationTest {
         assertEquals(linkRepository.findAllByChatId(chatId).size(), 1);
     }
 
-
 }
-

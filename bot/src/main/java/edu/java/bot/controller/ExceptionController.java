@@ -1,6 +1,6 @@
 package edu.java.bot.controller;
 
-import edu.java.bot.model.dto.ApiErrorResponse;
+import edu.java.bot.model.dto.response.ApiErrorResponse;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.http.HttpStatus;

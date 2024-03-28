@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import edu.java.bot.service.ScrapperService;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -17,7 +18,9 @@ public class ListCommandTest {
     public void testExecuteWithNoLinks() {
         State state = Mockito.mock(State.class);
         ChatBotMessage chatMessage = Mockito.mock(ChatBotMessage.class);
-        ListCommand listCommand = Mockito.spy(new ListCommand());
+        ScrapperService scrapperService = Mockito.mock(ScrapperService.class);
+
+        ListCommand listCommand = Mockito.spy(new ListCommand(scrapperService));
 
         Mockito.when(listCommand.getUserLinks(anyLong())).thenReturn(Collections.emptyList());
 
@@ -34,7 +37,8 @@ public class ListCommandTest {
     public void testExecuteWithOneLink() {
         State state = Mockito.mock(State.class);
         ChatBotMessage chatMessage = Mockito.mock(ChatBotMessage.class);
-        ListCommand listCommand = Mockito.spy(new ListCommand());
+        ScrapperService scrapperService = Mockito.mock(ScrapperService.class);
+        ListCommand listCommand = Mockito.spy(new ListCommand(scrapperService));
 
         Mockito.when(listCommand.getUserLinks(anyLong())).thenReturn(Collections.singletonList("https://example.com"));
 
@@ -49,7 +53,8 @@ public class ListCommandTest {
     public void testExecuteWithManyLinks() {
         State state = Mockito.mock(State.class);
         ChatBotMessage chatMessage = Mockito.mock(ChatBotMessage.class);
-        ListCommand listCommand = Mockito.spy(new ListCommand());
+        ScrapperService scrapperService = Mockito.mock(ScrapperService.class);
+        ListCommand listCommand = Mockito.spy(new ListCommand(scrapperService));
 
         Mockito.when(listCommand.getUserLinks(anyLong())).
             thenReturn(List.of("https://example1.com", "https://example2.com", "https://example3.com"));

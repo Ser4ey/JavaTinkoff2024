@@ -2,7 +2,7 @@ package edu.java.scrapper.urls.tracked_links;
 
 import edu.java.scrapper.IntegrationTest;
 import edu.java.scrapper.client.StackOverflowClient;
-import edu.java.scrapper.model.dto.StackOverflowQuestionsResponse.StackOverflowQuestion;
+import edu.java.scrapper.model.dto.response.StackOverflowQuestionsResponse.StackOverflowQuestion;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import org.junit.jupiter.api.Test;

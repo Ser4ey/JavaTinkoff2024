@@ -4,31 +4,29 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-
+@Component
 public class AllCommands {
-    private AllCommands() {}
+    private final Map<String, Command> commandsMap = new LinkedHashMap<>();
 
-    private static final Map<String, Command> COMMANDS = new LinkedHashMap<>();
-
-    static {
-        registerCommand(new StartCommand());
-        registerCommand(new HelpCommand());
-        registerCommand(new ListCommand());
-        registerCommand(new TrackCommand());
-        registerCommand(new UntrackCommand());
+    public AllCommands(@Autowired List<Command> commands) {
+        for (Command command : commands) {
+            registerCommand(command);
+        }
     }
 
-    public static void registerCommand(Command command) {
-        COMMANDS.put(command.getName(), command);
+    public void registerCommand(Command command) {
+        commandsMap.put(command.getName(), command);
     }
 
-    public static List<Command> getAllCommands() {
-        return new ArrayList<>(COMMANDS.values());
+    public List<Command> getAllCommands() {
+        return new ArrayList<>(commandsMap.values());
     }
 
-    public static Command getCommand(String commandName) {
-        return COMMANDS.get(commandName);
+    public Command getCommand(String commandName) {
+        return commandsMap.get(commandName);
     }
 
 }

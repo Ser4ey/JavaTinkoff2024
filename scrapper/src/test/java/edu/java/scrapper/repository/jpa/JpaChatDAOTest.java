@@ -1,29 +1,26 @@
-package edu.java.scrapper.repository.jdbc;
+package edu.java.scrapper.repository.jpa;
 
 import edu.java.scrapper.IntegrationTest;
 import java.net.URI;
-import edu.java.scrapper.repository.ChatRepository;
-import edu.java.scrapper.repository.LinkRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
-class JdbcChatDAOTest extends IntegrationTest {
-    private final JdbcChatDAO chatRepository;
-    private final JdbcLinkDAO linkRepository;
 
-    JdbcChatDAOTest(@Autowired JdbcTemplate jdbcTemplate) {
-        this.chatRepository = new JdbcChatDAO(jdbcTemplate);
-        this.linkRepository = new JdbcLinkDAO(jdbcTemplate);
+@SpringBootTest
+class JpaChatDAOTest extends IntegrationTest{
+    private final JpaChatDAO chatRepository;
+    private final JpaLinkDAO linkRepository;
+
+    public JpaChatDAOTest(@Autowired JpaChatRepository jpaChatRepository,
+        @Autowired JpaLinkRepository jpaLinkRepository) {
+        this.chatRepository = new JpaChatDAO(jpaChatRepository, jpaLinkRepository);
+        this.linkRepository = new JpaLinkDAO(jpaChatRepository, jpaLinkRepository);
     }
 
     @Test
@@ -86,9 +83,32 @@ class JdbcChatDAOTest extends IntegrationTest {
         assertTrue(chatRepository.isChatExist(777L));
 
         chatRepository.remove(777L);
+        chatRepository.remove(87L);
 
         assertFalse(chatRepository.isChatExist(777L));
+        assertFalse(chatRepository.isChatExist(87L));
 
+        assertTrue(chatRepository.findAll().isEmpty());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void testRemove2() {
+        chatRepository.add(777L);
+        var link = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
+
+        assertTrue(chatRepository.isChatExist(777L));
+        assertFalse(chatRepository.findAll().isEmpty());
+
+        linkRepository.addLinkRelation(777L, link.id());
+
+        assertTrue(chatRepository.isChatExist(777L));
+        assertFalse(chatRepository.findAll().isEmpty());
+
+        chatRepository.remove(777L);
+
+        assertFalse(chatRepository.isChatExist(777L));
         assertTrue(chatRepository.findAll().isEmpty());
     }
 }

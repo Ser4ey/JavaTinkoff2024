@@ -5,7 +5,7 @@ import edu.java.scrapper.exception.service.ChatNotFound;
 import edu.java.scrapper.exception.service.LinkAlreadyTracking;
 import edu.java.scrapper.exception.service.LinkDoNotWorking;
 import edu.java.scrapper.exception.service.LinkNotFound;
-import edu.java.scrapper.model.dto.ApiErrorResponse;
+import edu.java.scrapper.model.dto.response.ApiErrorResponse;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.http.HttpStatus;
