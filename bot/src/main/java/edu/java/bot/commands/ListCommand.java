@@ -2,13 +2,13 @@ package edu.java.bot.commands;
 
 import edu.java.bot.chatbot.ChatBotMessage;
 import edu.java.bot.exception.service.ScrapperException;
+import edu.java.bot.service.ScrapperService;
 import edu.java.bot.states.State;
 import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
-import service.ScrapperService;
 
 @Component
 @RequiredArgsConstructor

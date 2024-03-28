@@ -4,7 +4,7 @@ import edu.java.bot.chatbot.ChatBotMessage;
 import edu.java.bot.states.State;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import service.ScrapperService;
+import edu.java.bot.service.ScrapperService;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

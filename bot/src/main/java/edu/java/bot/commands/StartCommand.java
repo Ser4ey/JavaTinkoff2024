@@ -1,13 +1,16 @@
 package edu.java.bot.commands;
 
 import edu.java.bot.chatbot.ChatBotMessage;
+import edu.java.bot.exception.service.ScrapperException;
+import edu.java.bot.service.ScrapperService;
 import edu.java.bot.states.State;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
-import service.ScrapperService;
 
 @Component
+@Log4j2
 @RequiredArgsConstructor
 public class StartCommand implements Command {
     public static final String WELCOME_MESSAGE = """
@@ -34,8 +37,23 @@ public class StartCommand implements Command {
 
     @Override
     public CommandAnswer execute(ChatBotMessage chatMessage, State state) {
-        scrapperService.registerChat(chatMessage.getChatId());
+        try {
+            scrapperService.registerChat(chatMessage.getChatId());
+        } catch (ScrapperException e) {
+            log.debug("Command /start. Code: {} Описание: {} Текст ошибки: {}",
+                e.getStatusCode(), e.getDescription(), e.getDescription());
+
+            if (e.getStatusCode().equals("0")) {
+                var answerText = String.format("""
+                Сервер не доступен
+                Описание: %s
+                Ошибка: %s
+                """, e.getDescription(), e.getExceptionMessage());
+                return new CommandAnswer(answerText, false);
+            }
+        }
         return new CommandAnswer(WELCOME_MESSAGE, true);
+
     }
 }
 
