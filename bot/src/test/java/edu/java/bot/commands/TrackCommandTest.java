@@ -5,6 +5,7 @@ import edu.java.bot.states.State;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import service.ScrapperService;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,7 +23,8 @@ public class TrackCommandTest {
     public void init() {
         state = Mockito.mock(State.class);
         chatMessage = Mockito.mock(ChatBotMessage.class);
-        trackCommand = Mockito.spy(new TrackCommand());
+        ScrapperService scrapperService = Mockito.mock(ScrapperService.class);
+        trackCommand = Mockito.spy(new TrackCommand(scrapperService));
     }
 
     @Test
@@ -59,34 +61,7 @@ public class TrackCommandTest {
     }
 
     @Test
-    public void testStatusWaitUrl_UrlInDB() {
-        Mockito.when(trackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(true);
-        Mockito.when(chatMessage.getMessageText()).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
-
-        CommandAnswer commandAnswer = trackCommand.statusWaitUrl(chatMessage, state);
-
-        assertEquals(
-            new CommandAnswer("Ссылка уже отслеживается", false),
-            commandAnswer
-        );
-
-        verify(state, Mockito.times(1)).clear();
-    }
-
-    @Test
-    public void testStatusWaitUrl_UrlNotInDB() {
-        Mockito.when(trackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(false);
-        Mockito.when(chatMessage.getMessageText()).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
-
-        CommandAnswer commandAnswer = trackCommand.statusWaitUrl(chatMessage, state);
-        assertNotEquals(commandAnswer.getAnswerText(), "Ссылка уже отслеживается");
-
-        verify(state, Mockito.times(1)).clear();
-    }
-
-    @Test
     public void testStatusWaitUrl_UrlValid() {
-        Mockito.when(trackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(false);
         Mockito.when(chatMessage.getMessageText()).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
 
         CommandAnswer commandAnswer = trackCommand.statusWaitUrl(chatMessage, state);
@@ -112,7 +87,6 @@ public class TrackCommandTest {
 
     @Test
     public void testStatusWaitUrl_UrlTrack() {
-        Mockito.when(trackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(false);
         Mockito.when(chatMessage.getMessageText()).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
 
         CommandAnswer commandAnswer = trackCommand.statusWaitUrl(chatMessage, state);

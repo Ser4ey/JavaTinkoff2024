@@ -91,7 +91,7 @@ public class ImplLinkService implements LinkService {
     @Override
     public List<Link> listAllByChatId(long chatId) {
         if (!chatRepository.isChatExist(chatId)) {
-            chatRepository.add(chatId);
+            throw new ChatNotFound(CHAT_NOT_FOUND_EXCEPTION_TEXT);
         }
 
         return linkRepository.findAllByChatId(chatId);
