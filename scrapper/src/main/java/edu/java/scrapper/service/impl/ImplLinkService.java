@@ -1,4 +1,4 @@
-package edu.java.scrapper.service.jdbc;
+package edu.java.scrapper.service.impl;
 
 import edu.java.scrapper.exception.service.ChatNotFound;
 import edu.java.scrapper.exception.service.LinkAlreadyTracking;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Log4j2
 @Service
-public class JdbcLinkService implements LinkService {
+public class ImplLinkService implements LinkService {
     private final ChatRepository chatRepository;
     private final LinkRepository linkRepository;
     private final UrlsApi urlsApi;

@@ -48,6 +48,10 @@ public class JpaChatDAO implements ChatRepository {
     @Override
     @Transactional
     public void add(Long chatId) {
+        if (isChatExist(chatId)) {
+            throw new IllegalArgumentException("Чат с таким ID уже существует");
+        }
+
         jpaChatRepository.save(
             new ChatEntity(chatId)
         );

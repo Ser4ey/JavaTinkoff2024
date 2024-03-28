@@ -2,8 +2,8 @@ app:
   database-access-type: jpa
   scheduler:
     enable: true
-    interval: 10s
-    force-check-delay: 10s
+    interval: 100s
+    force-check-delay: 100s
     checked-links-batch-size: 2
 
 spring:
