@@ -16,8 +16,8 @@ public class ScrapperServiceImpl implements ScrapperService {
 
     private final ScrapperClient scrapperClient;
 
-//    private static final ScrapperException SERVER_NOT_AVALIBLE_EXCEPTION =
-//        new ScrapperException("0", "Не удалось получить информацию", "Сервер не доступен");
+    private static final ScrapperException SERVER_NOT_AVAILABLE_EXCEPTION =
+        new ScrapperException("0", "Не удалось получить информацию", "Сервер не доступен");
 
     @Override
     public List<String> getUserLinks(long chatId) {
@@ -37,7 +37,7 @@ public class ScrapperServiceImpl implements ScrapperService {
             var exceptionMessage = e.getApiErrorResponse().exceptionMessage();
             throw new ScrapperException(statusCode, description, exceptionMessage);
         } catch (WebClientRequestException e) {
-            throw new ScrapperException("0", "Не удалось получить информацию", "Сервер не доступен");
+            throw SERVER_NOT_AVAILABLE_EXCEPTION;
         }
 
     }
@@ -53,7 +53,7 @@ public class ScrapperServiceImpl implements ScrapperService {
             log.info("Не удалось зарегистрировать пользователя. Code: {} Описание: {} Сообщение ошибки: {}",
                 statusCode, description, exceptionMessage);
         } catch (WebClientRequestException e) {
-            throw new ScrapperException("0", "Не удалось получить информацию", "Сервер не доступен");
+            throw SERVER_NOT_AVAILABLE_EXCEPTION;
         }
     }
 
@@ -67,7 +67,7 @@ public class ScrapperServiceImpl implements ScrapperService {
             var exceptionMessage = e.getApiErrorResponse().exceptionMessage();
             throw new ScrapperException(statusCode, description, exceptionMessage);
         } catch (WebClientRequestException e) {
-            throw new ScrapperException("0", "Не удалось получить информацию", "Сервер не доступен");
+            throw SERVER_NOT_AVAILABLE_EXCEPTION;
         }
     }
 
@@ -81,7 +81,7 @@ public class ScrapperServiceImpl implements ScrapperService {
             var exceptionMessage = e.getApiErrorResponse().exceptionMessage();
             throw new ScrapperException(statusCode, description, exceptionMessage);
         } catch (WebClientRequestException e) {
-            throw new ScrapperException("0", "Не удалось получить информацию", "Сервер не доступен");
+            throw SERVER_NOT_AVAILABLE_EXCEPTION;
         }
     }
 }
