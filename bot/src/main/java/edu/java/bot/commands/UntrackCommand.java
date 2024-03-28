@@ -6,12 +6,19 @@ import edu.java.bot.db.UserLinkDB;
 import edu.java.bot.states.State;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Component;
 
+@Component
 @Log4j2
-@SuppressWarnings("MemberName")
+@SuppressWarnings({"MemberName", "MagicNumber"})
 public class UntrackCommand implements Command {
     private final UserLinkDB db;
     public final static String STATUS_WAIT_URL = "statusWaitUrl";
+
+    @Override
+    public int getOrder() {
+        return 5;
+    }
 
     @Override
     public @NonNull String getName() {

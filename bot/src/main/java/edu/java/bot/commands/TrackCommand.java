@@ -8,12 +8,19 @@ import edu.java.bot.urls.AllUrls;
 import edu.java.bot.urls.UrlWorker;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Component;
 
+@Component
 @Log4j2
-@SuppressWarnings("MemberName")
+@SuppressWarnings({"MemberName", "MagicNumber"})
 public class TrackCommand implements Command {
     public static final String STATUS_WAIT_URL = "statusWaitUrl";
     private final UserLinkDB db;
+
+    @Override
+    public int getOrder() {
+        return 4;
+    }
 
     @Override
     public @NonNull String getName() {

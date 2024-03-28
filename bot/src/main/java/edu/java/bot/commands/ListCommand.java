@@ -6,10 +6,18 @@ import edu.java.bot.db.UserLinkDB;
 import edu.java.bot.states.State;
 import java.util.List;
 import lombok.NonNull;
+import org.springframework.stereotype.Component;
 
+@Component
+@SuppressWarnings("MagicNumber")
 public class ListCommand implements Command {
     public static final String NO_LINKS = "Нет отслеживаемых ссылок!";
     private final UserLinkDB db;
+
+    @Override
+    public int getOrder() {
+        return 3;
+    }
 
     @Override
     public @NonNull String getName() {

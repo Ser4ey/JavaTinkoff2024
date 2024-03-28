@@ -15,15 +15,20 @@ import edu.java.bot.handlers.MainHandler;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Log4j2
 @Component
 public class SimpleBot {
     private final TelegramBot bot;
-    private final MainHandler commandHandler = new MainHandler();
+    private final AllCommands allCommands;
+    private final MainHandler commandHandler;
 
-    public SimpleBot(ApplicationConfig applicationConfig) {
+    public SimpleBot(ApplicationConfig applicationConfig, @Autowired AllCommands allCommands,
+        @Autowired MainHandler commandHandler) {
+        this.allCommands = allCommands;
+        this.commandHandler = commandHandler;
         bot = new TelegramBot(applicationConfig.telegramToken());
         setBotCommands();
         start();
@@ -62,7 +67,7 @@ public class SimpleBot {
 
     private void setBotCommands() {
         List<BotCommand> commands = new ArrayList<>();
-        for (Command command : AllCommands.getAllCommands()) {
+        for (Command command : allCommands.getAllCommands()) {
             commands.add(new BotCommand(command.getName(), command.getDescription()));
         }
 

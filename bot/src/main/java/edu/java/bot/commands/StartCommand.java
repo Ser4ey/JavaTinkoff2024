@@ -3,12 +3,19 @@ package edu.java.bot.commands;
 import edu.java.bot.chatbot.ChatBotMessage;
 import edu.java.bot.states.State;
 import lombok.NonNull;
+import org.springframework.stereotype.Component;
 
+@Component
 public class StartCommand implements Command {
     public static final String WELCOME_MESSAGE = """
             Привет!
             Я бот для отслеживания обновлений.
             GitHub проекта: https://github.com/Ser4ey/JavaTinkoff2024""";
+
+    @Override
+    public int getOrder() {
+        return 1;
+    }
 
     @Override
     public @NonNull String getName() {
