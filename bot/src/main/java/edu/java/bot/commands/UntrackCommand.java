@@ -57,7 +57,7 @@ public class UntrackCommand implements Command {
         String url = chatMessage.getMessageText();
 
         try {
-            delUrl(chatId, url);
+            deleteUrl(chatId, url);
             state.clear();
             return new CommandAnswer("Ссылка успешно удалена!", false);
         } catch (ScrapperException e) {
@@ -73,7 +73,7 @@ public class UntrackCommand implements Command {
         }
     }
 
-    public void delUrl(Long chatId, String url) {
+    public void deleteUrl(Long chatId, String url) {
         scrapperService.removeLink(chatId, URI.create(url));
     }
 }

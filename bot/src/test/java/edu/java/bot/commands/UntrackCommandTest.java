@@ -62,7 +62,7 @@ public class UntrackCommandTest {
     @Test
     public void testStatusWaitUrl_UrlInDB() {
         Mockito.when(chatMessage.getMessageText()).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
-        Mockito.doNothing().when(untrackCommand).delUrl(any(), any());
+        Mockito.doNothing().when(untrackCommand).deleteUrl(any(), any());
 
         CommandAnswer commandAnswer = untrackCommand.statusWaitUrl(chatMessage, state);
 
