@@ -21,14 +21,12 @@ import lombok.Setter;
 @Table(name = "chat")
 @Setter
 @Getter
-//@ToString
 @NoArgsConstructor
 public class ChatEntity {
     @Id
     @Column(name = "chat_id")
     private Long chatId;
 
-//    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
         name = "chat_link",
