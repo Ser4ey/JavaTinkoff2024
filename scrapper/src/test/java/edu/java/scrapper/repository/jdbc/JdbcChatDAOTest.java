@@ -91,4 +91,41 @@ class JdbcChatDAOTest extends IntegrationTest {
 
         assertTrue(chatRepository.findAll().isEmpty());
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    void testRemove2() {
+        chatRepository.add(777L);
+        chatRepository.add(111L);
+        assertTrue(chatRepository.isChatExist(777L));
+        assertTrue(chatRepository.isChatExist(111L));
+
+        chatRepository.remove(777L);
+
+        assertFalse(chatRepository.isChatExist(777L));
+        assertTrue(chatRepository.isChatExist(111L));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void testRemove3() {
+        Long chatId1 = 777L;
+        Long chatId2 = 111L;
+        chatRepository.add(chatId1);
+        chatRepository.add(chatId2);
+
+        var added_link = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw4"));
+        linkRepository.addLinkRelation(chatId1, added_link.id());
+        linkRepository.addLinkRelation(chatId2, added_link.id());
+
+        assertTrue(chatRepository.isChatExist(chatId1));
+        assertTrue(chatRepository.isChatExist(chatId2));
+
+        chatRepository.remove(chatId1);
+
+        assertFalse(chatRepository.isChatExist(chatId1));
+        assertTrue(chatRepository.isChatExist(chatId2));
+    }
 }
