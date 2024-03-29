@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AllCommands {
     private final Map<String, Command> commandsMap = new LinkedHashMap<>();
 
-    public AllCommands(@Autowired List<Command> commands) {
+    public AllCommands(List<Command> commands) {
         for (Command command : commands) {
             registerCommand(command);
         }
