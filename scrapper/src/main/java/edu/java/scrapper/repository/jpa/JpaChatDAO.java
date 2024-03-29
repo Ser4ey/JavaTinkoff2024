@@ -2,10 +2,10 @@ package edu.java.scrapper.repository.jpa;
 
 import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.model.entity.ChatEntity;
+import edu.java.scrapper.model.entity.EntityMapper;
 import edu.java.scrapper.repository.ChatRepository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,16 +17,14 @@ public class JpaChatDAO implements ChatRepository {
     private List<Chat> convertListOfChatEntityToListOfChat(List<ChatEntity> listOfChatEntity) {
         var listOfChats = new ArrayList<Chat>();
         for (ChatEntity chatEntity : listOfChatEntity) {
-            listOfChats.add(chatEntity.toChat());
+            listOfChats.add(EntityMapper.toChat(chatEntity));
         }
         return listOfChats;
     }
 
     @Override
     public List<Chat> findAll() {
-        return jpaChatRepository.findAll().stream()
-            .map(ChatEntity::toChat)
-            .collect(Collectors.toList());
+        return convertListOfChatEntityToListOfChat(jpaChatRepository.findAll());
     }
 
     @Override

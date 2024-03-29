@@ -1,6 +1,7 @@
 package edu.java.scrapper.repository.jpa;
 
 import edu.java.scrapper.model.Link;
+import edu.java.scrapper.model.entity.EntityMapper;
 import edu.java.scrapper.model.entity.LinkEntity;
 import edu.java.scrapper.repository.LinkRepository;
 import java.net.URI;
@@ -19,7 +20,7 @@ public class JpaLinkDAO implements LinkRepository {
     private List<Link> convertListOfLinkEntityToListOfLink(List<LinkEntity> listOfLinkEntity) {
         var listOfLinks = new ArrayList<Link>();
         for (LinkEntity linkEntity : listOfLinkEntity) {
-            listOfLinks.add(linkEntity.toLink());
+            listOfLinks.add(EntityMapper.toLink(linkEntity));
         }
         return listOfLinks;
     }
@@ -49,13 +50,13 @@ public class JpaLinkDAO implements LinkRepository {
     @Override
     public Optional<Link> findById(Integer linkId) {
         var linkEntity = jpaLinkRepository.findById(linkId);
-        return linkEntity.map(LinkEntity::toLink);
+        return linkEntity.map(EntityMapper::toLink);
     }
 
     @Override
     public Optional<Link> findByUrl(URI url) {
         var linkEntity = jpaLinkRepository.findByUrl(url.toString());
-        return linkEntity.map(LinkEntity::toLink);
+        return linkEntity.map(EntityMapper::toLink);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package edu.java.scrapper.model.entity;
 
-import edu.java.scrapper.model.Chat;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -39,7 +38,4 @@ public class ChatEntity {
         this.chatId = chatId;
     }
 
-    public Chat toChat() {
-        return new Chat(this.chatId);
-    }
 }
