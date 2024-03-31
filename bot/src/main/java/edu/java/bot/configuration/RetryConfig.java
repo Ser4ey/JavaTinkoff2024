@@ -19,7 +19,7 @@ import org.springframework.retry.support.RetryTemplate;
 @SuppressWarnings("MagicNumber")
 public class RetryConfig {
 
-    private static final int MAX_RETRY_ATTEMPTS = 5;
+    private static final int MAX_RETRY_ATTEMPTS = 3;
     private final SimpleRetryPolicy simpleRetryPolicy = new SimpleRetryPolicy(MAX_RETRY_ATTEMPTS);
     private final NeverRetryPolicy neverRetryPolicy = new NeverRetryPolicy();
 

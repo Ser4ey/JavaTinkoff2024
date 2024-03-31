@@ -9,7 +9,6 @@ import edu.java.bot.model.dto.response.ListLinksResponse;
 import java.net.URI;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatusCode;
-import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -20,25 +19,15 @@ public class ScrapperWebClient implements ScrapperClient {
     private static final String TG_CHAT_ID_HEADER = "Tg-Chat-Id";
 
     private final WebClient webClient;
-    private final RetryTemplate retryTemplate;
 
-    public ScrapperWebClient(String baseUrl, RetryTemplate retryTemplate) {
+    public ScrapperWebClient(String baseUrl) {
         String finalUrl = (baseUrl == null || baseUrl.isBlank()) ? DEFAULT_URL : baseUrl;
 
         this.webClient = WebClient.builder().baseUrl(finalUrl).build();
-
-        this.retryTemplate = retryTemplate;
     }
 
     @Override
     public void registerChat(Long id) {
-        retryTemplate.execute(context -> {
-            registerChat2(id);
-            return null;
-        });
-    }
-
-    public void registerChat2(Long id) {
         webClient.post()
             .uri(TG_CHAT_URL, id)
             .retrieve()
