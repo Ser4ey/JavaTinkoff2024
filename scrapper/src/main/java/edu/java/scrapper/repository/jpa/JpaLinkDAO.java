@@ -17,22 +17,14 @@ public class JpaLinkDAO implements LinkRepository {
     private final JpaChatRepository jpaChatRepository;
     private final JpaLinkRepository jpaLinkRepository;
 
-    private List<Link> convertListOfLinkEntityToListOfLink(List<LinkEntity> listOfLinkEntity) {
-        var listOfLinks = new ArrayList<Link>();
-        for (LinkEntity linkEntity : listOfLinkEntity) {
-            listOfLinks.add(EntityMapper.toLink(linkEntity));
-        }
-        return listOfLinks;
-    }
-
     @Override
     public List<Link> findAll() {
-        return convertListOfLinkEntityToListOfLink(jpaLinkRepository.findAll());
+        return EntityMapper.convertListOfLinkEntityToListOfLink(jpaLinkRepository.findAll());
     }
 
     @Override
     public List<Link> findNotCheckedForLongTime(Integer numberOfLink) {
-        return convertListOfLinkEntityToListOfLink(
+        return EntityMapper.convertListOfLinkEntityToListOfLink(
             jpaLinkRepository.findNotCheckedForLongTime(numberOfLink));
     }
 
@@ -44,7 +36,7 @@ public class JpaLinkDAO implements LinkRepository {
             return new ArrayList<>();
         }
 
-        return convertListOfLinkEntityToListOfLink(chatEntity.get().getLinks());
+        return EntityMapper.convertListOfLinkEntityToListOfLink(chatEntity.get().getLinks());
     }
 
     @Override

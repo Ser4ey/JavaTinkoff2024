@@ -14,17 +14,9 @@ public class JpaChatDAO implements ChatRepository {
     private final JpaChatRepository jpaChatRepository;
     private final JpaLinkRepository jpaLinkRepository;
 
-    private List<Chat> convertListOfChatEntityToListOfChat(List<ChatEntity> listOfChatEntity) {
-        var listOfChats = new ArrayList<Chat>();
-        for (ChatEntity chatEntity : listOfChatEntity) {
-            listOfChats.add(EntityMapper.toChat(chatEntity));
-        }
-        return listOfChats;
-    }
-
     @Override
     public List<Chat> findAll() {
-        return convertListOfChatEntityToListOfChat(jpaChatRepository.findAll());
+        return EntityMapper.convertListOfChatEntityToListOfChat(jpaChatRepository.findAll());
     }
 
     @Override
@@ -35,7 +27,7 @@ public class JpaChatDAO implements ChatRepository {
             return new ArrayList<>();
         }
 
-        return convertListOfChatEntityToListOfChat(linkEntity.get().getChats());
+        return EntityMapper.convertListOfChatEntityToListOfChat(linkEntity.get().getChats());
     }
 
     @Override
