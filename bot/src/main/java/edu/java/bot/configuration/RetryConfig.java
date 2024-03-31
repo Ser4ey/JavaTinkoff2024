@@ -1,9 +1,10 @@
 package edu.java.bot.configuration;
 
+import edu.java.bot.exception.request.CustomRequestException;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.classify.Classifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.retry.RetryPolicy;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
@@ -11,10 +12,10 @@ import org.springframework.retry.policy.ExceptionClassifierRetryPolicy;
 import org.springframework.retry.policy.NeverRetryPolicy;
 import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
-import org.springframework.web.client.HttpStatusCodeException;
 
 @Configuration
 @EnableRetry
+@Log4j2
 @SuppressWarnings("MagicNumber")
 public class RetryConfig {
 
@@ -54,32 +55,30 @@ public class RetryConfig {
 
     private Classifier<Throwable, RetryPolicy> configureStatusCodeBasedRetryPolicy() {
         return throwable -> {
-//            System.out.println("11111111");
-//            System.out.println(throwable);
-//            System.out.println("11111111");
-            if (throwable instanceof HttpStatusCodeException) {
-                HttpStatusCodeException exception = (HttpStatusCodeException) throwable;
-                return getRetryPolicyForStatus(exception.getStatusCode());
+            if (throwable instanceof CustomRequestException) {
+                return getRetryPolicyForCustomRequestException((CustomRequestException) throwable);
             }
             return simpleRetryPolicy;
         };
     }
 
-    private RetryPolicy getRetryPolicyForStatus(HttpStatusCode httpStatusCode) {
-//        switch (httpStatus) {
-//            case BAD_GATEWAY:
-//            case SERVICE_UNAVAILABLE:
-//            case INTERNAL_SERVER_ERROR:
-//            case GATEWAY_TIMEOUT:
-//                return simpleRetryPolicy;
-//            default:
-//                return neverRetryPolicy;
-//        }
+    private RetryPolicy getRetryPolicyForCustomRequestException(CustomRequestException customRequestException) {
+        log.debug("Ответ от сервера: {}", customRequestException.getApiErrorResponse());
 
-        return simpleRetryPolicy;
+        return switch (customRequestException.getApiErrorResponse().code()) {
+            case "400", "500" -> {
+                log.debug("Код ответа {}. Отправляем повторные запросы.",
+                        customRequestException.getApiErrorResponse().code());
+                yield simpleRetryPolicy;
+            }
+            default -> {
+                log.debug("Код ответа {}. Не отправляем повторные запросы.",
+                        customRequestException.getApiErrorResponse().code());
+                yield neverRetryPolicy;
+            }
+        };
 
     }
-
 
 }
 

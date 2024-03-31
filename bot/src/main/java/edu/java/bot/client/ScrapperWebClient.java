@@ -33,10 +33,7 @@ public class ScrapperWebClient implements ScrapperClient {
     @Override
     public void registerChat(Long id) {
         retryTemplate.execute(context -> {
-//            System.out.println(context);
-//            System.out.println(context.getLastThrowable());
             registerChat2(id);
-
             return null;
         });
     }
@@ -49,7 +46,6 @@ public class ScrapperWebClient implements ScrapperClient {
                 .flatMap(apiErrorResponse -> Mono.error(new CustomRequestException(apiErrorResponse)))
             )
             .toBodilessEntity()
-//            .retryWhen(Retry.fixedDelay(3, Duration.ofSeconds(2)))
             .block();
     }
 
