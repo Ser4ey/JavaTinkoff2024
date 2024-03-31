@@ -3,7 +3,7 @@ package edu.java.scrapper.service.impl;
 import edu.java.scrapper.client.BotClient;
 import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.model.Link;
-import edu.java.scrapper.model.dto.LinkUpdateRequest;
+import edu.java.scrapper.model.dto.request.LinkUpdateRequest;
 import edu.java.scrapper.service.ChatService;
 import edu.java.scrapper.service.LinkService;
 import edu.java.scrapper.service.LinkUpdater;

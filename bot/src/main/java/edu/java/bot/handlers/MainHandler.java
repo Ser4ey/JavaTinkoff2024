@@ -6,11 +6,14 @@ import edu.java.bot.commands.Command;
 import edu.java.bot.commands.CommandAnswer;
 import edu.java.bot.states.State;
 import edu.java.bot.states.StateManager;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
-
-@NoArgsConstructor
+@RequiredArgsConstructor
+@Component
 public class MainHandler {
+    private final AllCommands allCommands;
+
     @SuppressWarnings("ReturnCount")
     public CommandAnswer handleCommand(ChatBotMessage chatMessage) {
         Long chatId = chatMessage.getChatId();
@@ -20,7 +23,7 @@ public class MainHandler {
         // при отправки новой команды сбрасываем состояние
         if (Command.isCommand(messageText)) {
             currentChatState.clear();
-            Command command = AllCommands.getCommand(messageText);
+            Command command = allCommands.getCommand(messageText);
             if (command != null) {
                 return command.execute(chatMessage, currentChatState);
             } else {

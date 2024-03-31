@@ -1,7 +1,7 @@
 package edu.java.bot.client;
 
-import edu.java.bot.model.dto.LinkResponse;
-import edu.java.bot.model.dto.ListLinksResponse;
+import edu.java.bot.model.dto.response.LinkResponse;
+import edu.java.bot.model.dto.response.ListLinksResponse;
 import java.net.URI;
 
 public interface ScrapperClient {

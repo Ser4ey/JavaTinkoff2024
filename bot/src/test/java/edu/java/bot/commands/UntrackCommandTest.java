@@ -22,7 +22,7 @@ public class UntrackCommandTest {
     public void init() {
         state = Mockito.mock(State.class);
         chatMessage = Mockito.mock(ChatBotMessage.class);
-        untrackCommand = Mockito.spy(new UntrackCommand());
+        untrackCommand = Mockito.spy(new UntrackCommand(null));
     }
 
     @Test
@@ -61,29 +61,13 @@ public class UntrackCommandTest {
 
     @Test
     public void testStatusWaitUrl_UrlInDB() {
-        Mockito.when(untrackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(true);
         Mockito.when(chatMessage.getMessageText()).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
-        Mockito.doNothing().when(untrackCommand).delUrlFromDB(any(), any());
+        Mockito.doNothing().when(untrackCommand).deleteUrl(any(), any());
 
         CommandAnswer commandAnswer = untrackCommand.statusWaitUrl(chatMessage, state);
 
         assertEquals(
             new CommandAnswer("Ссылка успешно удалена!", false),
-            commandAnswer
-        );
-
-        Mockito.verify(state, Mockito.times(1)).clear();
-    }
-
-    @Test
-    public void testStatusWaitUrl_UrlNotInDB() {
-        Mockito.when(untrackCommand.checkUrlAlreadyInDB(anyLong(), anyString())).thenReturn(false);
-        Mockito.when(chatMessage.getMessageText()).thenReturn("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw1");
-
-        CommandAnswer commandAnswer = untrackCommand.statusWaitUrl(chatMessage, state);
-
-        assertEquals(
-            new CommandAnswer("Ссылка не отслеживается!", false),
             commandAnswer
         );
 

@@ -1,25 +1,30 @@
 package edu.java.scrapper.repository.jdbc;
 
 import edu.java.scrapper.IntegrationTest;
+import java.net.URI;
 import edu.java.scrapper.repository.ChatRepository;
 import edu.java.scrapper.repository.LinkRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import java.net.URI;
+import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class JdbcChatDAOTest extends IntegrationTest {
-    @Autowired
-    private ChatRepository chatRepository;
+    private final JdbcChatDAO chatRepository;
+    private final JdbcLinkDAO linkRepository;
 
-    @Autowired
-    private LinkRepository linkRepository;
+    JdbcChatDAOTest(@Autowired JdbcTemplate jdbcTemplate) {
+        this.chatRepository = new JdbcChatDAO(jdbcTemplate);
+        this.linkRepository = new JdbcLinkDAO(jdbcTemplate);
+    }
 
     @Test
     @Transactional
@@ -85,5 +90,42 @@ class JdbcChatDAOTest extends IntegrationTest {
         assertFalse(chatRepository.isChatExist(777L));
 
         assertTrue(chatRepository.findAll().isEmpty());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void testRemove2() {
+        chatRepository.add(777L);
+        chatRepository.add(111L);
+        assertTrue(chatRepository.isChatExist(777L));
+        assertTrue(chatRepository.isChatExist(111L));
+
+        chatRepository.remove(777L);
+
+        assertFalse(chatRepository.isChatExist(777L));
+        assertTrue(chatRepository.isChatExist(111L));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void testRemove3() {
+        Long chatId1 = 777L;
+        Long chatId2 = 111L;
+        chatRepository.add(chatId1);
+        chatRepository.add(chatId2);
+
+        var added_link = linkRepository.addLink(URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw4"));
+        linkRepository.addLinkRelation(chatId1, added_link.id());
+        linkRepository.addLinkRelation(chatId2, added_link.id());
+
+        assertTrue(chatRepository.isChatExist(chatId1));
+        assertTrue(chatRepository.isChatExist(chatId2));
+
+        chatRepository.remove(chatId1);
+
+        assertFalse(chatRepository.isChatExist(chatId1));
+        assertTrue(chatRepository.isChatExist(chatId2));
     }
 }

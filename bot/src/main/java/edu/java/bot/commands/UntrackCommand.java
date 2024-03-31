@@ -1,17 +1,27 @@
 package edu.java.bot.commands;
 
 import edu.java.bot.chatbot.ChatBotMessage;
-import edu.java.bot.db.LocalDBFactory;
-import edu.java.bot.db.UserLinkDB;
+import edu.java.bot.exception.service.ScrapperException;
+import edu.java.bot.service.ScrapperService;
 import edu.java.bot.states.State;
+import java.net.URI;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Component;
 
+@Component
 @Log4j2
-@SuppressWarnings("MemberName")
+@RequiredArgsConstructor
+@SuppressWarnings({"MemberName", "MagicNumber"})
 public class UntrackCommand implements Command {
-    private final UserLinkDB db;
+    private final ScrapperService scrapperService;
     public final static String STATUS_WAIT_URL = "statusWaitUrl";
+
+    @Override
+    public int getOrder() {
+        return 5;
+    }
 
     @Override
     public @NonNull String getName() {
@@ -21,11 +31,6 @@ public class UntrackCommand implements Command {
     @Override
     public @NonNull String getDescription() {
         return "Удалить ссылку";
-    }
-
-
-    public UntrackCommand() {
-        db = LocalDBFactory.getInstance();
     }
 
     @Override
@@ -51,23 +56,24 @@ public class UntrackCommand implements Command {
         Long chatId = chatMessage.getChatId();
         String url = chatMessage.getMessageText();
 
-        String answerText;
-        if (checkUrlAlreadyInDB(chatId, url)) {
-            delUrlFromDB(chatId, url);
-            answerText = "Ссылка успешно удалена!";
-        } else {
-            answerText = "Ссылка не отслеживается!";
+        try {
+            deleteUrl(chatId, url);
+            state.clear();
+            return new CommandAnswer("Ссылка успешно удалена!", false);
+        } catch (ScrapperException e) {
+            state.clear();
+            log.debug("Не далось получить список ссылок. Code: {} Описание: {} Текст ошибки: {}",
+                e.getStatusCode(), e.getDescription(), e.getDescription());
+            var answerText = String.format("""
+                Не удалось удалить ссылку
+                Описание: %s
+                Ошибка: %s
+                """, e.getDescription(), e.getExceptionMessage());
+            return new CommandAnswer(answerText, false);
         }
-
-        state.clear();
-        return new CommandAnswer(answerText, false);
     }
 
-    public void delUrlFromDB(Long chatId, String url) {
-        db.delUserLinks(chatId, url);
-    }
-
-    public boolean checkUrlAlreadyInDB(Long chatId, String url) {
-        return db.checkUserLink(chatId, url);
+    public void deleteUrl(Long chatId, String url) {
+        scrapperService.removeLink(chatId, URI.create(url));
     }
 }

@@ -8,7 +8,7 @@ public interface ChatRepository {
 
     List<Chat> findAllByLinkId(Integer linkId);
 
-    boolean isChatExist(Long uniqueChatId);
+    boolean isChatExist(Long chatId);
 
     void add(Long chatId);
 

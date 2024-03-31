@@ -1,8 +1,8 @@
 package edu.java.scrapper.client;
 
 import edu.java.scrapper.exception.request.CustomRequestException;
-import edu.java.scrapper.model.dto.ApiErrorResponse;
-import edu.java.scrapper.model.dto.LinkUpdateRequest;
+import edu.java.scrapper.model.dto.request.LinkUpdateRequest;
+import edu.java.scrapper.model.dto.response.ApiErrorResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;

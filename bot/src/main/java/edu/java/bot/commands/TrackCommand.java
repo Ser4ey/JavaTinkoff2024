@@ -1,19 +1,30 @@
 package edu.java.bot.commands;
 
 import edu.java.bot.chatbot.ChatBotMessage;
-import edu.java.bot.db.LocalDBFactory;
-import edu.java.bot.db.UserLinkDB;
+import edu.java.bot.exception.service.ScrapperException;
+import edu.java.bot.service.ScrapperService;
 import edu.java.bot.states.State;
 import edu.java.bot.urls.AllUrls;
 import edu.java.bot.urls.UrlWorker;
+import java.net.URI;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Component;
 
+@Component
 @Log4j2
-@SuppressWarnings("MemberName")
+@RequiredArgsConstructor
+@SuppressWarnings({"MemberName", "MagicNumber"})
 public class TrackCommand implements Command {
     public static final String STATUS_WAIT_URL = "statusWaitUrl";
-    private final UserLinkDB db;
+
+    private final ScrapperService scrapperService;
+
+    @Override
+    public int getOrder() {
+        return 4;
+    }
 
     @Override
     public @NonNull String getName() {
@@ -23,10 +34,6 @@ public class TrackCommand implements Command {
     @Override
     public @NonNull String getDescription() {
         return "Добавить ссылку";
-    }
-
-    public TrackCommand() {
-        db = LocalDBFactory.getInstance();
     }
 
     @Override
@@ -65,24 +72,24 @@ public class TrackCommand implements Command {
             );
         }
 
-        if (checkUrlAlreadyInDB(chatId, url)) {
+        try {
+            addUrl(chatId, url);
             state.clear();
-            return new CommandAnswer("Ссылка уже отслеживается", false);
+            return new CommandAnswer("Ссылка успешно добавлена!", false);
+        } catch (ScrapperException e) {
+            state.clear();
+            log.debug("Не удалось получить список ссылок. Code: {} Описание: {} Текст ошибки: {}",
+                e.getStatusCode(), e.getDescription(), e.getDescription());
+            var answerText = String.format("""
+                Не удалось добавить ссылку
+                Описание: %s
+                Ошибка: %s
+                """, e.getDescription(), e.getExceptionMessage());
+            return new CommandAnswer(answerText, false);
         }
-
-        addUrlToDB(chatId, url);
-        state.clear();
-        return new CommandAnswer("Ссылка успешно добавлена!", false);
-
     }
 
-    public void addUrlToDB(Long chatId, String url) {
-        db.addUserLinks(chatId, url);
+    public void addUrl(Long chatId, String url) {
+        scrapperService.addLink(chatId, URI.create(url));
     }
-
-    public boolean checkUrlAlreadyInDB(Long chatId, String url) {
-        return db.checkUserLink(chatId, url);
-    }
-
 }
-

@@ -1,6 +1,6 @@
 package edu.java.scrapper.controller;
 
-import edu.java.scrapper.model.dto.ApiErrorResponse;
+import edu.java.scrapper.model.dto.response.ApiErrorResponse;
 import edu.java.scrapper.service.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

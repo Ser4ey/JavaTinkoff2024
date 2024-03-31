@@ -21,10 +21,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class SimpleBot {
     private final TelegramBot bot;
-    private final MainHandler commandHandler = new MainHandler();
+    private final AllCommands allCommands;
+    private final MainHandler commandHandler;
 
-    public SimpleBot(ApplicationConfig applicationConfig) {
-        bot = new TelegramBot(applicationConfig.telegramToken());
+    public SimpleBot(ApplicationConfig applicationConfig, AllCommands allCommands, MainHandler commandHandler) {
+        this.allCommands = allCommands;
+        this.commandHandler = commandHandler;
+        this.bot = new TelegramBot(applicationConfig.telegramToken());
         setBotCommands();
         start();
         log.info("BOT started!");
@@ -62,7 +65,7 @@ public class SimpleBot {
 
     private void setBotCommands() {
         List<BotCommand> commands = new ArrayList<>();
-        for (Command command : AllCommands.getAllCommands()) {
+        for (Command command : allCommands.getAllCommands()) {
             commands.add(new BotCommand(command.getName(), command.getDescription()));
         }
 
