@@ -1,6 +1,7 @@
 package edu.java.bot.configuration;
 
 import edu.java.bot.exception.request.CustomRequestException;
+import edu.java.bot.retry.policy.LinearBackOffPolicy;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.classify.Classifier;
 import org.springframework.context.annotation.Bean;
@@ -26,29 +27,29 @@ public class RetryConfig {
 
     public RetryConfig(ApplicationConfig applicationConfig) {
         this.applicationConfig = applicationConfig;
-//        System.out.println(applicationConfig);
         this.simpleRetryPolicy = new SimpleRetryPolicy(applicationConfig.retry().retryNumbers());
     }
 
     private BackOffPolicy getBackOffPolicy() {
-        var a = "2";
-        switch (a) {
-            case "1" -> {
+        switch (applicationConfig.retry().strategyName()) {
+            case "fixed" -> {
                 FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
-                fixedBackOffPolicy.setBackOffPeriod(2000L); // 2 секунды
+                fixedBackOffPolicy.setBackOffPeriod(applicationConfig.retry().interval());
                 return fixedBackOffPolicy;
             }
-            case "2" -> {
-                LinearBackOffPolicy linearBackOffPolicy = new LinearBackOffPolicy(applicationConfig.retry().interval());
-                return linearBackOffPolicy;
+            case "linear" -> {
+                return new LinearBackOffPolicy(applicationConfig.retry().interval());
             }
-            default ->  {
+            case "exponential" -> {
                 ExponentialBackOffPolicy exponentialBackOffPolicy = new ExponentialBackOffPolicy();
-                exponentialBackOffPolicy.setInitialInterval(500L);
-                exponentialBackOffPolicy.setMultiplier(2);
-                exponentialBackOffPolicy.setMaxInterval(35000L);
+                exponentialBackOffPolicy.setInitialInterval(applicationConfig.retry().interval());
+                exponentialBackOffPolicy.setMultiplier(applicationConfig.retry().multiplier());
                 return exponentialBackOffPolicy;
             }
+            default -> throw new IllegalArgumentException(
+                "Invalid retry strategy: " + applicationConfig.retry().strategyName()
+            );
+
         }
     }
 
@@ -56,15 +57,11 @@ public class RetryConfig {
     public RetryTemplate retryTemplate() {
         RetryTemplate retryTemplate = new RetryTemplate();
 
-        BackOffPolicy backOffPolicy = getBackOffPolicy();
-//        FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
-//        fixedBackOffPolicy.setBackOffPeriod(2000L);
-        retryTemplate.setBackOffPolicy(backOffPolicy);
+        retryTemplate.setBackOffPolicy(getBackOffPolicy());
 
         ExceptionClassifierRetryPolicy policy = new ExceptionClassifierRetryPolicy();
         policy.setExceptionClassifier(configureStatusCodeBasedRetryPolicy());
         retryTemplate.setRetryPolicy(policy);
-
 
         return retryTemplate;
     }
@@ -80,19 +77,15 @@ public class RetryConfig {
 
     private RetryPolicy getRetryPolicyForCustomRequestException(CustomRequestException customRequestException) {
         log.debug("Ответ от сервера: {}", customRequestException.getApiErrorResponse());
+        String responseCode = customRequestException.getApiErrorResponse().code();
 
-        return switch (customRequestException.getApiErrorResponse().code()) {
-            case "400", "500" -> {
-                log.debug("Код ответа {}. Отправляем повторные запросы.",
-                        customRequestException.getApiErrorResponse().code());
-                yield simpleRetryPolicy;
-            }
-            default -> {
-                log.debug("Код ответа {}. Не отправляем повторные запросы.",
-                        customRequestException.getApiErrorResponse().code());
-                yield neverRetryPolicy;
-            }
-        };
+        if (applicationConfig.retry().retryCodes().contains(responseCode)) {
+            log.debug("Код ответа {} входит в список retryCodes. Отправляем повторные запросы.", responseCode);
+            return simpleRetryPolicy;
+        } else {
+            log.debug("Код ответа {} не входит в список retryCodes. Не отправляем повторные запросы.", responseCode);
+            return neverRetryPolicy;
+        }
 
     }
 
