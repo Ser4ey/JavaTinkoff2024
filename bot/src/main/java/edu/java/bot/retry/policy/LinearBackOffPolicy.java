@@ -1,4 +1,4 @@
-package edu.java.bot.configuration;
+package edu.java.bot.retry.policy;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

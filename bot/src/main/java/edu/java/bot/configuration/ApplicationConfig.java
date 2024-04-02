@@ -24,7 +24,7 @@ public record ApplicationConfig(
         long interval,
         @Positive
         float multiplier,
-        List<Integer> retryCodes
+        List<String> retryCodes
     ) {
     }
 }

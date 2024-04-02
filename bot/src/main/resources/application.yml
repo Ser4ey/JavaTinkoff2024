@@ -1,7 +1,7 @@
 app:
   telegram-token: ${BOT_TOKEN}
   retry:
-    strategy-name: linear # fixed, linear, exponential
+    strategy-name: fixed # fixed, linear, exponential
     retry-numbers: 5
     interval: 500
     multiplier: 2.5
