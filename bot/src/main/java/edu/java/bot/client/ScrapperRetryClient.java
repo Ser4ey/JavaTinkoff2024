@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.retry.support.RetryTemplate;
 
 @RequiredArgsConstructor
-public class ScrapperRetryWebClient implements ScrapperClient {
+public class ScrapperRetryClient implements ScrapperClient {
     private final ScrapperClient scrapperClient;
 
     private final RetryTemplate retryTemplate;

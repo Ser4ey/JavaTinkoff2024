@@ -1,7 +1,7 @@
 package edu.java.bot.configuration;
 
 import edu.java.bot.client.ScrapperClient;
-import edu.java.bot.client.ScrapperRetryWebClient;
+import edu.java.bot.client.ScrapperRetryClient;
 import edu.java.bot.client.ScrapperWebClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +21,6 @@ public class ClientConfiguration {
     public ScrapperClient scrapperClient() {
         var scrapperWebClient = new ScrapperWebClient(scrapperBaseUrl);
 
-        return new ScrapperRetryWebClient(scrapperWebClient, retryTemplate);
+        return new ScrapperRetryClient(scrapperWebClient, retryTemplate);
     }
 }

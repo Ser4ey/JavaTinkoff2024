@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.RetryPolicy;
 import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.backoff.BackOffPolicy;
+import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.retry.policy.ExceptionClassifierRetryPolicy;
 import org.springframework.retry.policy.NeverRetryPolicy;
@@ -18,37 +20,51 @@ import org.springframework.retry.support.RetryTemplate;
 @Log4j2
 @SuppressWarnings("MagicNumber")
 public class RetryConfig {
-
-    private static final int MAX_RETRY_ATTEMPTS = 3;
-    private final SimpleRetryPolicy simpleRetryPolicy = new SimpleRetryPolicy(MAX_RETRY_ATTEMPTS);
+    private final ApplicationConfig applicationConfig;
+    private final SimpleRetryPolicy simpleRetryPolicy;
     private final NeverRetryPolicy neverRetryPolicy = new NeverRetryPolicy();
 
-//    @Bean
-//    public RetryTemplate retryTemplate() {
-//        RetryTemplate retryTemplate = new RetryTemplate();
-//
-//        FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
-//        fixedBackOffPolicy.setBackOffPeriod(2000l);
-//        retryTemplate.setBackOffPolicy(fixedBackOffPolicy);
-//
-//        SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
-//        retryPolicy.setMaxAttempts(5);
-//        retryTemplate.setRetryPolicy(retryPolicy);
-//
-//        return retryTemplate;
-//    }
+    public RetryConfig(ApplicationConfig applicationConfig) {
+        this.applicationConfig = applicationConfig;
+//        System.out.println(applicationConfig);
+        this.simpleRetryPolicy = new SimpleRetryPolicy(applicationConfig.retry().retryNumbers());
+    }
+
+    private BackOffPolicy getBackOffPolicy() {
+        var a = "2";
+        switch (a) {
+            case "1" -> {
+                FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
+                fixedBackOffPolicy.setBackOffPeriod(2000L); // 2 секунды
+                return fixedBackOffPolicy;
+            }
+            case "2" -> {
+                LinearBackOffPolicy linearBackOffPolicy = new LinearBackOffPolicy(applicationConfig.retry().interval());
+                return linearBackOffPolicy;
+            }
+            default ->  {
+                ExponentialBackOffPolicy exponentialBackOffPolicy = new ExponentialBackOffPolicy();
+                exponentialBackOffPolicy.setInitialInterval(500L);
+                exponentialBackOffPolicy.setMultiplier(2);
+                exponentialBackOffPolicy.setMaxInterval(35000L);
+                return exponentialBackOffPolicy;
+            }
+        }
+    }
 
     @Bean
     public RetryTemplate retryTemplate() {
         RetryTemplate retryTemplate = new RetryTemplate();
 
-        FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
-        fixedBackOffPolicy.setBackOffPeriod(2000L);
-        retryTemplate.setBackOffPolicy(fixedBackOffPolicy);
+        BackOffPolicy backOffPolicy = getBackOffPolicy();
+//        FixedBackOffPolicy fixedBackOffPolicy = new FixedBackOffPolicy();
+//        fixedBackOffPolicy.setBackOffPeriod(2000L);
+        retryTemplate.setBackOffPolicy(backOffPolicy);
 
         ExceptionClassifierRetryPolicy policy = new ExceptionClassifierRetryPolicy();
         policy.setExceptionClassifier(configureStatusCodeBasedRetryPolicy());
         retryTemplate.setRetryPolicy(policy);
+
 
         return retryTemplate;
     }
