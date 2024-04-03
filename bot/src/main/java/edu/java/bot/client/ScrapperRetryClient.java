@@ -18,7 +18,6 @@ public class ScrapperRetryClient implements ScrapperClient {
             scrapperClient.registerChat(id);
             return null;
         });
-
     }
 
     @Override

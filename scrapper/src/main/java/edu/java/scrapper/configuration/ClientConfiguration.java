@@ -1,14 +1,17 @@
 package edu.java.scrapper.configuration;
 
 import edu.java.scrapper.client.BotClient;
+import edu.java.scrapper.client.BotRetryClient;
 import edu.java.scrapper.client.BotWebClient;
 import edu.java.scrapper.client.GitHubClient;
 import edu.java.scrapper.client.GitHubWebClient;
 import edu.java.scrapper.client.StackOverflowClient;
 import edu.java.scrapper.client.StackOverflowWebClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.support.RetryTemplate;
 
 @Configuration
 public class ClientConfiguration {
@@ -20,6 +23,9 @@ public class ClientConfiguration {
 
     @Value("${web-clients.bot.baseurl:#{null}}")
     private String botBaseUrl;
+
+    @Autowired
+    RetryTemplate retryTemplate;
 
     @Bean
     public GitHubClient gitHubClient() {
@@ -33,6 +39,8 @@ public class ClientConfiguration {
 
     @Bean
     public BotClient botClient() {
-        return new BotWebClient(botBaseUrl);
+        var botWebClient = new BotWebClient(botBaseUrl);
+
+        return new BotRetryClient(botWebClient, retryTemplate);
     }
 }
