@@ -1,6 +1,6 @@
-package edu.java.bot.configuration;
+package edu.java.scrapper.configuration;
 
-import edu.java.bot.interceptor.RateLimitInterceptor;
+import edu.java.scrapper.interceptor.RateLimitInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -13,6 +13,6 @@ public class RateLimitConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(interceptor).addPathPatterns("/updates");
+        registry.addInterceptor(interceptor).addPathPatterns("/links").addPathPatterns("/tg-chat");
     }
 }
