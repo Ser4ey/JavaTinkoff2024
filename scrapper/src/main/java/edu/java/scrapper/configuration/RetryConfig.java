@@ -1,7 +1,7 @@
-package edu.java.bot.configuration;
+package edu.java.scrapper.configuration;
 
-import edu.java.bot.exception.request.CustomRequestException;
-import edu.java.bot.retry.policy.LinearBackOffPolicy;
+import edu.java.scrapper.exception.request.CustomRequestException;
+import edu.java.scrapper.retry.policy.LinearBackOffPolicy;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.classify.Classifier;
 import org.springframework.context.annotation.Bean;
