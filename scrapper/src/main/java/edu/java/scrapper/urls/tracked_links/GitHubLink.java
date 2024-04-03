@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class GitHubLink implements TrackedLink {
     private final GitHubClient gitHubClient;
     private static final String LINK_HOST = "github.com";
-    private static final String UNKNOWN_GITHUB_API_ERROR = "Неизвестная ошибка при запросе к GitHub API";
+    private static final String UNKNOWN_GITHUB_API_ERROR = "Неизвестная ошибка при запросе к GitHub API: {}";
 
     @Override
     public boolean isCurrentLinkHost(URI url) {
@@ -44,7 +44,7 @@ public class GitHubLink implements TrackedLink {
                 return false;
             }
         } catch (Exception e) {
-            log.warn(UNKNOWN_GITHUB_API_ERROR, e);
+            log.warn(UNKNOWN_GITHUB_API_ERROR, e.getMessage());
             return false;
         }
 
@@ -69,7 +69,7 @@ public class GitHubLink implements TrackedLink {
             return Optional.ofNullable(answer.updatedAt());
 
         } catch (Exception e) {
-            log.warn(UNKNOWN_GITHUB_API_ERROR, e);
+            log.warn(UNKNOWN_GITHUB_API_ERROR, e.getMessage());
             return Optional.empty();
         }
     }

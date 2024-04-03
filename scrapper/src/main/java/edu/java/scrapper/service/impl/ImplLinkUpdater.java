@@ -79,7 +79,7 @@ public class ImplLinkUpdater implements LinkUpdater {
             botClient.sendUpdates(linkUpdateRequest);
             linkService.updateLastUpdateTime(link.id(), newTime.get());
         } catch (WebClientRequestException ex) {
-            log.error("Не удалось отправить обновление боту", ex);
+            log.error("Не удалось отправить обновление боту: {}", ex.getMessage());
             return false;
         }
 
