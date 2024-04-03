@@ -13,6 +13,7 @@ public class RateLimitConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(interceptor);
+//        registry.addInterceptor(interceptor).addPathPatterns("/updates").addPathPatterns("/d");
+        registry.addInterceptor(interceptor).addPathPatterns("/updates");
     }
 }

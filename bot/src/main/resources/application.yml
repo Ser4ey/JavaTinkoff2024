@@ -11,7 +11,7 @@ app:
       - 500
 
 bucket:
-  limit-per-minute: 2
+  limit-per-minute: 100
 
 
 spring:
