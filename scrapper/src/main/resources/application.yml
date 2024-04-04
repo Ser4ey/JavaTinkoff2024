@@ -5,6 +5,19 @@ app:
     interval: 100s
     force-check-delay: 100s
     checked-links-batch-size: 2
+  retry:
+    strategy-name: fixed # fixed, linear, exponential
+    retry-numbers: 5
+    interval: 500
+    multiplier: 2.5
+    retry-codes:
+      - 500
+      - 502
+      - 503
+
+bucket:
+  limit-per-minute: 4
+
 
 spring:
   application:

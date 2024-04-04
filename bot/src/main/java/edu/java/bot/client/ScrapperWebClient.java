@@ -18,7 +18,6 @@ public class ScrapperWebClient implements ScrapperClient {
     private static final String LINKS_URL = "/links";
     private static final String TG_CHAT_ID_HEADER = "Tg-Chat-Id";
 
-
     private final WebClient webClient;
 
     public ScrapperWebClient(String baseUrl) {

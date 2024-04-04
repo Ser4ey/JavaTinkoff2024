@@ -16,7 +16,8 @@ public class StackOverflowLink implements TrackedLink {
 
     private final StackOverflowClient stackOverflowClient;
     private static final String LINK_HOST = "stackoverflow.com";
-    private static final String UNKNOWN_STACKOVERFLOW_API_ERROR = "Неизвестная ошибка при запросе к StackOverflow API";
+    private static final String UNKNOWN_STACKOVERFLOW_API_ERROR =
+        "Неизвестная ошибка при запросе к StackOverflow API: {}";
 
     @Override
     public boolean isCurrentLinkHost(URI url) {
@@ -43,7 +44,7 @@ public class StackOverflowLink implements TrackedLink {
             }
 
         } catch (Exception e) {
-            log.warn(UNKNOWN_STACKOVERFLOW_API_ERROR, e);
+            log.warn(UNKNOWN_STACKOVERFLOW_API_ERROR, e.getMessage());
             return false;
         }
 
@@ -66,7 +67,7 @@ public class StackOverflowLink implements TrackedLink {
             return Optional.ofNullable(answer.lastActivityDate());
 
         } catch (Exception e) {
-            log.warn(UNKNOWN_STACKOVERFLOW_API_ERROR, e);
+            log.warn(UNKNOWN_STACKOVERFLOW_API_ERROR, e.getMessage());
             return Optional.empty();
         }
 

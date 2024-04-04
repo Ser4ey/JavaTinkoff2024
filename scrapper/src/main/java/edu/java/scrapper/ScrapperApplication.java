@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-//@SpringBootApplication
+
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
 @EnableConfigurationProperties(ApplicationConfig.class)
 public class ScrapperApplication {
