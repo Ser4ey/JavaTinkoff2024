@@ -30,6 +30,10 @@ spring:
   liquibase:
     enabled: false
 
+kafka:
+  topic: bot-notify-topic
+  bootstrap-servers: localhost:9092
+
 server:
   port: 8080
 
