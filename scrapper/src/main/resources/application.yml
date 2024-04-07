@@ -14,10 +14,13 @@ app:
       - 500
       - 502
       - 503
+  kafka:
+    topic: bot-notify-topic
+    bootstrap-servers: localhost:9092
+    use-queue: true
 
 bucket:
   limit-per-minute: 4
-
 
 spring:
   application:
@@ -29,11 +32,6 @@ spring:
     password: postgres
   liquibase:
     enabled: false
-
-kafka:
-  topic: bot-notify-topic
-  bootstrap-servers: localhost:9092
-  use-queue: true
 
 server:
   port: 8080

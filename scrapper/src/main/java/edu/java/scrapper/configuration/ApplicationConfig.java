@@ -17,13 +17,16 @@ public record ApplicationConfig(
     @NotNull
     Scheduler scheduler,
     String databaseAccessType,
-    RetryConfig retry
+    RetryConfig retry,
+    KafkaConfig kafka
 
 ) {
     public record Scheduler(
         boolean enable,
-        @NotNull Duration interval,
-        @NotNull Duration forceCheckDelay,
+        @NotNull
+        Duration interval,
+        @NotNull
+        Duration forceCheckDelay,
         int checkedLinksBatchSize
     ) {
     }
@@ -39,6 +42,16 @@ public record ApplicationConfig(
         @Positive
         float multiplier,
         List<String> retryCodes
+    ) {
+    }
+
+    public record KafkaConfig(
+        @NotEmpty
+        String topic,
+        @NotEmpty
+        String bootstrapServers,
+        boolean useQueue
+
     ) {
     }
 }
