@@ -22,7 +22,6 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
 @Configuration
-//@EnableKafka
 public class KafkaConfiguration {
 
     @Value("${kafka.bootstrap-servers}")
@@ -30,6 +29,9 @@ public class KafkaConfiguration {
 
     @Value("${kafka.topic}")
     private String topic;
+
+    @Value("${kafka.group-id}")
+    private String groupId;
 
     @Bean
     public NewTopic topic() {
@@ -53,9 +55,6 @@ public class KafkaConfiguration {
         return new KafkaTemplate<>(producerFactory());
     }
 
-    @Value("${kafka.group-id}")
-    private String groupId;
-
     @Bean
     public ConsumerFactory<String, LinkUpdateRequest> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
@@ -73,11 +72,6 @@ public class KafkaConfiguration {
         );
     }
 
-//    @Bean
-//    CommonErrorHandler commonErrorHandler() {
-//        return new CommonLoggingErrorHandler();
-//    }
-
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, LinkUpdateRequest> kafkaListenerContainerFactory(
         ConsumerFactory<String, LinkUpdateRequest> consumerFactory
@@ -85,7 +79,6 @@ public class KafkaConfiguration {
         ConcurrentKafkaListenerContainerFactory<String, LinkUpdateRequest> factory =
             new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory);
-//        factory.setCommonErrorHandler(commonErrorHandler);
         return factory;
     }
 }
