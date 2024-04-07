@@ -19,7 +19,7 @@ public class ScrapperBotListener {
     private final LinkUpdateRequestValidator linkUpdateRequestValidator;
 
     @RetryableTopic(attempts = "1", kafkaTemplate = "kafkaTemplate", dltTopicSuffix = "_dlq")
-    @KafkaListener(topics = "${kafka.topic}", containerFactory = "kafkaListenerContainerFactory")
+    @KafkaListener(topics = "${app.kafka.topic}", containerFactory = "kafkaListenerContainerFactory")
     public void listen(LinkUpdateRequest update) {
 
         try {
