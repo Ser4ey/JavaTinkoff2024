@@ -33,6 +33,7 @@ spring:
 kafka:
   topic: bot-notify-topic
   bootstrap-servers: localhost:9092
+  use-queue: true
 
 server:
   port: 8080

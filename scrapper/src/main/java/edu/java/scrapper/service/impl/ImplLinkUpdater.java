@@ -1,12 +1,12 @@
 package edu.java.scrapper.service.impl;
 
-import edu.java.scrapper.client.BotClient;
 import edu.java.scrapper.model.Chat;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.model.dto.request.LinkUpdateRequest;
 import edu.java.scrapper.service.ChatService;
 import edu.java.scrapper.service.LinkService;
 import edu.java.scrapper.service.LinkUpdater;
+import edu.java.scrapper.service.NotificationService;
 import edu.java.scrapper.urls.UrlsApi;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -26,9 +26,9 @@ public class ImplLinkUpdater implements LinkUpdater {
 
     private final LinkService linkService;
 
-    private final BotClient botClient;
-
     private final UrlsApi urlsApi;
+
+    private final NotificationService notificationService;
 
     @Override
     public int update(int checkedLinksBatchSize) {
@@ -75,8 +75,9 @@ public class ImplLinkUpdater implements LinkUpdater {
             chatIds
         );
 
+
         try {
-            botClient.sendUpdates(linkUpdateRequest);
+            notificationService.sendNotification(linkUpdateRequest);
             linkService.updateLastUpdateTime(link.id(), newTime.get());
         } catch (WebClientRequestException ex) {
             log.error("Не удалось отправить обновление боту: {}", ex.getMessage());
