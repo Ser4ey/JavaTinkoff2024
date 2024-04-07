@@ -1,8 +1,9 @@
-package edu.java.bot.service;
+package edu.java.bot.service.impl;
 
 import edu.java.bot.client.ScrapperClient;
 import edu.java.bot.exception.request.CustomRequestException;
 import edu.java.bot.exception.service.ScrapperException;
+import edu.java.bot.service.ScrapperService;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;

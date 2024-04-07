@@ -3,6 +3,7 @@ package edu.java.bot.kafka;
 import edu.java.bot.exception.kafka.MessageValueValidationException;
 import edu.java.bot.kafka.validator.LinkUpdateRequestValidator;
 import edu.java.bot.model.dto.request.LinkUpdateRequest;
+import edu.java.bot.service.UpdateUrlsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 @Log4j2
 public class ScrapperBotListener {
 
+    private final UpdateUrlsService updateUrlsService;
     private final LinkUpdateRequestValidator linkUpdateRequestValidator;
 
     @RetryableTopic(attempts = "1", kafkaTemplate = "kafkaTemplate", dltTopicSuffix = "_dlq")
@@ -27,7 +29,8 @@ public class ScrapperBotListener {
             throw e;
         }
 
-        log.info("GOOOOOOOOOD");
-        log.info(update);
+        log.info("Получено обновление по Kafka: {}", update);
+        updateUrlsService.update(update);
+
     }
 }

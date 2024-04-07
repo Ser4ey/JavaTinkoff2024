@@ -1,8 +1,8 @@
 package edu.java.bot.controller;
 
-import edu.java.bot.SimpleBot;
 import edu.java.bot.model.dto.request.LinkUpdateRequest;
 import edu.java.bot.model.dto.response.ApiErrorResponse;
+import edu.java.bot.service.UpdateUrlsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,7 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Log4j2
 public class UpdatesApiController {
-    private final SimpleBot simpleBot;
+
+    private final UpdateUrlsService updateUrlsService;
 
     @PostMapping
     @Operation(summary = "Send update",
@@ -36,14 +37,9 @@ public class UpdatesApiController {
         })
     })
     public void updateUrls(@RequestBody @Valid LinkUpdateRequest linkUpdateRequest) {
-        log.info("Получено обновление {}", linkUpdateRequest);
+        log.info("Получено обновление по API: {}", linkUpdateRequest);
 
-        for (Long chatId: linkUpdateRequest.tgChatIds()) {
-            simpleBot.sendMessageWithWebPagePreview(
-                chatId,
-                linkUpdateRequest.url().toString() + "\n\n" + linkUpdateRequest.description()
-            );
-        }
+        updateUrlsService.update(linkUpdateRequest);
     }
 }
 
