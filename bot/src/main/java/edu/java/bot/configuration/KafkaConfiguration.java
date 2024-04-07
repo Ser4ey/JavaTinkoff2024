@@ -63,9 +63,12 @@ public class KafkaConfiguration {
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
+//        props.put(
+//            JsonDeserializer.TYPE_MAPPINGS,
+//            "edu.java.scrapper.model.dto.request.LinkUpdateRequest:edu.java.bot.model.dto.request.LinkUpdateRequest"
+//        );
+        props.put(JsonDeserializer.TRUSTED_PACKAGES, "edu.java.bot.model.dto.request");
         props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
-        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, LinkUpdateRequest.class);
 
         return new DefaultKafkaConsumerFactory<>(
             props,
