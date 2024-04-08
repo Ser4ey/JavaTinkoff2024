@@ -19,7 +19,7 @@ public class NotificationServiceConfiguration {
 
     @Bean
     public NotificationService notificationService() {
-        if (applicationConfig.kafka().useQueue()) {
+        if (applicationConfig.useQueue()) {
             return update -> {
                 // return kafkaQueueProducer::send;
                 log.debug("Используем Kafaka для отправки LinkUpdateRequest");

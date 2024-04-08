@@ -17,6 +17,7 @@ public record ApplicationConfig(
     @NotNull
     Scheduler scheduler,
     String databaseAccessType,
+    boolean useQueue,
     RetryConfig retry,
     KafkaConfig kafka
 
@@ -49,9 +50,7 @@ public record ApplicationConfig(
         @NotEmpty
         String topic,
         @NotEmpty
-        String bootstrapServers,
-        boolean useQueue
-
+        String bootstrapServers
     ) {
     }
 }
