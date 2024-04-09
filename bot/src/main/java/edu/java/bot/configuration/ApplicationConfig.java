@@ -12,7 +12,9 @@ import org.springframework.validation.annotation.Validated;
 public record ApplicationConfig(
     @NotEmpty
     String telegramToken,
-    RetryConfig retry
+    RetryConfig retry,
+    KafkaConfig kafka
+
 ) {
     public record RetryConfig(
         @NotEmpty
@@ -25,6 +27,17 @@ public record ApplicationConfig(
         @Positive
         float multiplier,
         List<String> retryCodes
+    ) {
+    }
+
+
+    public record KafkaConfig(
+        @NotEmpty
+        String topic,
+        @NotEmpty
+        String bootstrapServers,
+        @NotEmpty
+        String groupId
     ) {
     }
 }

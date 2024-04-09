@@ -5,15 +5,17 @@ app:
     retry-numbers: 5
     interval: 500
     multiplier: 2.5
-
     retry-codes:
       - 500
       - 502
       - 503
+  kafka:
+    topic: bot-notify-topic
+    bootstrap-servers: localhost:9092
+    group-id: update-listener
 
 bucket:
   limit-per-minute: 100
-
 
 spring:
   application:

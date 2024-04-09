@@ -1,5 +1,6 @@
 app:
   database-access-type: jpa
+  use-queue: true
   scheduler:
     enable: true
     interval: 100s
@@ -14,10 +15,12 @@ app:
       - 500
       - 502
       - 503
+  kafka:
+    topic: bot-notify-topic
+    bootstrap-servers: localhost:9092
 
 bucket:
   limit-per-minute: 4
-
 
 spring:
   application:
