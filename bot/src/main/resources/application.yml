@@ -36,3 +36,38 @@ web-clients:
 springdoc:
   swagger-ui:
     path: /swagger-ui
+
+
+management:
+  server:
+    port: 8081
+
+  endpoints:
+    web:
+      base-path: /
+      path-mapping:
+        prometheus: /metrics
+      exposure:
+        include: info, health, prometheus
+
+#  endpoint:
+#    health:
+#      enabled: true
+#    info:
+#      enabled: true
+#    prometheus:
+#      enabled: true
+
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+#
+#  prometheus:
+#    metrics:
+#      export:
+#        enabled: true
+#        step: 1m
