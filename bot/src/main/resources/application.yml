@@ -40,7 +40,7 @@ springdoc:
 
 management:
   server:
-    port: 8081
+    port: 8091
 
   endpoints:
     web:
@@ -50,24 +50,20 @@ management:
       exposure:
         include: info, health, prometheus
 
-#  endpoint:
-#    health:
-#      enabled: true
-#    info:
-#      enabled: true
-#    prometheus:
-#      enabled: true
-
   metrics:
+#    export:
+#      prometheus:
+#        enabled: true
     tags:
       application: ${spring.application.name}
 
     distribution:
       percentiles-histogram:
         "[http.server.requests]": true
-#
+
 #  prometheus:
 #    metrics:
 #      export:
+##        step: 1m
 #        enabled: true
-#        step: 1m
+
