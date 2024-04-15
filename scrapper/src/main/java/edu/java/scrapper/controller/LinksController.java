@@ -7,6 +7,8 @@ import edu.java.scrapper.model.dto.response.ApiErrorResponse;
 import edu.java.scrapper.model.dto.response.LinkResponse;
 import edu.java.scrapper.model.dto.response.ListLinksResponse;
 import edu.java.scrapper.service.LinkService;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Metrics;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LinksController {
 
     private final LinkService linkService;
+    private final Counter processedMessagesCounter = Metrics.counter("processed.messages");
 
     @GetMapping
     @Operation(summary = "Get all the tracked links", description = "Get all the tracked links")
@@ -46,6 +49,7 @@ public class LinksController {
         })
     })
     public ListLinksResponse getAllLinks(@RequestHeader("Tg-Chat-Id") @Min(1) Long chatId) {
+        processedMessagesCounter.increment();
 
         List<Link> links = linkService.listAllByChatId(chatId);
 
@@ -78,8 +82,9 @@ public class LinksController {
     public LinkResponse createLink(
         @RequestHeader("Tg-Chat-Id") @Min(1) Long chatId, @RequestBody @Valid AddLinkRequest addLinkRequest
     ) {
-        var link = linkService.add(chatId, addLinkRequest.link());
+        processedMessagesCounter.increment();
 
+        var link = linkService.add(chatId, addLinkRequest.link());
         return new LinkResponse(link.id().longValue(), link.url());
     }
 
@@ -99,8 +104,9 @@ public class LinksController {
     public LinkResponse deleteLink(
         @RequestHeader("Tg-Chat-Id") @Min(1) Long chatId, @RequestBody @Valid RemoveLinkRequest removeLinkRequest
     ) {
-        linkService.remove(chatId, removeLinkRequest.link());
+        processedMessagesCounter.increment();
 
+        linkService.remove(chatId, removeLinkRequest.link());
         return new LinkResponse(0L, removeLinkRequest.link());
     }
 
