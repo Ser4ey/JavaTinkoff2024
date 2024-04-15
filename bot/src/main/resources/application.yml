@@ -51,19 +51,10 @@ management:
         include: info, health, prometheus
 
   metrics:
-#    export:
-#      prometheus:
-#        enabled: true
     tags:
       application: ${spring.application.name}
 
     distribution:
       percentiles-histogram:
         "[http.server.requests]": true
-
-#  prometheus:
-#    metrics:
-#      export:
-##        step: 1m
-#        enabled: true
 
