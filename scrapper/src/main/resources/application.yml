@@ -17,7 +17,7 @@ app:
       - 503
   kafka:
     topic: bot-notify-topic
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: host.docker.internal:9092
 
 bucket:
   limit-per-minute: 4
@@ -27,7 +27,7 @@ spring:
     name: scrapper
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/scrapper
+    url: jdbc:postgresql://host.docker.internal:5432/scrapper
     username: postgres
     password: postgres
   liquibase:
@@ -45,7 +45,7 @@ web-clients:
   github:
     baseurl: https://api.github.com/
   bot:
-    baseurl: http://localhost:8090
+    baseurl: http://host.docker.internal:8090
 
 springdoc:
   swagger-ui:
