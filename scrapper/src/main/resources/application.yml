@@ -17,7 +17,7 @@ app:
       - 503
   kafka:
     topic: bot-notify-topic
-    bootstrap-servers: host.docker.internal:9092
+    bootstrap-servers: host.docker.internal:29092
 
 bucket:
   limit-per-minute: 4
@@ -32,6 +32,8 @@ spring:
     password: postgres
   liquibase:
     enabled: false
+  kafka:
+    bootstrap-servers: host.docker.internal:29092
 
 server:
   port: 8080

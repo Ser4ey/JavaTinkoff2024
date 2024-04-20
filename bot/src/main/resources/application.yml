@@ -12,7 +12,7 @@ app:
   kafka:
     topic: bot-notify-topic
 #    bootstrap-servers: localhost:9092
-    bootstrap-servers: host.docker.internal:9092
+    bootstrap-servers: host.docker.internal:29092
     group-id: update-listener
 
 bucket:
@@ -23,6 +23,8 @@ spring:
     name: bot
   jackson:
     time-zone: UTC
+  kafka:
+    bootstrap-servers:  host.docker.internal:29092
 
 server:
   port: 8090
