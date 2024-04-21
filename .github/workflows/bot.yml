@@ -7,11 +7,16 @@ on:
       - .github/workflows/bot.yml
       - bot/**
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
     name: Build
     permissions:
+      contents: read
       packages: write
 
     steps:
@@ -35,6 +40,27 @@ jobs:
           min-coverage-changed-files: 30
           title: Code Coverage
           update-comment: true
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@1
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@1
+        with:
+          context: .
+          file: bot/bot.Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
 
   checkstyle:
     name: checkstyle
