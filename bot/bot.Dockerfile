@@ -5,6 +5,6 @@ WORKDIR /app
 
 #ARG JAR_FILE=target/*.jar
 
-COPY target/*.jar app.jar
+COPY target/bot.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "/app.jar"]
