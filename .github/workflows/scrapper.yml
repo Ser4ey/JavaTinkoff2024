@@ -60,7 +60,7 @@ jobs:
           context: scrapper
           file: scrapper/scrapper.Dockerfile
           push: true
-          tags: ${{ steps.meta.outputs.tags }}/test1
+          tags: ${{ steps.meta.outputs.tags }}
 
   checkstyle:
     name: checkstyle
