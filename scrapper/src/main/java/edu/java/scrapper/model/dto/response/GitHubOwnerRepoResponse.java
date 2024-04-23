@@ -10,7 +10,9 @@ public record GitHubOwnerRepoResponse(
     @JsonProperty("pushed_at")
     OffsetDateTime pushedAt,
     @JsonProperty("updated_at")
-    OffsetDateTime updatedAt
+    OffsetDateTime updatedAt,
+    @JsonProperty("answer_count")
+    Integer answersCount
 ) {
 
 }

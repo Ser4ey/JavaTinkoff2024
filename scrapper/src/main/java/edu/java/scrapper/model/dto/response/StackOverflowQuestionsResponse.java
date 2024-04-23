@@ -14,7 +14,9 @@ public record StackOverflowQuestionsResponse(
         Long id,
         String title,
         @JsonProperty("last_activity_date")
-        OffsetDateTime lastActivityDate
+        OffsetDateTime lastActivityDate,
+        @JsonProperty("forks_count")
+        Integer forksCount
     ) {
 
     }
