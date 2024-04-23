@@ -11,7 +11,8 @@ app:
       - 503
   kafka:
     topic: bot-notify-topic
-    bootstrap-servers: localhost:9092
+#    bootstrap-servers: localhost:9092
+    bootstrap-servers: host.docker.internal:29092
     group-id: update-listener
 
 bucket:
@@ -22,6 +23,8 @@ spring:
     name: bot
   jackson:
     time-zone: UTC
+  kafka:
+    bootstrap-servers:  host.docker.internal:29092
 
 server:
   port: 8090
@@ -31,7 +34,9 @@ logging:
 
 web-clients:
   scrapper:
-    baseurl: http://localhost:8080
+#    baseurl: http://localhost:8080
+    baseurl: http://host.docker.internal:8080
+
 
 springdoc:
   swagger-ui:
