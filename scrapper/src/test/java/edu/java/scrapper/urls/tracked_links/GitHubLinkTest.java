@@ -98,9 +98,11 @@ class GitHubLinkTest extends IntegrationTest {
 
         assertFalse(some.isEmpty());
         assertEquals(some.get().newCount(), 0);
-
-        System.out.println(some.get().newLastActivity());
-        System.out.println(now);
         assertTrue(some.get().newLastActivity().isEqual(tomorrow));
+
+        var noUpdate = gitHubLink.getUpdate(
+            new Link(10, goodURI, tomorrow, tomorrow, 0)
+        );
+        assertTrue(noUpdate.isEmpty());
     }
 }

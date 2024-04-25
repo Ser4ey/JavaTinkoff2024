@@ -5,7 +5,6 @@ import edu.java.scrapper.model.Link;
 import edu.java.scrapper.model.dto.response.StackOverflowQuestionsResponse;
 import edu.java.scrapper.urls.UrlUpdateDto;
 import java.net.URI;
-import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -53,28 +52,6 @@ public class StackOverflowLink implements TrackedLink {
         }
 
         return true;
-    }
-
-    @Override
-    public Optional<OffsetDateTime> getLastActivityTime(URI url) {
-        try {
-            var questionId = getQuestionId(url);
-            if (questionId.isEmpty()) {
-                return Optional.empty();
-            }
-
-            var answer = stackOverflowClient.getQuestion(questionId.get());
-            log.info("Ответ от StackOverflow API: {}", answer);
-            if (answer == null) {
-                return Optional.empty();
-            }
-
-            return Optional.ofNullable(answer.lastActivityDate());
-
-        } catch (Exception e) {
-            log.warn(UNKNOWN_STACKOVERFLOW_API_ERROR, e.getMessage());
-            return Optional.empty();
-        }
     }
 
     @Override

@@ -5,7 +5,6 @@ import edu.java.scrapper.model.Link;
 import edu.java.scrapper.model.dto.response.GitHubOwnerRepoResponse;
 import edu.java.scrapper.urls.UrlUpdateDto;
 import java.net.URI;
-import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -53,29 +52,6 @@ public class GitHubLink implements TrackedLink {
         }
 
         return true;
-    }
-
-    @Override
-    public Optional<OffsetDateTime> getLastActivityTime(URI url) {
-        try {
-            var ownerRepoPair = getOwnerAndRepo(url);
-            if (ownerRepoPair.isEmpty()) {
-                return Optional.empty();
-            }
-            String owner = ownerRepoPair.get().getLeft();
-            String repo = ownerRepoPair.get().getRight();
-
-            var answer = gitHubClient.getRepository(owner, repo);
-            log.info("Ответ от GitHub API: {}", answer);
-            if (answer == null) {
-                return Optional.empty();
-            }
-            return Optional.ofNullable(answer.updatedAt());
-
-        } catch (Exception e) {
-            log.warn(UNKNOWN_GITHUB_API_ERROR, e.getMessage());
-            return Optional.empty();
-        }
     }
 
     @Override

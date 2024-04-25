@@ -4,15 +4,12 @@ import edu.java.scrapper.model.Link;
 import edu.java.scrapper.urls.UrlUpdateDto;
 import java.net.URI;
 import java.net.URL;
-import java.time.OffsetDateTime;
 import java.util.Optional;
 
 public interface TrackedLink {
     boolean isCurrentLinkHost(URI url); // ссылка относится к текущему адресу
 
     boolean isWorkingUrl(URI url); // ссылка доступна для получения обновлений
-
-    Optional<OffsetDateTime> getLastActivityTime(URI url); // время последнего обновления
 
     Optional<UrlUpdateDto> getUpdate(Link link); // обновление источника (если есть)
 

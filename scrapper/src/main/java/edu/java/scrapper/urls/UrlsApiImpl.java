@@ -3,7 +3,6 @@ package edu.java.scrapper.urls;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.urls.tracked_links.TrackedLink;
 import java.net.URI;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -28,18 +27,6 @@ public class UrlsApiImpl implements UrlsApi {
             }
         }
         return false;
-    }
-
-    @Override
-    public Optional<OffsetDateTime> getLastActivity(URI url) {
-        for (TrackedLink tackedLink : trackedLinks) {
-            if (!tackedLink.isCurrentLinkHost(url)) {
-                continue;
-            }
-            return tackedLink.getLastActivityTime(url);
-
-        }
-        return Optional.empty();
     }
 
     @Override

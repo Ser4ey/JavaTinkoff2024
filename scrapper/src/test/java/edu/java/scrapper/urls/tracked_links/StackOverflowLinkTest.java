@@ -92,6 +92,11 @@ public class StackOverflowLinkTest extends IntegrationTest {
         assertFalse(some.isEmpty());
         assertEquals(some.get().newCount(), 100);
         assertTrue(some.get().newLastActivity().isEqual(tomorrow));
+
+        var noUpdate = stackOverflowLink.getUpdate(
+            new Link(10, goodURI, tomorrow, tomorrow, 100)
+        );
+        assertTrue(noUpdate.isEmpty());
     }
 
 }
