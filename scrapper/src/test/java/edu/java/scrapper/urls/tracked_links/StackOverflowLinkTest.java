@@ -38,7 +38,8 @@ public class StackOverflowLinkTest extends IntegrationTest {
         var StackOverflowQuestion = new StackOverflowQuestion (
             10L,
             "TinkoffJava2024",
-            now
+            now,
+            0
         );
 
         Mockito.doReturn(StackOverflowQuestion)
@@ -62,7 +63,8 @@ public class StackOverflowLinkTest extends IntegrationTest {
         var StackOverflowQuestion = new StackOverflowQuestion (
             10L,
             "TinkoffJava2024",
-            now
+            now,
+            0
         );
         Mockito.doReturn(StackOverflowQuestion)
             .when(stackOverflowClient)

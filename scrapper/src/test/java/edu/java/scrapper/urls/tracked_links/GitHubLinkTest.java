@@ -38,7 +38,8 @@ class GitHubLinkTest extends IntegrationTest {
             10L,
             "TinkoffJava2024",
             OffsetDateTime.MIN,
-            now
+            now,
+            0
             );
 
 
@@ -67,7 +68,8 @@ class GitHubLinkTest extends IntegrationTest {
             10L,
             "TinkoffJava2024",
             OffsetDateTime.MIN,
-            now
+            now,
+            0
         );
 
 
