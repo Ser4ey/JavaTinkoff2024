@@ -16,6 +16,8 @@ public interface LinkService {
 
     void updateLastCheckTime(Integer id, OffsetDateTime lastCheckTime);
 
+    void updateCount(Integer id, Integer count);
+
     void remove(long chatId, URI url) throws LinkNotFound, ChatNotFound;
 
     void removeLinksWithNoRelations();

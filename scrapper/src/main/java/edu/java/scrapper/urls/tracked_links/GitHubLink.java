@@ -1,8 +1,12 @@
 package edu.java.scrapper.urls.tracked_links;
 
 import edu.java.scrapper.client.GitHubClient;
+import edu.java.scrapper.model.Link;
+import edu.java.scrapper.model.dto.response.GitHubOwnerRepoResponse;
+import edu.java.scrapper.urls.UrlUpdateDto;
 import java.net.URI;
 import java.time.OffsetDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -61,8 +65,8 @@ public class GitHubLink implements TrackedLink {
             String owner = ownerRepoPair.get().getLeft();
             String repo = ownerRepoPair.get().getRight();
 
-
             var answer = gitHubClient.getRepository(owner, repo);
+            log.info("Ответ от GitHub API: {}", answer);
             if (answer == null) {
                 return Optional.empty();
             }
@@ -72,6 +76,67 @@ public class GitHubLink implements TrackedLink {
             log.warn(UNKNOWN_GITHUB_API_ERROR, e.getMessage());
             return Optional.empty();
         }
+    }
+
+    @Override
+    public Optional<UrlUpdateDto> getUpdate(Link link) {
+        try {
+            URI url = link.url();
+
+            var ownerRepoPair = getOwnerAndRepo(url);
+            if (ownerRepoPair.isEmpty()) {
+                log.warn("GitHub не удалось получить Owner/Repo: {}", url);
+                return Optional.empty();
+            }
+            String owner = ownerRepoPair.get().getLeft();
+            String repo = ownerRepoPair.get().getRight();
+
+            var answer = gitHubClient.getRepository(owner, repo);
+            log.info("Ответ от GitHub API: {}", answer);
+            if (answer == null) {
+                return Optional.empty();
+            }
+
+            return getUpdateDTO(link, answer);
+
+        } catch (Exception e) {
+            log.warn(UNKNOWN_GITHUB_API_ERROR, e.getMessage());
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    private static Optional<UrlUpdateDto> getUpdateDTO(Link link, GitHubOwnerRepoResponse answer) {
+        StringBuilder updateText = new StringBuilder();
+
+        log.debug("Старое время: {} Новок время: {}", link.lastUpdateTime(), answer.updatedAt());
+        if (
+            link.lastUpdateTime().isEqual(answer.updatedAt()) ||
+            link.lastUpdateTime().isAfter(answer.updatedAt())
+        ) {
+            log.info("Нет новых обновлений для ссылки: {}", link.url().toString());
+        } else {
+            updateText.append("Информация по GitHub ссылке обновилась");
+        }
+
+        if (!Objects.equals(link.count(), answer.forksCount())) {
+            if (!updateText.isEmpty()) {
+                updateText.append("\n");
+            }
+            updateText.append(String.format("Изменилось кол-во forks: %d -> %d", link.count(), answer.forksCount()));
+        }
+
+        if (updateText.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(
+            new UrlUpdateDto(
+                updateText.toString(),
+                answer.updatedAt(),
+                answer.forksCount()
+            )
+        );
     }
 
     private static Optional<Pair<String, String>> getOwnerAndRepo(URI url) {

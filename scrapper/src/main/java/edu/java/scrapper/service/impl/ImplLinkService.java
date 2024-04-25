@@ -66,6 +66,11 @@ public class ImplLinkService implements LinkService {
     }
 
     @Override
+    public void updateCount(Integer id, Integer count) {
+        linkRepository.updateCount(id, count);
+    }
+
+    @Override
     @Transactional
     public void remove(long chatId, URI url) {
         if (!chatRepository.isChatExist(chatId)) {
