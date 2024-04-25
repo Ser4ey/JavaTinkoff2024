@@ -27,7 +27,8 @@ public class EntityMapper {
             linkEntity.getId(),
             URI.create(linkEntity.getUrl()),
             linkEntity.getLastUpdate(),
-            linkEntity.getLastCheck()
+            linkEntity.getLastCheck(),
+            linkEntity.getCount()
         );
     }
 

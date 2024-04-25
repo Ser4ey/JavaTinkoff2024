@@ -35,6 +35,9 @@ public class LinkEntity {
     @Column(name = "last_check", nullable = false)
     private OffsetDateTime lastCheck;
 
+    @Column(name = "count", nullable = false)
+    private Integer count;
+
     @ManyToMany(mappedBy = "links", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ChatEntity> chats = new ArrayList<>();
 
@@ -42,5 +45,6 @@ public class LinkEntity {
         this.url = url;
         lastUpdate = OffsetDateTime.now();
         lastCheck = OffsetDateTime.now();
+        count = 0;
     }
 }

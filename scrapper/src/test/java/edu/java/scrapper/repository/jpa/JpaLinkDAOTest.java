@@ -222,6 +222,19 @@ class JpaLinkDAOTest extends IntegrationTest {
         assertEquals(link.get().lastCheckTime(), dateTime);
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    void testUpdateCount() {
+        var uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024");
+        var added_link = linkRepository.addLink(uri);
+
+        assertEquals(added_link.count(), 0);
+        linkRepository.updateCount(added_link.id(), 7);
+
+        var link = linkRepository.findByUrl(uri);
+        assertEquals(link.get().count(), 7);
+    }
 
     @Test
     @Transactional

@@ -8,12 +8,15 @@ import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
+@Log4j2
 @SuppressWarnings({"MultipleStringLiterals", "InnerTypeLast"})
 public class JdbcLinkDAO implements LinkRepository {
 
@@ -26,7 +29,8 @@ public class JdbcLinkDAO implements LinkRepository {
                     resultSet.getInt("id"),
                     URI.create(resultSet.getString("url")),
                     resultSet.getTimestamp("last_update").toInstant().atOffset(ZoneOffset.UTC),
-                    resultSet.getTimestamp("last_check").toInstant().atOffset(ZoneOffset.UTC)
+                    resultSet.getTimestamp("last_check").toInstant().atOffset(ZoneOffset.UTC),
+                    resultSet.getInt("count")
                 );
     }
 
@@ -44,7 +48,7 @@ public class JdbcLinkDAO implements LinkRepository {
     @Override
     public List<Link> findAllByChatId(Long chatId) {
         String sql = """
-            SELECT DISTINCT link.id, link.url, link.last_update, link.last_check
+            SELECT DISTINCT link.id, link.url, link.last_update, link.last_check, link.count
             FROM link JOIN chat_link ON link.id = chat_link.link_id
             WHERE chat_id = ?
             """;
@@ -105,10 +109,16 @@ public class JdbcLinkDAO implements LinkRepository {
     @Override
     @Transactional
     public Link addLink(URI url) {
-        jdbcTemplate.update(
-            "INSERT INTO link (url) VALUES (?)",
-            url.toString()
-        );
+        try {
+            jdbcTemplate.update(
+                "INSERT INTO link (url) VALUES (?)",
+                url.toString()
+            );
+        } catch (DuplicateKeyException e) {
+            log.warn("Ссылка {} уже есть в бд! Er: {}", url, e.toString());
+            var link = findByUrl(url);
+            return link.get();
+        }
 
         var link = findByUrl(url);
         return link.get();
@@ -124,15 +134,24 @@ public class JdbcLinkDAO implements LinkRepository {
     }
 
     @Override
+    @Transactional
     public void updateLastUpdateTime(Integer id, OffsetDateTime lastUpdateTime) {
         String sql = "UPDATE link SET last_update = ? WHERE id = ?";
         jdbcTemplate.update(sql, lastUpdateTime, id);
     }
 
     @Override
+    @Transactional
     public void updateLastCheckTime(Integer id, OffsetDateTime lastCheckTime) {
         String sql = "UPDATE link SET last_check = ? WHERE id = ?";
         jdbcTemplate.update(sql, lastCheckTime, id);
+    }
+
+    @Override
+    @Transactional
+    public void updateCount(Integer id, Integer count) {
+        String sql = "UPDATE link SET count = ? WHERE id = ?";
+        jdbcTemplate.update(sql, count, id);
     }
 
     @Override
@@ -165,6 +184,5 @@ public class JdbcLinkDAO implements LinkRepository {
 
         jdbcTemplate.update(sql);
     }
-
 }
 

@@ -107,6 +107,17 @@ public class JpaLinkDAO implements LinkRepository {
 
     @Override
     @Transactional
+    public void updateCount(Integer id, Integer count) {
+        var linkEntity = jpaLinkRepository.findById(id);
+        if (linkEntity.isEmpty()) {
+            return;
+        }
+        linkEntity.get().setCount(count);
+        jpaLinkRepository.save(linkEntity.get());
+    }
+
+    @Override
+    @Transactional
     public void remove(Integer id) {
         jpaLinkRepository.deleteById(id);
     }

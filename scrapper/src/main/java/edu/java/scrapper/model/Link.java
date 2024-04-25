@@ -7,7 +7,8 @@ public record Link(
     Integer id,
     URI url,
     OffsetDateTime lastUpdateTime,
-    OffsetDateTime lastCheckTime
+    OffsetDateTime lastCheckTime,
+    Integer count
 ) {
 
 }

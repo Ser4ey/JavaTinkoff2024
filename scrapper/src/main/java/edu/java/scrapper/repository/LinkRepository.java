@@ -28,6 +28,8 @@ public interface LinkRepository {
 
     void updateLastCheckTime(Integer id, OffsetDateTime lastCheckTime);
 
+    void updateCount(Integer id, Integer count);
+
     void remove(Integer id);
 
     void removeLinkRelation(Long chatId, Integer linkId); // удаление из таблицы chat_link
