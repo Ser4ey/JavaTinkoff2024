@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Log4j2
 @Component
 @RequiredArgsConstructor
-@SuppressWarnings({"ReturnCount", "MagicNumber"})
+@SuppressWarnings({"ReturnCount", "MagicNumber", "MultipleStringLiterals"})
 public class StackOverflowLink implements TrackedLink {
 
     private final StackOverflowClient stackOverflowClient;
@@ -107,9 +107,10 @@ public class StackOverflowLink implements TrackedLink {
     ) {
         log.debug("Старое время: {} Новок время: {}", link.lastUpdateTime(), answer.lastActivityDate());
         if (
-            link.lastUpdateTime().isEqual(answer.lastActivityDate()) ||
-                link.lastUpdateTime().isAfter(answer.lastActivityDate())) {
-            log.info("Нет новых обновлений для ссылки: {}", link.url().toString());
+            link.lastUpdateTime().isEqual(answer.lastActivityDate())
+            || link.lastUpdateTime().isAfter(answer.lastActivityDate())
+        ) {
+            log.info("Информация по ссылке не изменилась: {}", link.url().toString());
             return Optional.empty();
         }
 

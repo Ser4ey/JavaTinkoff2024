@@ -69,12 +69,15 @@ public class ImplLinkUpdater implements LinkUpdater {
             chatIds
         );
 
-
         try {
             notificationService.sendNotification(linkUpdateRequest);
 
-            linkService.updateLastUpdateTime(link.id(), urlUpdateDto.newLastActivity());
-            linkService.updateCount(link.id(), urlUpdateDto.newCount());
+            if (!link.lastUpdateTime().equals(urlUpdateDto.newLastActivity())) {
+                linkService.updateLastUpdateTime(link.id(), urlUpdateDto.newLastActivity());
+            }
+            if (!link.count().equals(urlUpdateDto.newCount())) {
+                linkService.updateCount(link.id(), urlUpdateDto.newCount());
+            }
         } catch (WebClientRequestException ex) {
             log.error("Не удалось отправить обновление боту: {}", ex.getMessage());
             return false;

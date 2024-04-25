@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Log4j2
 @Component
 @RequiredArgsConstructor
-@SuppressWarnings({"ReturnCount", "MagicNumber"})
+@SuppressWarnings({"ReturnCount", "MagicNumber", "MultipleStringLiterals"})
 public class GitHubLink implements TrackedLink {
     private final GitHubClient gitHubClient;
     private static final String LINK_HOST = "github.com";
@@ -101,7 +101,6 @@ public class GitHubLink implements TrackedLink {
 
         } catch (Exception e) {
             log.warn(UNKNOWN_GITHUB_API_ERROR, e.getMessage());
-            e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -111,10 +110,10 @@ public class GitHubLink implements TrackedLink {
 
         log.debug("Старое время: {} Новок время: {}", link.lastUpdateTime(), answer.updatedAt());
         if (
-            link.lastUpdateTime().isEqual(answer.updatedAt()) ||
-            link.lastUpdateTime().isAfter(answer.updatedAt())
+            link.lastUpdateTime().isEqual(answer.updatedAt())
+            || link.lastUpdateTime().isAfter(answer.updatedAt())
         ) {
-            log.info("Нет новых обновлений для ссылки: {}", link.url().toString());
+            log.info("Информация по ссылке не изменилась: {}", link.url().toString());
         } else {
             updateText.append("Информация по GitHub ссылке обновилась");
         }
