@@ -91,7 +91,7 @@ public class GitHubLink implements TrackedLink {
         ) {
             log.info("Информация по ссылке не изменилась: {}", link.url().toString());
         } else {
-            updateText.append("Информация по GitHub ссылке обновилась");
+            updateText.append("Новое обновление в GitHub репозитории");
         }
 
         if (!Objects.equals(link.count(), answer.forksCount())) {
