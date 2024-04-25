@@ -2,6 +2,7 @@ package edu.java.scrapper.urls.tracked_links;
 
 import edu.java.scrapper.IntegrationTest;
 import edu.java.scrapper.client.GitHubClient;
+import edu.java.scrapper.model.Link;
 import edu.java.scrapper.model.dto.response.GitHubOwnerRepoResponse;
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -62,16 +63,17 @@ class GitHubLinkTest extends IntegrationTest {
     }
 
     @Test
-    void testGetLastActivityTime() {
+    void testGetUpdate() {
         OffsetDateTime now = OffsetDateTime.now();
+        OffsetDateTime tomorrow = now.plusDays(1);
+
         var gitHubOwnerRepoResponse = new GitHubOwnerRepoResponse(
             10L,
             "TinkoffJava2024",
-            OffsetDateTime.MIN,
-            now,
+            tomorrow,
+            tomorrow,
             0
         );
-
 
         Mockito.doReturn(gitHubOwnerRepoResponse)
             .when(gitHubClient)
@@ -85,10 +87,20 @@ class GitHubLinkTest extends IntegrationTest {
         var goodURI = URI.create("https://github.com/Ser4ey/JavaTinkoff2024/pull/6");
         var badURI = URI.create("https://github.com/Ser4ey/NotJavaTinkoff2024/pull/6");
 
-        var time = gitHubLink.getLastActivityTime(goodURI);
-        assertEquals(time.get(), now);
+        var none = gitHubLink.getUpdate(
+            new Link(3, badURI, now, now, 10)
+        );
+        assertTrue(none.isEmpty());
 
-        var time2 = gitHubLink.getLastActivityTime(badURI);
-        assertTrue(time2.isEmpty());
+        var some = gitHubLink.getUpdate(
+            new Link(10, goodURI, now, now, 10)
+        );
+
+        assertFalse(some.isEmpty());
+        assertEquals(some.get().newCount(), 0);
+
+        System.out.println(some.get().newLastActivity());
+        System.out.println(now);
+        assertTrue(some.get().newLastActivity().isEqual(tomorrow));
     }
 }

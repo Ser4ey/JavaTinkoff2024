@@ -2,6 +2,7 @@ package edu.java.scrapper.urls.tracked_links;
 
 import edu.java.scrapper.IntegrationTest;
 import edu.java.scrapper.client.StackOverflowClient;
+import edu.java.scrapper.model.Link;
 import edu.java.scrapper.model.dto.response.StackOverflowQuestionsResponse.StackOverflowQuestion;
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -58,14 +59,17 @@ public class StackOverflowLinkTest extends IntegrationTest {
     }
 
     @Test
-    void testGetLastActivityTime() {
+    void testGetUpdate() {
         OffsetDateTime now = OffsetDateTime.now();
+        OffsetDateTime tomorrow = now.plusDays(1);
+
         var StackOverflowQuestion = new StackOverflowQuestion (
             10L,
-            "TinkoffJava2024",
-            now,
-            0
+            "TinkoffJava2024 the best",
+            tomorrow,
+            100
         );
+
         Mockito.doReturn(StackOverflowQuestion)
             .when(stackOverflowClient)
             .getQuestion(41694969L);
@@ -74,15 +78,20 @@ public class StackOverflowLinkTest extends IntegrationTest {
             .when(stackOverflowClient)
             .getQuestion(1L);
 
-
         var goodURI = URI.create("https://stackoverflow.com/questions/41694969/how-to-replace-an-existing-bean-in-spring-boot-application");
         var badURI = URI.create("https://notstackoverflow.com/questions/1/how-to-replace-an-existing-bean-in-spring-boot-application");
 
-        var time = stackOverflowLink.getLastActivityTime(goodURI);
-        assertEquals(time.get(), now);
+        var none = stackOverflowLink.getUpdate(
+            new Link(5, badURI, now, now, 10)
+        );
+        assertTrue(none.isEmpty());
 
-        var time2 = stackOverflowLink.getLastActivityTime(badURI);
-        assertTrue(time2.isEmpty());
+        var some = stackOverflowLink.getUpdate(
+            new Link(10, goodURI, now, now, 10)
+        );
+        assertFalse(some.isEmpty());
+        assertEquals(some.get().newCount(), 100);
+        assertTrue(some.get().newLastActivity().isEqual(tomorrow));
     }
 
 }

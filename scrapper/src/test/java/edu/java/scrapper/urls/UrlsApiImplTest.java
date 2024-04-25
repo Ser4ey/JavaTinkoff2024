@@ -8,7 +8,6 @@ import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -16,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -32,6 +30,7 @@ class UrlsApiImplTest extends IntegrationTest {
     private UrlsApiImpl urlsApiImpl;
 
     private static final OffsetDateTime CURRENT_TIME = OffsetDateTime.now();
+    private static final UrlUpdateDto urlUpdateDto = new UrlUpdateDto("text", CURRENT_TIME, 0);
 
 
     @BeforeEach
@@ -46,11 +45,11 @@ class UrlsApiImplTest extends IntegrationTest {
 
 
         Mockito.doReturn(true)
-            .when(gitHubLink)
+            .when(stackOverflowLink)
             .isCurrentLinkHost(URI.create("https://stackoverflow.com/questions/41694969/how"));
 
         Mockito.doReturn(false)
-            .when(gitHubLink)
+            .when(stackOverflowLink)
             .isCurrentLinkHost(URI.create("https://notstackoverflow.com/questions/41694969/how"));
 
 
@@ -65,31 +64,12 @@ class UrlsApiImplTest extends IntegrationTest {
 
 
         Mockito.doReturn(true)
-            .when(gitHubLink)
+            .when(stackOverflowLink)
             .isWorkingUrl(URI.create("https://stackoverflow.com/questions/41694969/how"));
 
         Mockito.doReturn(false)
-            .when(gitHubLink)
+            .when(stackOverflowLink)
             .isWorkingUrl(URI.create("https://notstackoverflow.com/questions/41694969/how"));
-
-        // --------------
-        Mockito.doReturn(Optional.of(CURRENT_TIME))
-            .when(gitHubLink)
-            .getLastActivityTime(URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
-
-        Mockito.doReturn(Optional.empty())
-            .when(gitHubLink)
-            .getLastActivityTime(URI.create("https://notgithub.com/Ser4ey/JavaTinkoff2024"));
-
-
-        Mockito.doReturn(Optional.of(CURRENT_TIME))
-            .when(gitHubLink)
-            .getLastActivityTime(URI.create("https://stackoverflow.com/questions/41694969/how"));
-
-        Mockito.doReturn(Optional.empty())
-            .when(gitHubLink)
-            .getLastActivityTime(URI.create("https://notstackoverflow.com/questions/41694969/how"));
-
 
         // --------------
 
@@ -108,28 +88,4 @@ class UrlsApiImplTest extends IntegrationTest {
         assertFalse(urlsApiImpl.isWorkingUrl(URI.create("1")));
     }
 
-    @Test
-    void testGetLastActivity() {
-        assertEquals(
-            urlsApiImpl.getLastActivity(URI.create("https://github.com/Ser4ey/JavaTinkoff2024")),
-            Optional.of(CURRENT_TIME)
-        );
-        assertEquals(
-            urlsApiImpl.getLastActivity(URI.create("https://stackoverflow.com/questions/41694969/how")),
-            Optional.of(CURRENT_TIME)
-        );
-
-        assertEquals(
-            urlsApiImpl.getLastActivity(URI.create("https://notgithub.com/Ser4ey/JavaTinkoff2024")),
-            Optional.empty()
-        );
-        assertEquals(
-            urlsApiImpl.getLastActivity(URI.create("https://notstackoverflow.com/questions/41694969/how")),
-            Optional.empty()
-        );
-       assertEquals(
-            urlsApiImpl.getLastActivity(URI.create("1")),
-            Optional.empty()
-        );
-    }
 }
