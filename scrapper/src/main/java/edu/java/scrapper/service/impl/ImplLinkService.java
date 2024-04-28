@@ -12,6 +12,8 @@ import edu.java.scrapper.urls.UrlsApi;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
+import edu.java.scrapper.urls.model.TrackedUrlInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -44,13 +46,12 @@ public class ImplLinkService implements LinkService {
             return link.get();
         }
 
-
-        boolean isWorkingUrl = urlsApi.isWorkingUrl(url);
-        if (!isWorkingUrl) {
+        Optional<TrackedUrlInfo> trackedUrlInfo = urlsApi.getUrlInfo(url);
+        if (trackedUrlInfo.isEmpty()) {
             throw new LinkDoNotWorking();
         }
 
-        var newLink = linkRepository.addLink(url);
+        var newLink = linkRepository.addLink(url, trackedUrlInfo.get().count());
         linkRepository.addLinkRelation(chatId, newLink.id());
         return newLink;
     }
