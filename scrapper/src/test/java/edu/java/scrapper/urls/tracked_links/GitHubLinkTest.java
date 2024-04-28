@@ -33,36 +33,6 @@ class GitHubLinkTest extends IntegrationTest {
     }
 
     @Test
-    void testIsWorkingUrl() {
-        OffsetDateTime now = OffsetDateTime.now();
-        GitHubOwnerRepoResponse gitHubOwnerRepoResponse = new GitHubOwnerRepoResponse(
-            10L,
-            "TinkoffJava2024",
-            OffsetDateTime.MIN,
-            now,
-            0
-            );
-
-
-        Mockito.doReturn(gitHubOwnerRepoResponse)
-            .when(gitHubClient)
-            .getRepository("Ser4ey", "JavaTinkoff2024");
-
-        Mockito.doReturn(null)
-            .when(gitHubClient)
-            .getRepository("Ser4ey", "NotJavaTinkoff2024");
-
-
-        var goodURI = URI.create("https://github.com/Ser4ey/JavaTinkoff2024/pull/6");
-        var badURI = URI.create("https://github.com/Ser4ey/NotJavaTinkoff2024/pull/6");
-        var veryBadURI = URI.create("1");
-
-        assertTrue(gitHubLink.isWorkingUrl(goodURI));
-        assertFalse(gitHubLink.isWorkingUrl(badURI));
-        assertFalse(gitHubLink.isWorkingUrl(veryBadURI));
-    }
-
-    @Test
     void testGetUpdate() {
         OffsetDateTime now = OffsetDateTime.now();
         OffsetDateTime tomorrow = now.plusDays(1);

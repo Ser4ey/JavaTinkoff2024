@@ -34,31 +34,6 @@ public class StackOverflowLinkTest extends IntegrationTest {
     }
 
     @Test
-    void testIsWorkingUrl() {
-        OffsetDateTime now = OffsetDateTime.now();
-        var StackOverflowQuestion = new StackOverflowQuestion (
-            10L,
-            "TinkoffJava2024",
-            now,
-            0
-        );
-
-        Mockito.doReturn(StackOverflowQuestion)
-            .when(stackOverflowClient)
-            .getQuestion(41694969L);
-
-        Mockito.doReturn(null)
-            .when(stackOverflowClient)
-            .getQuestion(1L);
-
-        var goodURI = URI.create("https://stackoverflow.com/questions/41694969/how-to-replace-an-existing-bean-in-spring-boot-application");
-        var badURI = URI.create("https://notstackoverflow.com/questions/1/how-to-replace-an-existing-bean-in-spring-boot-application");
-
-        assertTrue(stackOverflowLink.isWorkingUrl(goodURI));
-        assertFalse(stackOverflowLink.isWorkingUrl(badURI));
-    }
-
-    @Test
     void testGetUpdate() {
         OffsetDateTime now = OffsetDateTime.now();
         OffsetDateTime tomorrow = now.plusDays(1);

@@ -30,32 +30,6 @@ public class StackOverflowLink implements TrackedLink {
     }
 
     @Override
-    public boolean isWorkingUrl(URI url) {
-        if (!isCurrentLinkHost(url)) {
-            return false;
-        }
-
-        var questionId = getQuestionId(url);
-        if (questionId.isEmpty()) {
-            return false;
-        }
-
-        try {
-            var answer = stackOverflowClient.getQuestion(questionId.get());
-            log.info("Ответ от StackOverflow API: {}", answer);
-            if (answer == null) {
-                return false;
-            }
-
-        } catch (Exception e) {
-            log.warn(UNKNOWN_STACKOVERFLOW_API_ERROR, e.getMessage());
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
     public Optional<TrackedUrlInfo> getUrlInfo(URI url) {
         if (!isCurrentLinkHost(url)) {
             return Optional.empty();

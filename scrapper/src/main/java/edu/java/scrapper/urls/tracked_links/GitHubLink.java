@@ -29,33 +29,6 @@ public class GitHubLink implements TrackedLink {
     }
 
     @Override
-    public boolean isWorkingUrl(URI url) {
-        if (!isCurrentLinkHost(url)) {
-            return false;
-        }
-
-        try {
-            var ownerRepoPair = getOwnerAndRepo(url);
-            if (ownerRepoPair.isEmpty()) {
-                return false;
-            }
-            String owner = ownerRepoPair.get().getLeft();
-            String repo = ownerRepoPair.get().getRight();
-
-            var answer = gitHubClient.getRepository(owner, repo);
-            log.info("Ответ от GitHub API: {}", answer);
-            if (answer == null) {
-                return false;
-            }
-        } catch (Exception e) {
-            log.warn(UNKNOWN_GITHUB_API_ERROR, e.getMessage());
-            return false;
-        }
-
-        return true;
-    }
-
-    @Override
     public Optional<TrackedUrlInfo> getUrlInfo(URI url) {
         if (!isCurrentLinkHost(url)) {
             return Optional.empty();

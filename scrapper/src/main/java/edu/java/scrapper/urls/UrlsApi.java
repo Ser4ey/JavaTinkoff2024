@@ -7,8 +7,6 @@ import java.net.URI;
 import java.util.Optional;
 
 public interface UrlsApi {
-    boolean isWorkingUrl(URI url);
-
     Optional<TrackedUrlInfo> getUrlInfo(URI url);
 
     Optional<UrlUpdateDto> getUrlUpdate(Link link);

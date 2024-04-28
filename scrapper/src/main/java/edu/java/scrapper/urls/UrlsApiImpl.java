@@ -19,20 +19,6 @@ public class UrlsApiImpl implements UrlsApi {
     private final List<TrackedLink> trackedLinks;
 
     @Override
-    public boolean isWorkingUrl(URI url) {
-        for (TrackedLink trackedLink : trackedLinks) {
-            if (!trackedLink.isCurrentLinkHost(url)) {
-                continue;
-            }
-
-            if (trackedLink.isWorkingUrl(url)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public Optional<TrackedUrlInfo> getUrlInfo(URI url) {
         for (TrackedLink trackedLink : trackedLinks) {
             if (!trackedLink.isCurrentLinkHost(url)) {

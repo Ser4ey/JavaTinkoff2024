@@ -10,8 +10,6 @@ import java.util.Optional;
 public interface TrackedLink {
     boolean isCurrentLinkHost(URI url); // ссылка относится к текущему адресу
 
-    boolean isWorkingUrl(URI url); // ссылка доступна для получения обновлений
-
     Optional<TrackedUrlInfo> getUrlInfo(URI url); // актуальная информация по ссылке
 
     Optional<UrlUpdateDto> getUpdate(Link link); // обновление источника (если есть)

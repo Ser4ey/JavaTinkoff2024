@@ -54,25 +54,6 @@ class UrlsApiImplTest extends IntegrationTest {
             .when(stackOverflowLink)
             .isCurrentLinkHost(URI.create("https://notstackoverflow.com/questions/41694969/how"));
 
-
-        // --------------
-        Mockito.doReturn(true)
-            .when(gitHubLink)
-            .isWorkingUrl(URI.create("https://github.com/Ser4ey/JavaTinkoff2024"));
-
-        Mockito.doReturn(false)
-            .when(gitHubLink)
-            .isWorkingUrl(URI.create("https://notgithub.com/Ser4ey/JavaTinkoff2024"));
-
-
-        Mockito.doReturn(true)
-            .when(stackOverflowLink)
-            .isWorkingUrl(URI.create("https://stackoverflow.com/questions/41694969/how"));
-
-        Mockito.doReturn(false)
-            .when(stackOverflowLink)
-            .isWorkingUrl(URI.create("https://notstackoverflow.com/questions/41694969/how"));
-
         // --------------
 
         Mockito.doReturn(Optional.of(TRACKED_URL_INFO))
@@ -96,17 +77,6 @@ class UrlsApiImplTest extends IntegrationTest {
 
         List<TrackedLink> trackedLinks = Arrays.asList(gitHubLink, stackOverflowLink);
         ReflectionTestUtils.setField(urlsApiImpl, "trackedLinks", trackedLinks);
-    }
-
-
-    @Test
-    void testIsWorkingUrl() {
-        assertTrue(urlsApiImpl.isWorkingUrl(URI.create("https://github.com/Ser4ey/JavaTinkoff2024")));
-        assertTrue(urlsApiImpl.isWorkingUrl(URI.create("https://stackoverflow.com/questions/41694969/how")));
-
-        assertFalse(urlsApiImpl.isWorkingUrl(URI.create("https://gnotithub.com/Ser4ey/JavaTinkoff2024")));
-        assertFalse(urlsApiImpl.isWorkingUrl(URI.create("https://notstackoverflow.com/questions/41694969/how")));
-        assertFalse(urlsApiImpl.isWorkingUrl(URI.create("1")));
     }
 
     @Test
