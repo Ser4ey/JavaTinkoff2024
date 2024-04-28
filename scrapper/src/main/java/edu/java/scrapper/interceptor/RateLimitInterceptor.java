@@ -1,10 +1,13 @@
 package edu.java.scrapper.interceptor;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.java.scrapper.model.dto.response.ApiErrorResponse;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.ConsumptionProbe;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -39,12 +42,19 @@ public class RateLimitInterceptor implements HandlerInterceptor {
             log.info("Rate Limiting - BAD. IP: {} | prode: {}", ip, probe);
             long waitForRefill = probe.getNanosToWaitForRefill() / 1_000_000_000;
             response.addHeader("X-Rate-Limit-Retry-After-Seconds", String.valueOf(waitForRefill));
-            response.sendError(
-                HttpStatus.TOO_MANY_REQUESTS.value(),
-                "You have exhausted your API Request Quota");
+
+            response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
+            response.setContentType("application/json");
+            response.getWriter().write(new ObjectMapper().writeValueAsString(new ApiErrorResponse(
+                "Too many requests",
+                "429",
+                "Rate Limiting",
+                String.format("Rate Limiting - BAD. Too many requests. Wait %ds before the new request", waitForRefill),
+                List.of(probe.toString())
+            )));
+
             return false;
         }
-
     }
 
     private String getIpFromRequest(HttpServletRequest request) {
