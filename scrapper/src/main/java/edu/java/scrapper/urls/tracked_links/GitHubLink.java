@@ -3,6 +3,7 @@ package edu.java.scrapper.urls.tracked_links;
 import edu.java.scrapper.client.GitHubClient;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.model.dto.response.GitHubOwnerRepoResponse;
+import edu.java.scrapper.urls.model.TrackedUrlInfo;
 import edu.java.scrapper.urls.model.UrlUpdateDto;
 import java.net.URI;
 import java.util.Objects;
@@ -52,6 +53,37 @@ public class GitHubLink implements TrackedLink {
         }
 
         return true;
+    }
+
+    @Override
+    public Optional<TrackedUrlInfo> getUrlInfo(URI url) {
+        if (!isCurrentLinkHost(url)) {
+            return Optional.empty();
+        }
+
+        var ownerRepoPair = getOwnerAndRepo(url);
+        if (ownerRepoPair.isEmpty()) {
+            return Optional.empty();
+        }
+        String owner = ownerRepoPair.get().getLeft();
+        String repo = ownerRepoPair.get().getRight();
+
+        try {
+            var answer = gitHubClient.getRepository(owner, repo);
+            log.info("Ответ от GitHub API: {}", answer);
+            if (answer == null) {
+                return Optional.empty();
+            }
+
+            TrackedUrlInfo trackedUrlInfo = new TrackedUrlInfo(
+                answer.updatedAt(),
+                answer.forksCount()
+            );
+            return Optional.of(trackedUrlInfo);
+        } catch (Exception e) {
+            log.warn(UNKNOWN_GITHUB_API_ERROR, e.getMessage());
+            return Optional.empty();
+        }
     }
 
     @Override

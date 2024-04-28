@@ -1,6 +1,7 @@
 package edu.java.scrapper.urls.tracked_links;
 
 import edu.java.scrapper.model.Link;
+import edu.java.scrapper.urls.model.TrackedUrlInfo;
 import edu.java.scrapper.urls.model.UrlUpdateDto;
 import java.net.URI;
 import java.net.URL;
@@ -10,6 +11,8 @@ public interface TrackedLink {
     boolean isCurrentLinkHost(URI url); // ссылка относится к текущему адресу
 
     boolean isWorkingUrl(URI url); // ссылка доступна для получения обновлений
+
+    Optional<TrackedUrlInfo> getUrlInfo(URI url); // актуальная информация по ссылке
 
     Optional<UrlUpdateDto> getUpdate(Link link); // обновление источника (если есть)
 
