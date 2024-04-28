@@ -79,7 +79,7 @@ public class TrackCommand implements Command {
         } catch (ScrapperException e) {
             state.clear();
             log.debug("Не удалось получить список ссылок. Code: {} Описание: {} Текст ошибки: {}",
-                e.getStatusCode(), e.getDescription(), e.getDescription());
+                e.getStatusCode(), e.getDescription(), e.getExceptionMessage());
             var answerText = String.format("""
                 Не удалось добавить ссылку
                 Описание: %s

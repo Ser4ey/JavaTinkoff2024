@@ -46,7 +46,7 @@ public class ListCommand implements Command {
             return new CommandAnswer(buildListMessage(links), false);
         } catch (ScrapperException e) {
             log.debug("Не далось получить список ссылок. Code: {} Описание: {} Текст ошибки: {}",
-                e.getStatusCode(), e.getDescription(), e.getDescription());
+                e.getStatusCode(), e.getDescription(), e.getExceptionMessage());
             var answerText = String.format("""
                 Не удалось получить список ссылок
                 Описание: %s
