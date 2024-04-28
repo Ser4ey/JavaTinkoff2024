@@ -125,6 +125,24 @@ public class JdbcLinkDAO implements LinkRepository {
     }
 
     @Override
+    public Link addLink(URI url, Integer count) {
+        try {
+            jdbcTemplate.update(
+                "INSERT INTO link (url, count) VALUES (?, ?)",
+                url.toString(),
+                count
+            );
+        } catch (DuplicateKeyException e) {
+            log.warn("Ссылка {} уже есть в бд! Er: {}", url, e.toString());
+            var link = findByUrl(url);
+            return link.get();
+        }
+
+        var link = findByUrl(url);
+        return link.get();
+    }
+
+    @Override
     @Transactional
     public void addLinkRelation(Long chatId, Integer linkId) {
         jdbcTemplate.update(

@@ -22,6 +22,8 @@ public interface LinkRepository {
 
     Link addLink(URI url);
 
+    Link addLink(URI url, Integer count);
+
     void addLinkRelation(Long chatId, Integer linkId);
 
     void updateLastUpdateTime(Integer id, OffsetDateTime lastUpdateTime);

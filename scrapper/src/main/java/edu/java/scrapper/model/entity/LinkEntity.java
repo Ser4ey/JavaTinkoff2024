@@ -47,4 +47,11 @@ public class LinkEntity {
         lastCheck = OffsetDateTime.now();
         count = 0;
     }
+
+    public LinkEntity(String url, Integer count) {
+        this.url = url;
+        lastUpdate = OffsetDateTime.now();
+        lastCheck = OffsetDateTime.now();
+        this.count = count;
+    }
 }
