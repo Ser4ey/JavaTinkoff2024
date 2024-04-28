@@ -7,7 +7,7 @@ import edu.java.scrapper.service.ChatService;
 import edu.java.scrapper.service.LinkService;
 import edu.java.scrapper.service.LinkUpdater;
 import edu.java.scrapper.service.NotificationService;
-import edu.java.scrapper.urls.UrlUpdateDto;
+import edu.java.scrapper.urls.model.UrlUpdateDto;
 import edu.java.scrapper.urls.UrlsApi;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;

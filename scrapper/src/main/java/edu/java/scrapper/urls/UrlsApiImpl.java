@@ -1,6 +1,7 @@
 package edu.java.scrapper.urls;
 
 import edu.java.scrapper.model.Link;
+import edu.java.scrapper.urls.model.UrlUpdateDto;
 import edu.java.scrapper.urls.tracked_links.TrackedLink;
 import java.net.URI;
 import java.util.List;

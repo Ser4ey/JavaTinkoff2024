@@ -1,4 +1,4 @@
-package edu.java.scrapper.urls;
+package edu.java.scrapper.urls.model;
 
 import java.time.OffsetDateTime;
 

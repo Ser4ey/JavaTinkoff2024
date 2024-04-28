@@ -1,6 +1,7 @@
 package edu.java.scrapper.urls;
 
 import edu.java.scrapper.IntegrationTest;
+import edu.java.scrapper.urls.model.UrlUpdateDto;
 import edu.java.scrapper.urls.tracked_links.GitHubLink;
 import edu.java.scrapper.urls.tracked_links.StackOverflowLink;
 import edu.java.scrapper.urls.tracked_links.TrackedLink;

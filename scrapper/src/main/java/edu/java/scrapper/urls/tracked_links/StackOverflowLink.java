@@ -3,7 +3,7 @@ package edu.java.scrapper.urls.tracked_links;
 import edu.java.scrapper.client.StackOverflowClient;
 import edu.java.scrapper.model.Link;
 import edu.java.scrapper.model.dto.response.StackOverflowQuestionsResponse;
-import edu.java.scrapper.urls.UrlUpdateDto;
+import edu.java.scrapper.urls.model.UrlUpdateDto;
 import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
