@@ -63,7 +63,7 @@ public class UntrackCommand implements Command {
         } catch (ScrapperException e) {
             state.clear();
             log.debug("Не далось получить список ссылок. Code: {} Описание: {} Текст ошибки: {}",
-                e.getStatusCode(), e.getDescription(), e.getDescription());
+                e.getStatusCode(), e.getDescription(), e.getExceptionMessage());
             var answerText = String.format("""
                 Не удалось удалить ссылку
                 Описание: %s

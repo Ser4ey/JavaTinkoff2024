@@ -222,6 +222,19 @@ class JpaLinkDAOTest extends IntegrationTest {
         assertEquals(link.get().lastCheckTime(), dateTime);
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    void testUpdateCount() {
+        var uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024");
+        var added_link = linkRepository.addLink(uri);
+
+        assertEquals(added_link.count(), 0);
+        linkRepository.updateCount(added_link.id(), 7);
+
+        var link = linkRepository.findByUrl(uri);
+        assertEquals(link.get().count(), 7);
+    }
 
     @Test
     @Transactional
@@ -341,6 +354,23 @@ class JpaLinkDAOTest extends IntegrationTest {
         assertEquals(aliveLink.get().url(), uri2);
 
         assertEquals(linkRepository.findAllByChatId(chatId).size(), 1);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void testAddLinkWithCount() {
+        URI uri = URI.create("https://github.com/Ser4ey/JavaTinkoff2024/tree/hw4");
+        Integer count = 7;
+
+        var link1 = linkRepository.addLink(uri, count);
+        assertEquals(link1.url(), uri);
+        assertEquals(link1.count(), count);
+
+        var link2 = linkRepository.findByUrl(uri);
+        assertFalse(link2.isEmpty());
+        assertEquals(link2.get().url(), uri);
+        assertEquals(link2.get().count(), count);
     }
 
 }

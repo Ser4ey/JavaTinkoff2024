@@ -8,6 +8,7 @@ import edu.java.scrapper.service.LinkService;
 import edu.java.scrapper.service.LinkUpdater;
 import edu.java.scrapper.service.NotificationService;
 import edu.java.scrapper.urls.UrlsApi;
+import edu.java.scrapper.urls.model.UrlUpdateDto;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,39 +47,37 @@ public class ImplLinkUpdater implements LinkUpdater {
 
     private boolean updateLink(Link link) {
         linkService.updateLastCheckTime(link.id(), OffsetDateTime.now());
-
-        Optional<OffsetDateTime> newTime = urlsApi.getLastActivity(link.url());
-        if (newTime.isEmpty()) {
-            log.warn("Не удалось получить обновление для ссылки: {}", link.url().toString());
-            return false;
-        }
-
-        log.debug("Старое время: {} Новок время: {}", link.lastUpdateTime(), newTime.get());
-        if (link.lastUpdateTime().isEqual(newTime.get()) || link.lastUpdateTime().isAfter(newTime.get())) {
+        Optional<UrlUpdateDto> urlUpdateDtoOptional = urlsApi.getUrlUpdate(link);
+        if (urlUpdateDtoOptional.isEmpty()) {
             log.info("Нет новых обновлений для ссылки: {}", link.url().toString());
             return false;
         }
 
+        UrlUpdateDto urlUpdateDto = urlUpdateDtoOptional.get();
+        log.info("Новое обновление для ссылки {}: {}", link.url().toString(), urlUpdateDto);
 
-        log.info("Новое обновление для ссылки: {}", link.url().toString());
         var chats = chatService.findAllByLinkId(link.id());
         List<Long> chatIds = new ArrayList<>();
         for (Chat chat : chats) {
             chatIds.add(chat.chatId());
         }
-
         log.info("Отправляем обновление для: {}", chats);
         LinkUpdateRequest linkUpdateRequest = new LinkUpdateRequest(
             System.currentTimeMillis(),
-           link.url(),
-           "Информация по ссылке обновилась",
+            link.url(),
+            urlUpdateDto.updateText(),
             chatIds
         );
 
-
         try {
             notificationService.sendNotification(linkUpdateRequest);
-            linkService.updateLastUpdateTime(link.id(), newTime.get());
+
+            if (!link.lastUpdateTime().equals(urlUpdateDto.newLastActivity())) {
+                linkService.updateLastUpdateTime(link.id(), urlUpdateDto.newLastActivity());
+            }
+            if (!link.count().equals(urlUpdateDto.newCount())) {
+                linkService.updateCount(link.id(), urlUpdateDto.newCount());
+            }
         } catch (WebClientRequestException ex) {
             log.error("Не удалось отправить обновление боту: {}", ex.getMessage());
             return false;

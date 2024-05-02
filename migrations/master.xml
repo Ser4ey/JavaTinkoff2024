@@ -9,5 +9,13 @@
 
     <include file="init_tables.sql" relativeToChangelogFile="true"/>
 
+    <changeSet id="25-04-2024-add-column-to-link-table" author="Ser4ey">
+        <addColumn tableName="link">
+            <column name="count" type="integer" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 

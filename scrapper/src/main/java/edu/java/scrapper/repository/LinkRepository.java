@@ -22,11 +22,15 @@ public interface LinkRepository {
 
     Link addLink(URI url);
 
+    Link addLink(URI url, Integer count);
+
     void addLinkRelation(Long chatId, Integer linkId);
 
     void updateLastUpdateTime(Integer id, OffsetDateTime lastUpdateTime);
 
     void updateLastCheckTime(Integer id, OffsetDateTime lastCheckTime);
+
+    void updateCount(Integer id, Integer count);
 
     void remove(Integer id);
 

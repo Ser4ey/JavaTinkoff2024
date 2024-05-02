@@ -2,6 +2,7 @@ package edu.java.scrapper.urls.tracked_links;
 
 import edu.java.scrapper.IntegrationTest;
 import edu.java.scrapper.client.GitHubClient;
+import edu.java.scrapper.model.Link;
 import edu.java.scrapper.model.dto.response.GitHubOwnerRepoResponse;
 import java.net.URI;
 import java.time.OffsetDateTime;
@@ -32,44 +33,17 @@ class GitHubLinkTest extends IntegrationTest {
     }
 
     @Test
-    void testIsWorkingUrl() {
+    void testGetUpdate() {
         OffsetDateTime now = OffsetDateTime.now();
-        GitHubOwnerRepoResponse gitHubOwnerRepoResponse = new GitHubOwnerRepoResponse(
-            10L,
-            "TinkoffJava2024",
-            OffsetDateTime.MIN,
-            now
-            );
+        OffsetDateTime tomorrow = now.plusDays(1);
 
-
-        Mockito.doReturn(gitHubOwnerRepoResponse)
-            .when(gitHubClient)
-            .getRepository("Ser4ey", "JavaTinkoff2024");
-
-        Mockito.doReturn(null)
-            .when(gitHubClient)
-            .getRepository("Ser4ey", "NotJavaTinkoff2024");
-
-
-        var goodURI = URI.create("https://github.com/Ser4ey/JavaTinkoff2024/pull/6");
-        var badURI = URI.create("https://github.com/Ser4ey/NotJavaTinkoff2024/pull/6");
-        var veryBadURI = URI.create("1");
-
-        assertTrue(gitHubLink.isWorkingUrl(goodURI));
-        assertFalse(gitHubLink.isWorkingUrl(badURI));
-        assertFalse(gitHubLink.isWorkingUrl(veryBadURI));
-    }
-
-    @Test
-    void testGetLastActivityTime() {
-        OffsetDateTime now = OffsetDateTime.now();
         var gitHubOwnerRepoResponse = new GitHubOwnerRepoResponse(
             10L,
             "TinkoffJava2024",
-            OffsetDateTime.MIN,
-            now
+            tomorrow,
+            tomorrow,
+            0
         );
-
 
         Mockito.doReturn(gitHubOwnerRepoResponse)
             .when(gitHubClient)
@@ -83,10 +57,22 @@ class GitHubLinkTest extends IntegrationTest {
         var goodURI = URI.create("https://github.com/Ser4ey/JavaTinkoff2024/pull/6");
         var badURI = URI.create("https://github.com/Ser4ey/NotJavaTinkoff2024/pull/6");
 
-        var time = gitHubLink.getLastActivityTime(goodURI);
-        assertEquals(time.get(), now);
+        var none = gitHubLink.getUpdate(
+            new Link(3, badURI, now, now, 10)
+        );
+        assertTrue(none.isEmpty());
 
-        var time2 = gitHubLink.getLastActivityTime(badURI);
-        assertTrue(time2.isEmpty());
+        var some = gitHubLink.getUpdate(
+            new Link(10, goodURI, now, now, 10)
+        );
+
+        assertFalse(some.isEmpty());
+        assertEquals(some.get().newCount(), 0);
+        assertTrue(some.get().newLastActivity().isEqual(tomorrow));
+
+        var noUpdate = gitHubLink.getUpdate(
+            new Link(10, goodURI, tomorrow, tomorrow, 0)
+        );
+        assertTrue(noUpdate.isEmpty());
     }
 }

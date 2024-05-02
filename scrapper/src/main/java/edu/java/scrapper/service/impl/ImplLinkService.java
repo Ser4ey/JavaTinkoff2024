@@ -9,9 +9,11 @@ import edu.java.scrapper.repository.ChatRepository;
 import edu.java.scrapper.repository.LinkRepository;
 import edu.java.scrapper.service.LinkService;
 import edu.java.scrapper.urls.UrlsApi;
+import edu.java.scrapper.urls.model.TrackedUrlInfo;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -44,13 +46,12 @@ public class ImplLinkService implements LinkService {
             return link.get();
         }
 
-
-        boolean isWorkingUrl = urlsApi.isWorkingUrl(url);
-        if (!isWorkingUrl) {
+        Optional<TrackedUrlInfo> trackedUrlInfo = urlsApi.getUrlInfo(url);
+        if (trackedUrlInfo.isEmpty()) {
             throw new LinkDoNotWorking();
         }
 
-        var newLink = linkRepository.addLink(url);
+        var newLink = linkRepository.addLink(url, trackedUrlInfo.get().count());
         linkRepository.addLinkRelation(chatId, newLink.id());
         return newLink;
     }
@@ -63,6 +64,11 @@ public class ImplLinkService implements LinkService {
     @Override
     public void updateLastCheckTime(Integer id, OffsetDateTime lastCheckTime) {
         linkRepository.updateLastCheckTime(id, lastCheckTime);
+    }
+
+    @Override
+    public void updateCount(Integer id, Integer count) {
+        linkRepository.updateCount(id, count);
     }
 
     @Override

@@ -71,6 +71,14 @@ public class JpaLinkDAO implements LinkRepository {
     }
 
     @Override
+    public Link addLink(URI url, Integer count) {
+        jpaLinkRepository.save(
+            new LinkEntity(url.toString(), count)
+        );
+        return findByUrl(url).get();
+    }
+
+    @Override
     @Transactional
     public void addLinkRelation(Long chatId, Integer linkId) {
         var chatEntity = jpaChatRepository.findById(chatId);
@@ -102,6 +110,17 @@ public class JpaLinkDAO implements LinkRepository {
             return;
         }
         linkEntity.get().setLastCheck(lastCheckTime);
+        jpaLinkRepository.save(linkEntity.get());
+    }
+
+    @Override
+    @Transactional
+    public void updateCount(Integer id, Integer count) {
+        var linkEntity = jpaLinkRepository.findById(id);
+        if (linkEntity.isEmpty()) {
+            return;
+        }
+        linkEntity.get().setCount(count);
         jpaLinkRepository.save(linkEntity.get());
     }
 

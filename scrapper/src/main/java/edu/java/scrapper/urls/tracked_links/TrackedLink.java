@@ -1,16 +1,18 @@
 package edu.java.scrapper.urls.tracked_links;
 
+import edu.java.scrapper.model.Link;
+import edu.java.scrapper.urls.model.TrackedUrlInfo;
+import edu.java.scrapper.urls.model.UrlUpdateDto;
 import java.net.URI;
 import java.net.URL;
-import java.time.OffsetDateTime;
 import java.util.Optional;
 
 public interface TrackedLink {
     boolean isCurrentLinkHost(URI url); // ссылка относится к текущему адресу
 
-    boolean isWorkingUrl(URI url); // ссылка доступна для получения обновлений
+    Optional<TrackedUrlInfo> getUrlInfo(URI url); // актуальная информация по ссылке
 
-    Optional<OffsetDateTime> getLastActivityTime(URI url); // время последнего обновления
+    Optional<UrlUpdateDto> getUpdate(Link link); // обновление источника (если есть)
 
     static Optional<String> getHostFromUrl(URI uri) {
         try {

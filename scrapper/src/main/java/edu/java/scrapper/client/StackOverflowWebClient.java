@@ -36,7 +36,7 @@ public class StackOverflowWebClient implements StackOverflowClient {
                 return null;
             }
 
-            return stackOverflowQuestionsResponse.questions().get(0);
+            return stackOverflowQuestionsResponse.questions().getFirst();
 
         } catch (WebClientResponseException ex) {
             log.error(

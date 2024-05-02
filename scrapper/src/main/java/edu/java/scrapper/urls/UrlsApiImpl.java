@@ -1,41 +1,44 @@
 package edu.java.scrapper.urls;
 
+import edu.java.scrapper.model.Link;
+import edu.java.scrapper.urls.model.TrackedUrlInfo;
+import edu.java.scrapper.urls.model.UrlUpdateDto;
 import edu.java.scrapper.urls.tracked_links.TrackedLink;
 import java.net.URI;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Log4j2
 public class UrlsApiImpl implements UrlsApi {
 
     private final List<TrackedLink> trackedLinks;
 
     @Override
-    public boolean isWorkingUrl(URI url) {
-        for (TrackedLink tackedLink : trackedLinks) {
-            if (!tackedLink.isCurrentLinkHost(url)) {
+    public Optional<TrackedUrlInfo> getUrlInfo(URI url) {
+        for (TrackedLink trackedLink : trackedLinks) {
+            if (!trackedLink.isCurrentLinkHost(url)) {
                 continue;
             }
-            if (tackedLink.isWorkingUrl(url)) {
-                return true;
-            }
+
+            return trackedLink.getUrlInfo(url);
         }
-        return false;
+        return Optional.empty();
     }
 
     @Override
-    public Optional<OffsetDateTime> getLastActivity(URI url) {
-        for (TrackedLink tackedLink : trackedLinks) {
-            if (!tackedLink.isCurrentLinkHost(url)) {
+    public Optional<UrlUpdateDto> getUrlUpdate(Link link) {
+        for (TrackedLink trackedLink : trackedLinks) {
+            if (!trackedLink.isCurrentLinkHost(link.url())) {
                 continue;
             }
-            return tackedLink.getLastActivityTime(url);
-
+            return trackedLink.getUpdate(link);
         }
+        log.warn("Неизвестная ссылка: {}", link.url());
         return Optional.empty();
     }
 

@@ -41,7 +41,7 @@ public class StartCommand implements Command {
             scrapperService.registerChat(chatMessage.getChatId());
         } catch (ScrapperException e) {
             log.debug("Command /start. Code: {} Описание: {} Текст ошибки: {}",
-                e.getStatusCode(), e.getDescription(), e.getDescription());
+                e.getStatusCode(), e.getDescription(), e.getExceptionMessage());
 
             if (e.getStatusCode().equals("0")) {
                 var answerText = String.format("""
