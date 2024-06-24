@@ -16,3 +16,21 @@
 
 Для работы требуется БД `PostgreSQL`. Присутствует опциональная зависимость на `Kafka`.
 
+## Технологии:
+### Проект
+- Spring Boot 3
+- Spring Data JPA
+- JDBC
+- Docker
+- Postgres
+- liquibase
+- Kafka
+- Prometheus
+- Grafana 
+- Maven
+- REST API
+
+### Тестирование
+- JUnit 5
+- Mockito
+- WireMock

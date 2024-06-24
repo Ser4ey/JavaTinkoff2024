@@ -2,16 +2,12 @@ package edu.java.scrapper.repository.jdbc;
 
 import edu.java.scrapper.IntegrationTest;
 import java.net.URI;
-import edu.java.scrapper.repository.ChatRepository;
-import edu.java.scrapper.repository.LinkRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;

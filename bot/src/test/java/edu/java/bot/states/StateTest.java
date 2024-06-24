@@ -10,7 +10,6 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 
 
-
 class StateTest {
     private State state;
 
